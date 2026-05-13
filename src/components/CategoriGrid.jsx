@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import '../styles/categoryGrid.css'
+import '../styles/CategoryGrid.css'
 
 const categories = [
 
