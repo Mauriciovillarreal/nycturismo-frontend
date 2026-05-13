@@ -45,7 +45,7 @@ const Hero = () => {
     try {
 
       const res = await api.get('/packages')
-
+      console.log(res.data)
       setPackages(res.data)
 
       const uniqueOrigins = [
