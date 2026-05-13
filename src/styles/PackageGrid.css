@@ -1,0 +1,12 @@
+.packageGridContainer h2 {
+   text-align: center;
+   font: bold;
+   text-transform: uppercase;
+   color: rgb(156, 156, 156);
+}
+
+.packageGridContainer p {
+   text-align: center;
+   color: rgb(156, 156, 156);
+   margin-bottom: 120px;
+}

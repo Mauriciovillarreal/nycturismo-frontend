@@ -1,0 +1,181 @@
+.packageCardLink{
+    text-decoration: none;
+    display: block;
+}
+
+.packageCard{
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.packageCard:hover{
+    transform: scale(1.02);
+}
+
+.packageCardImage{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.packageOverlay{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.88) 0%,
+        rgba(0,0,0,0.35) 45%,
+        rgba(0,0,0,0.05) 100%
+    );
+}
+
+.packageTag{
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    z-index: 5;
+
+    background: #ff5f5f;
+    color: white;
+
+    padding: 7px 14px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-transform: lowercase;
+}
+
+.packageBody{
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    padding: 22px;
+
+    color: white;
+}
+
+.packageContent{
+    width: 100%;
+}
+
+.packageTitle{
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.1;
+
+    margin: 0 0 16px 0;
+
+    color: white;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+.packageDate{
+    display: inline-block;
+
+    background: #ff5f5f;
+    color: white;
+
+    padding: 10px 16px;
+
+    border-radius: 14px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    margin-bottom: 18px;
+}
+
+.packageIcons{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    font-size: 20px;
+
+    margin-bottom: 20px;
+
+    color: white;
+}
+
+.packageFooter{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.packageFooter h5{
+    margin: 0;
+
+    color: white;
+
+    font-size: 22px;
+    font-weight: 800;
+}
+
+/* TABLET */
+
+@media(max-width: 992px){
+
+    .packageCard{
+        height: 460px;
+    }
+
+    .packageTitle{
+        font-size: 24px;
+    }
+
+    .packageFooter h5{
+        font-size: 28px;
+    }
+
+}
+
+/* MOBILE */
+
+@media(max-width: 768px){
+
+    .packageCard{
+        height: 500px;
+    }
+
+    .packageBody{
+        padding: 18px;
+    }
+
+    .packageTitle{
+        font-size: 22px;
+    }
+
+    .packageDate{
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .packageIcons{
+        font-size: 18px;
+        gap: 10px;
+    }
+
+    .packageFooter h5{
+        font-size: 24px;
+    }
+
+}

@@ -1,0 +1,17 @@
+html,
+body{
+    overflow-x: hidden;
+}
+body {
+  font-family: "Montserrat", sans-serif;
+}
+
+.btn-primary {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-primary:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}

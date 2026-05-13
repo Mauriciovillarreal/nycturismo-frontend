@@ -1,0 +1,59 @@
+.navbarCustom{
+    padding: 15px 0;
+    background: rgb(0, 0, 0);
+}
+
+.navbarTop h5 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+.navbarTop{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.imgLogoNav img{
+    width: 100px;
+}
+
+.searchBar .form-select,
+.searchBar button,
+.searchBarMobile .form-select,
+.searchBarMobile button{
+    height: 35px;
+    border-radius: 0px;
+}
+
+.searchToggleBtn{
+    border-radius: 1px !important;
+    padding: 2px 5px !important;
+    font-weight: 600;
+}
+
+.searchMobile{
+    margin-top: 15px;
+}
+.phoneIcon{
+    margin-bottom: 1px;
+    margin-right: 4px;
+    color: #000000;
+}
+
+
+@media (max-width: 992px){
+
+    .imgLogoNav img{
+        width: 80px;
+    }
+
+    .searchBarMobile{
+        width: 100%;
+    }
+    h5 {
+        color: rgb(235, 0, 0);
+        display: none;
+    }
+}
