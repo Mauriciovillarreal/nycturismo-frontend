@@ -10,7 +10,7 @@ import PackageCard from './PackageCard'
 import Loader from './Loader'
 import api from '../services/api'
 
-import '../styles/packageGrid.css'
+import '../styles/PackageGrid.css'
 
 const PackageGrid = ({ featured = false }) => {
 
