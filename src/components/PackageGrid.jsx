@@ -24,21 +24,14 @@ const PackageGrid = ({ featured = false }) => {
   const fetchPackages = async () => {
 
     try {
-
       const res = await api.get(
         `/packages${featured ? '?featured=true' : ''}`
       )
-
       setPackages(res.data)
-
     } catch (error) {
-
       console.error(error)
-
     } finally {
-
       setLoading(false)
-
     }
   }
 
