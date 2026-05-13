@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-
+import { Container } from 'react-bootstrap'
 
 import {
   FaPlane,
@@ -10,7 +10,7 @@ import {
 } from 'react-icons/fa'
 
 import '../styles/packageCard.css'
-import { Container } from 'react-bootstrap'
+
 
 const PackageCard = ({ pkg }) => {
 
