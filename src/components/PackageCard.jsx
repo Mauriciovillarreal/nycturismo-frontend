@@ -1,6 +1,6 @@
 import React from 'react'
+
 import { Link } from 'react-router-dom'
-import { Container } from 'react-bootstrap'
 
 import {
   FaPlane,
@@ -11,31 +11,41 @@ import {
 
 import '../styles/packageCard.css'
 
-
 const PackageCard = ({ pkg }) => {
+
+  const firstCircuit = pkg.circuits?.[0]
+
+  const currencySymbol =
+    firstCircuit?.currency === 'USD'
+      ? 'US$'
+      : '$'
 
   return (
 
-    <Container>
-
-      <Link
+    <Link
       to={`/packages/${pkg.slug}`}
       className="packageCardLink"
     >
 
       <div className="packageCard">
 
+        {/* IMAGE */}
+
         <img
-          src={pkg.images[0]}
+          src={pkg.images?.[0]}
           alt={pkg.title}
           className="packageCardImage"
         />
 
         <div className="packageOverlay"></div>
 
+        {/* CATEGORY */}
+
         <div className="packageTag">
-          paquete
+          {pkg.category}
         </div>
+
+        {/* BODY */}
 
         <div className="packageBody">
 
@@ -45,23 +55,66 @@ const PackageCard = ({ pkg }) => {
               {pkg.title}
             </h3>
 
+            {/* DURACION */}
+
             <div className="packageDate">
-              {pkg.duration} noches | salidas disponibles
+
+              {pkg.days} días
+              {' • '}
+              {pkg.nights} noches
+
             </div>
 
+            {/* ICONOS */}
+
             <div className="packageIcons">
-              <FaPlane />
-              <FaBus />
+
+              {
+                pkg.transport?.type === 'plane'
+                  ? <FaPlane />
+                  : <FaBus />
+              }
+
               <FaHotel />
+
               <FaSuitcaseRolling />
+
+            </div>
+
+            {/* TRANSPORTE */}
+
+            <div className="packageTransport">
+
+              {
+                pkg.transport?.type === 'plane'
+                  ? 'Avión'
+                  : 'Bus'
+              }
+
+              {' • '}
+
+              {pkg.transport?.category}
+
             </div>
 
           </div>
 
+          {/* FOOTER */}
+
           <div className="packageFooter">
 
+            <span>
+              Desde 
+            </span>
+
             <h5>
-              $ {pkg.price}
+
+              {currencySymbol}
+
+              {' '}
+
+              {firstCircuit?.price}
+
             </h5>
 
           </div>
@@ -71,7 +124,7 @@ const PackageCard = ({ pkg }) => {
       </div>
 
     </Link>
-    </Container>
+
   )
 }
 

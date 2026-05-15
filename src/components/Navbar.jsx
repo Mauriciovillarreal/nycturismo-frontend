@@ -13,7 +13,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import api from '../services/api'
 import { FaHeadset } from 'react-icons/fa'
-import '../styles/navbar.css'
+import '../styles/navBar.css'
 
 const NavbarComponent = () => {
 

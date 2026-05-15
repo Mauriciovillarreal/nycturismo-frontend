@@ -72,8 +72,7 @@
 }
 
 .packageTitle{
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 21px !important;
     line-height: 1.1;
 
     margin: 0 0 16px 0;
@@ -120,13 +119,18 @@
     align-items: center;
 }
 
-.packageFooter h5{
-    margin: 0;
+.packageFooter span {
+  display: block;
+  font-size: 0.95rem;
+  opacity: 0.85;
 
-    color: white;
+  margin-right: 8px;
+}
 
-    font-size: 22px;
-    font-weight: 800;
+.packageFooter h5 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
 }
 
 /* TABLET */

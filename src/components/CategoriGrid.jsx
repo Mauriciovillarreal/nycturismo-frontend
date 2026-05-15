@@ -6,13 +6,13 @@ import '../styles/CategoryGrid.css'
 const categories = [
 
     {
-        title: 'Brasil',
-        image: 'https://lh7-rt.googleusercontent.com/docsz/AD_4nXe_ESuFTXunsI-WlWImJHErl-vlA1nNBfpXMxYWIRM7JzvE3QJbcjT4v2T6wGw3c65PxmXYGGHf_VTrTS8L7SHW7FFrjMaQe-9PfRZNwAmfarZoy5hY9xeX8xFA9gSGKX_GUKqwbQ?key=4c4wy7GZSYjSBf31E8fVOQ',
-        category: 'Brasil'
+        title: 'Internacionales',
+        image: 'https://assets.voxcity.com/uploads/blog_images/What-is-the-first-place-to-visit-when-you-travel-to-Rome_original.jpg',
+        category: 'Internacionales'
     },
 
     {
-        title: 'Turquía',
+        title: 'Turquia',
         image: 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=1200&auto=format&fit=crop',
         category: 'Turquia'
     },
@@ -25,14 +25,14 @@ const categories = [
 
     {
         title: 'Caribe',
-        image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop',
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNYnXxGt9ZCa2QK_Nr1MtZ6lqxNA1DgrLMtg&s',
         category: 'Caribe'
     },
 
     {
-        title: 'Argentina',
+        title: 'Nacionales',
         image: 'https://cdn-imgix.headout.com/media/images/b8da531f-7c2a-4cbb-b677-18716d86366a-1747818847273-276449.jpg?auto=compress%2Cformat&w=900&h=562.5&q=90&ar=16%3A10&crop=faces%2Ccenter&fit=crop',
-        category: 'Argentina'
+        category: 'Nacionales'
     },
 
     {

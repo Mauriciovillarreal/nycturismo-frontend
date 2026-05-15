@@ -335,9 +335,13 @@ const Hero = () => {
       {/* BANNER */}
       <Container fluid className='banner bannerMovile'>
 
-        <div className="bannerContent">
+        <div >
+          <Container className="bannerContent">
 
-
+            <h1>Descubre tu próximo destino</h1>
+            <p>los mejores destinos turísticos con nuestros paquetes especiales.</p>
+            <p>Leg. 7865 D.N.T 276/92</p>
+          </Container>
         </div>
 
       </Container>

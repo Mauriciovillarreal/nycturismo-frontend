@@ -1,263 +1,405 @@
-.packageDetail {
-    padding-top: 20px;
+.packageDetailPage {
+    background: #ffffff;
+}
+
+.galleryWrapper {
+    padding: 40px 40px 0;
+    padding-bottom: 40px;
+}
+
+.galleryContent {
+    position: relative;
+    max-width: 1400px;
+    margin: auto;
+}
+
+.gallerySection {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1px;
+    height: 520px;
+}
+
+.mainImage img {
+    width: 100%;
+    height: 520px;
+    object-fit: cover;
+}
+
+.sideImages {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+}
+
+.sideImages img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+}
+
+/* FLOATING CARD */
+
+.floatingCard {
+    line-height: 1;
+    position: absolute;
+    right: 40px;
+    bottom: -350px;
+    width: 360px;
+    background: white;
+    border-radius: 3px;
+    padding: 20px;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.055);
+    z-index: 10;
+}
+
+.flightText {
+    font-size: 14px;
+    color: #666;
+}
+
+.roomTitle {
+    font-size: 22px;
+}
+
+.roomDescription {
+    line-height: 1;
+    font-size: 14px;
+    color: #000000;
+}
+
+.roomDescription span{
+    color: #858585;
+}
+
+.roomDescription p {
+    margin: 0;
+    margin-top: 5px;
+}
+
+.bottomSpace {
+    margin-bottom: 20px;
+}
+
+.priceLabel {
+    margin-top: 50px;
+    font-size: 14px;
+    color: #777;
+}
+
+.mainPrice {
+    font-size: 22px;
+}
+
+.finalPrice {
+    font-size: 15px;
+}
+
+.taxText {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.roomsButton {
+    width: 100%;
+    border: none !important;
+    background:  #ff8282 !important;
+    border-radius: 40px !important;
+    padding: 14px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+
+/* CONTENT */
+
+.packageDetailContent {
+    margin-top: 20px;
     padding-bottom: 60px;
 }
 
-/* LEFT COLUMN */
-
-.detailMainCard {
-    background: white;
-    border-radius: 18px;
-    padding: 20px;
-    margin-bottom: 25px;
-}
-
-.packageContent h2 {
-    font-size: 1.10rem;;
-    color: #000000;
-    margin-bottom: 18px;
+.packageTitleDetail {
+    font-size: 30px;
     text-transform: uppercase;
 }
-
-/* IMAGE */
-
-.detailImage {
-    margin-bottom: 20px;
-    width: 100%;
-    height: 420px;
-    object-fit: cover;
-    border-radius: 16px;
-}
-
-/* CONTENT BOX */
 
 .detailBox {
     background: white;
-    border-radius: 18px;
-    padding: 28px;
-    margin-bottom: 25px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
 }
 
 .detailBoxTitle {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #111;
-    margin-bottom: 25px;
-    text-transform: uppercase;
-    border-bottom: 1px solid #e9e9e9;
-    padding-bottom: 15px;
+    font-size: 20px;
+    margin-bottom: 20px;
 }
 
 .detailDescription {
-    color: #666;
-    line-height: 1.9;
-    font-size: 0.97rem;
+    font-size: 17px;
+    line-height: 1.2;
 }
 
-/* TABLE */
+.circuitsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.circuitCard {
+    border: 1px solid #d6d6d6;
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.circuitCard:hover {
+    border-color: #ff8282 !important;
+}
+
+.activeCircuit {
+    border: 2px solid  #ff8282 !important;
+}
 
 .datesTable {
     width: 100%;
-    border-collapse: collapse;
 }
 
-.datesTable thead tr {
-    border-bottom: 1px solid #e5e5e5;
-}
-
-.datesTable th {
-    padding: 16px 10px;
-    font-size: 0.92rem;
-    color: #333;
-    font-weight: 600;
-}
-
+.datesTable th,
 .datesTable td {
-    padding: 18px 10px;
-    border-bottom: 1px solid #efefef;
-    color: #555;
-    font-size: 0.95rem;
+    padding: 14px;
+    border-bottom: 1px solid #eee;
 }
 
 .priceText {
-    color: #111;
-    font-weight: 700;
-}
-
-/* SIDEBAR */
-
-.sidebarCard {
-    background: white;
-    border-radius: 18px;
-    padding: 24px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.sidebarCard:first-child {
-    position: sticky;
-    top: 100px;
-}
-
-.sidebarTitle {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #111;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e9e9e9;
-}
-
-.sidebarInfo {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 18px;
-    font-size: 0.95rem;
-}
-
-.sidebarInfo span {
-    min-width: 90px;
-    color: #666;
     font-weight: 600;
-    text-transform: uppercase;
 }
 
-.sidebarInfo p {
-    margin: 0;
-    color: #222;
-    font-weight: 500;
+.includesGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 30px;
+  margin-top: 25px;
 }
 
-/* PRICE */
-
-.totalPrice {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+.includeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.totalPrice span {
-    font-size: 1rem;
-    color: #333;
+.includeIcon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 24px;
+  font-weight: 700;
+
+  color: #2f3b52;
+
+  margin-bottom: 12px;
 }
 
-.totalPrice h3 {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #111;
+.includeItem p {
+  font-size: 16px;
+  line-height: 1.4;
+  color: #222;
+  margin: 0;
 }
 
-/* WHATSAPP */
 
-.whatsappButton {
-    width: 100%;
-    height: 54px;
-    border: none !important;
-    border-radius: 12px !important;
-    background: #25D366 !important;
-    color: white !important;
-    font-weight: 600 !important;
-    font-size: 1rem;
-    transition: 0.3s;
+/* TOP PACKAGEDETAIL */
+
+.packageResumeBar {
+  background: white;
+  padding: 4px;
+  display: grid;
+  grid-template-columns:
+    1.2fr
+    1fr
+    1fr
+    320px;
+  gap: 25px;
+  margin-bottom: 5px;
+  border: 1px solid rgb(219, 219, 219);
 }
 
-.whatsappButton:hover {
-    background: #1ebe5d !important;
+.resumeItem {
+
+  border-right: 1px solid #eee;
+
+  padding-right: 20px;
+
 }
 
-/* INCLUDES */
-
-.includesList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.resumeLabel {
+  display: block;
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+.dateTopDetail {
+  font-size: 16px;
 }
 
-.includesList li {
-    padding: 14px 0;
-    border-bottom: 1px solid #efefef;
-    color: #555;
+.resumeContent {
+
+  display: flex;
+
+  gap: 15px;
+
+  align-items: center;
+
 }
 
-.contactButtons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-top: 10px;
+.resumeThumb {
+
+  width: 110px;
+
+  height: 80px;
+
+  object-fit: cover;
+
+  border-radius: 12px;
+
 }
 
-.circleButton {
-    width: 58px;
-    height: 58px;
+.resumeContent h4,
+.resumeTransport h4 {
 
-    border-radius: 50%;
+  font-size: 15px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  margin: 0;
 
-    text-decoration: none;
+  font-weight: 700;
 
-    font-size: 1.5rem;
-
-    transition: 0.3s ease;
 }
 
-.whatsappCircle {
-    background: #25D366;
-    color: white;
+.resumeContent p,
+.resumeTransport p {
+
+  margin: 4px 0 0;
+
+  color: #666;
+
 }
 
-.whatsappCircle:hover {
-    transform: scale(1.08);
-    color: white;
+.resumeTransport {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+}
+
+.resumeTransport svg {
+
+  font-size: 26px;
+
+  color: #ff8282 !important;
+
+}
+
+.resumePriceBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+}
+
+.resumePriceBox span {
+  font-size: 14px;
+  color: #777;
+
+}
+
+.resumePriceBox h2 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.resumePriceBox p {
+  font-size: 14px;
+}
+
+.resumeButton {
+  width: 100%;
+  border: none !important;
+  background:  #ff8282 !important;
+  border-radius: 40px !important;
+  padding: 6px !important;
 }
 
 /* MOBILE */
 
-@media(max-width: 992px) {
+@media (max-width: 991px) {
 
-    .packageDetail {
-        padding-top: 20px;
-        padding-bottom: 30px;
-    }
+  .packageResumeBar {
+    display: none;
+  }
 
-    .detailMainCard {
+
+}
+/* MOBILE */
+
+@media (max-width: 991px) {
+
+  .includesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 991px) {
+
+    .galleryWrapper {
         padding: 15px;
     }
 
-    .packageTitle {
-        font-size: 1.3rem;
+    .gallerySection {
+        grid-template-columns: 1fr;
+        height: auto;
     }
 
-    .detailImage {
-        height: 240px;
-        border-radius: 12px;
+    .mainImage img {
+        height: 300px;
     }
 
-    .detailBox {
-        padding: 20px;
-        border-radius: 14px;
+    .sideImages {
+        grid-template-columns: 1fr 1fr;
     }
 
-    .sidebarCard {
-        border-radius: 14px;
-        padding: 20px;
+    .sideImages img {
+        height: 140px;
     }
 
-    .sidebarCard:first-child {
+    .floatingCard {
         position: relative;
-        top: 0;
+        width: 100%;
+        right: 0;
+        bottom: 0;
+        margin-top: 20px;
     }
 
-    .datesTable {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
+    .packageDetailContent {
+        margin-top: 40px;
     }
 
+    .packageTitleDetail {
+        font-size: 34px;
+    }
 }

@@ -52,7 +52,7 @@
     .searchBarMobile{
         width: 100%;
     }
-    h5 {
+    .navbarTop h5 {
         color: rgb(235, 0, 0);
         display: none;
     }
