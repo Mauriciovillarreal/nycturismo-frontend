@@ -184,7 +184,7 @@ const PackageDetail = () => {
         <div className='resumePriceBox'>
 
           <span>
-            Precio final por persona
+            Valor por persona en base doble
           </span>
 
           <h2>
