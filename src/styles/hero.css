@@ -238,6 +238,9 @@
         right: 10px;
         z-index: 20;
     }
+    .overlayContent {
+        padding: 50px 0px;
+    }
 
 }
 
