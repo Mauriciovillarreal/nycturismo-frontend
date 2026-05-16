@@ -104,17 +104,14 @@ const PackageCard = ({ pkg }) => {
           <div className="packageFooter">
 
             <span>
-              Desde 
+              Desde
             </span>
 
             <h5>
-
+              
               {currencySymbol}
-
               {' '}
-
               {firstCircuit?.price}
-
             </h5>
 
           </div>

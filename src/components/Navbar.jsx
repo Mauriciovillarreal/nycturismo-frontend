@@ -1,88 +1,80 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+
 import {
   Navbar,
-  Container,
-  Form,
-  Button,
-  Row,
-  Col,
-  Collapse
+  Container
 } from 'react-bootstrap'
 
 import { LinkContainer } from 'react-router-bootstrap'
-import { useNavigate } from 'react-router-dom'
-import api from '../services/api'
-import { FaHeadset } from 'react-icons/fa'
+
+import {
+  FaPhoneAlt,
+  FaWhatsapp
+} from 'react-icons/fa'
+
 import '../styles/navbar.css'
 
 const NavbarComponent = () => {
 
-  const navigate = useNavigate()
-
-  const [packages, setPackages] = useState([])
-
-  const [origin, setOrigin] = useState('')
-  const [destination, setDestination] = useState('')
-  const [date, setDate] = useState('')
-
-  const [origins, setOrigins] = useState([])
-  const [destinations, setDestinations] = useState([])
-  const [dates, setDates] = useState([])
-
-  const [openSearch, setOpenSearch] = useState(false)
-
-  useEffect(() => {
-    fetchPackages()
-  }, [])
-
-  const fetchPackages = async () => {
-
-    try {
-
-      const res = await api.get('/packages')
-
-      setPackages(res.data)
-
-      const uniqueOrigins = [
-        ...new Set(res.data.map(pkg => pkg.origin))
-      ]
-
-      const uniqueDestinations = [
-        ...new Set(res.data.map(pkg => pkg.destination))
-      ]
-
-      setOrigins(uniqueOrigins)
-      setDestinations(uniqueDestinations)
-
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-
   return (
 
-    <Navbar>
+    <Navbar className='customNavbar'>
 
-      <Container className="d-flex flex-column">
+      <Container className='navbarContent'>
 
-        <div className="navbarTop">
+        {/* LOGO */}
+        <LinkContainer to='/'>
+          <Navbar.Brand className='imgLogoNav'>
 
-          <LinkContainer to="/">
-            <Navbar.Brand className='imgLogoNav'>
-              <img src="../img/logonyc.png" alt="NYC Turismo" />
-            </Navbar.Brand>
-          </LinkContainer>
-          
-          <h5> <FaHeadset className='phoneIcon' />Para ventas 11 4050 0111</h5>
+            <img
+              src='../img/logonyc.png'
+              alt='NYC Travel'
+            />
+
+          </Navbar.Brand>
+        </LinkContainer>
+
+        {/* INFO */}
+        <div className='navInfo'>
+
+          <span className='ventasText'>
+            VENTAS:
+          </span>
+
+          <a
+            href='tel:08102201031'
+            className='navLink'
+          >
+
+            <FaPhoneAlt />
+
+            4627-7994
+
+          </a>
+
+          <a
+            href='https://wa.me/5491140500111'
+            target='_blank'
+            rel='noreferrer'
+            className='navLink'
+          >
+
+            <FaWhatsapp />
+
+            +54 9 11 5164-2289
+
+          </a>
+
+          <span className='navSchedule'>
+            Lunes a Viernes 09 a 17 hs
+          </span>
+
         </div>
-      
-
 
       </Container>
-      
 
     </Navbar>
+
   )
 }
 

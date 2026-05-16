@@ -1,6 +1,6 @@
-.navbarCustom{
+.navbarCustom {
     padding: 15px 0;
-    background: rgb(0, 0, 0);
+    background: rgb(223, 33, 33);
 }
 
 .navbarTop h5 {
@@ -8,52 +8,113 @@
     font-weight: 600;
     margin: 0;
 }
-.navbarTop{
+
+.navbarTop {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.imgLogoNav img{
+.imgLogoNav img {
     width: 100px;
 }
 
 .searchBar .form-select,
 .searchBar button,
 .searchBarMobile .form-select,
-.searchBarMobile button{
+.searchBarMobile button {
     height: 35px;
     border-radius: 0px;
 }
 
-.searchToggleBtn{
+.searchToggleBtn {
     border-radius: 1px !important;
     padding: 2px 5px !important;
     font-weight: 600;
 }
 
-.searchMobile{
+.searchMobile {
     margin-top: 15px;
 }
-.phoneIcon{
+
+.phoneIcon {
     margin-bottom: 1px;
     margin-right: 4px;
     color: #000000;
 }
 
+.navInfo {
 
-@media (max-width: 992px){
+    display: flex;
 
-    .imgLogoNav img{
+    align-items: center;
+
+    gap: 18px;
+
+    flex-wrap: wrap;
+
+}
+
+.ventasText {
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: #222;
+
+}
+
+.navLink {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    text-decoration: none;
+
+    color: #c70000;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+    transition: 0.2s;
+
+}
+
+.navSchedule {
+
+    color: #333;
+
+    font-size: 13px;
+
+}
+
+
+@media (max-width: 992px) {
+
+    .imgLogoNav img {
         width: 80px;
     }
 
-    .searchBarMobile{
+    .searchBarMobile {
         width: 100%;
     }
+
     .navbarTop h5 {
         color: rgb(235, 0, 0);
         display: none;
+    }
+
+    .navInfo {
+        display: none;
+    }
+
+    nav {
+        background: rgba(223, 33, 33, 0);
     }
 }

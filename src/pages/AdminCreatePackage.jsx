@@ -272,7 +272,7 @@ const AdminCreatePackage = () => {
                   </option>
 
                   <option value="Internacionales">
-                    Internacionales
+                    Internacional
                   </option>
 
                 </Form.Select>

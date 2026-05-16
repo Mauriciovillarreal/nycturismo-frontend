@@ -44,7 +44,7 @@ const AdminEditPackage = () => {
 
     transportCategory: '',
 
-    images: '',
+    images: ['', '', '', '', ''],
 
     availableDates: '',
 
@@ -89,7 +89,15 @@ const AdminEditPackage = () => {
           pkg.transport?.category || '',
 
         images:
-          pkg.images?.join(', ') || '',
+          pkg.images?.length
+            ? [
+                pkg.images[0] || '',
+                pkg.images[1] || '',
+                pkg.images[2] || '',
+                pkg.images[3] || '',
+                pkg.images[4] || ''
+              ]
+            : ['', '', '', '', ''],
 
         availableDates:
           pkg.availableDates
@@ -166,6 +174,24 @@ const AdminEditPackage = () => {
       ...formData,
 
       circuits: updatedCircuits
+
+    })
+  }
+
+  const handleImageChange = (
+    index,
+    value
+  ) => {
+
+    const updatedImages = [...formData.images]
+
+    updatedImages[index] = value
+
+    setFormData({
+
+      ...formData,
+
+      images: updatedImages
 
     })
   }
@@ -247,11 +273,9 @@ const AdminEditPackage = () => {
 
       },
 
-      images: formData.images
-        ? formData.images
-            .split(',')
-            .map(item => item.trim())
-        : [],
+      images: formData.images.filter(
+        image => image.trim() !== ''
+      ),
 
       availableDates: formData.availableDates
         ? formData.availableDates
@@ -314,8 +338,6 @@ const AdminEditPackage = () => {
 
           <Row>
 
-            {/* TITULO */}
-
             <Col md={6}>
 
               <Form.Group className="mb-3">
@@ -335,8 +357,6 @@ const AdminEditPackage = () => {
               </Form.Group>
 
             </Col>
-
-            {/* CATEGORIA */}
 
             <Col md={6}>
 
@@ -364,8 +384,8 @@ const AdminEditPackage = () => {
                     Nacionales
                   </option>
 
-                  <option value="Internacionales">
-                    Internacionales
+                  <option value="Internacional">
+                    Internacional
                   </option>
 
                 </Form.Select>
@@ -373,8 +393,6 @@ const AdminEditPackage = () => {
               </Form.Group>
 
             </Col>
-
-            {/* ORIGEN */}
 
             <Col md={6}>
 
@@ -395,8 +413,6 @@ const AdminEditPackage = () => {
 
             </Col>
 
-            {/* DESTINO */}
-
             <Col md={6}>
 
               <Form.Group className="mb-3">
@@ -415,8 +431,6 @@ const AdminEditPackage = () => {
               </Form.Group>
 
             </Col>
-
-            {/* DIAS */}
 
             <Col md={6}>
 
@@ -437,8 +451,6 @@ const AdminEditPackage = () => {
 
             </Col>
 
-            {/* NOCHES */}
-
             <Col md={6}>
 
               <Form.Group className="mb-3">
@@ -457,8 +469,6 @@ const AdminEditPackage = () => {
               </Form.Group>
 
             </Col>
-
-            {/* TRANSPORTE */}
 
             <Col md={6}>
 
@@ -488,8 +498,6 @@ const AdminEditPackage = () => {
 
             </Col>
 
-            {/* TIPO */}
-
             <Col md={6}>
 
               <Form.Group className="mb-3">
@@ -509,8 +517,6 @@ const AdminEditPackage = () => {
               </Form.Group>
 
             </Col>
-
-            {/* DESCRIPCION */}
 
             <Col md={12}>
 
@@ -538,22 +544,31 @@ const AdminEditPackage = () => {
 
               <Form.Group className="mb-4">
 
-                <Form.Label>
+                <Form.Label className="fw-bold mb-3">
                   Imágenes
                 </Form.Label>
 
-                <Form.Control
-                  type="text"
-                  name="images"
-                  value={formData.images}
-                  onChange={handleChange}
-                />
+                {formData.images.map((image, index) => (
+
+                  <Form.Control
+                    key={index}
+                    type="text"
+                    className="mb-3"
+                    placeholder={`Imagen ${index + 1}`}
+                    value={image}
+                    onChange={(e) =>
+                      handleImageChange(
+                        index,
+                        e.target.value
+                      )
+                    }
+                  />
+
+                ))}
 
               </Form.Group>
 
             </Col>
-
-            {/* FECHAS */}
 
             <Col md={12}>
 
@@ -573,8 +588,6 @@ const AdminEditPackage = () => {
               </Form.Group>
 
             </Col>
-
-            {/* CIRCUITOS */}
 
             <Col md={12}>
 
@@ -780,8 +793,6 @@ const AdminEditPackage = () => {
 
             ))}
 
-            {/* DESTACADO */}
-
             <Col md={12}>
 
               <Form.Group className="mb-4">
@@ -797,8 +808,6 @@ const AdminEditPackage = () => {
               </Form.Group>
 
             </Col>
-
-            {/* BOTON */}
 
             <Col md={12}>
 

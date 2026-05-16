@@ -6,9 +6,9 @@ import '../styles/CategoryGrid.css'
 const categories = [
 
     {
-        title: 'Internacionales',
+        title: 'Internacional',
         image: 'https://assets.voxcity.com/uploads/blog_images/What-is-the-first-place-to-visit-when-you-travel-to-Rome_original.jpg',
-        category: 'Internacionales'
+        category: 'Internacional'
     },
 
     {
