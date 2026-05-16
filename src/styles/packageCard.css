@@ -9,11 +9,12 @@
     height: 500px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.3s ease;
+
 }
 
-.packageCard:hover{
-    transform: scale(1.02);
+.packageCard:hover img{
+    transform: scale(1.08);
+    transition: transform 0.8s ease;
 }
 
 .packageCardImage{
@@ -39,17 +40,12 @@
     top: 18px;
     left: 18px;
     z-index: 5;
-
     background: #ff5f5f;
     color: white;
-
     padding: 7px 14px;
-
     border-radius: 999px;
-
     font-size: 12px;
     font-weight: 700;
-
     text-transform: lowercase;
 }
 
@@ -136,47 +132,34 @@
 /* TABLET */
 
 @media(max-width: 992px){
-
-    .packageCard{
-        height: 460px;
-    }
-
     .packageTitle{
         font-size: 24px;
     }
-
     .packageFooter h5{
         font-size: 28px;
     }
-
 }
 
 /* MOBILE */
 
 @media(max-width: 768px){
-
     .packageCard{
         height: 500px;
     }
-
     .packageBody{
         padding: 18px;
     }
-
     .packageTitle{
         font-size: 22px;
     }
-
     .packageDate{
         font-size: 13px;
         padding: 8px 12px;
     }
-
     .packageIcons{
         font-size: 18px;
         gap: 10px;
     }
-
     .packageFooter h5{
         font-size: 24px;
     }

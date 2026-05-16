@@ -4,6 +4,10 @@
    text-transform: uppercase;
    color: rgb(156, 156, 156);
 }
+.packageGridContainer {
+   padding: 0 !important;
+
+}
 
 .packageGridContainer p {
    text-align: center;

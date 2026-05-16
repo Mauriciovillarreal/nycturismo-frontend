@@ -11,23 +11,20 @@
 .categoryGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
+    gap: 2px;
 }
 
 .categoryCard {
     position: relative;
     height: 260px;
-
     overflow: hidden;
     cursor: pointer;
-
     border-radius: 0;
-
-    transition: transform 0.3s ease;
 }
 
-.categoryCard:hover {
+.categoryCard:hover img {
     transform: scale(1.02);
+     transition: transform 0.8s ease;
 }
 
 .categoryCard img {
@@ -40,7 +37,6 @@
 .categoryOverlay {
     position: absolute;
     inset: 0;
-
     background: linear-gradient(to top,
             rgba(0, 0, 0, 0.65),
             rgba(0, 0, 0, 0.15));
@@ -85,6 +81,7 @@
     .categorySection {
         padding: 40px 0;
         width: 100%;
+
         overflow: hidden;
     }
 
@@ -119,7 +116,7 @@
     .categoryCard {
         flex: 0 0 82%;
 
-        height: 210px;
+        height: 280px;
 
         scroll-snap-align: start;
     }

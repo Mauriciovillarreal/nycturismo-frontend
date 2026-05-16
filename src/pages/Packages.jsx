@@ -25,7 +25,7 @@ const Packages = () => {
   const destination = searchParams.get('destination')
   const date = searchParams.get('date')
   const category = searchParams.get('category')
-  
+
 
   useEffect(() => {
     fetchPackages()
@@ -94,16 +94,19 @@ const Packages = () => {
 
 
 
-      <Row>
+      <Row className="g-4 justify-content-center">
 
         {filteredPackages.length > 0 ? (
 
           filteredPackages.map(pkg => (
 
             <Col
-              md={4}
               key={pkg._id}
-              className="mb-4"
+              xxl={2.1}
+              xl={3}
+              lg={4}
+              md={6}
+              sm={12}
             >
               <PackageCard pkg={pkg} />
             </Col>
