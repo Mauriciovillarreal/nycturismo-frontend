@@ -20,23 +20,15 @@ const AdminPackages = () => {
   }, [])
 
   const fetchPackages = async () => {
-
     try {
-
       const res = await api.get('/packages')
-
       setPackages(res.data)
-
     } catch (error) {
-
       console.log(error)
-
     }
-
   }
 
   const deletePackage = async (id) => {
-
     const confirmDelete = window.confirm(
       '¿Estás seguro de eliminar este paquete?'
     )
@@ -44,25 +36,16 @@ const AdminPackages = () => {
     if (!confirmDelete) return
 
     try {
-
       await api.delete(`/packages/${id}`)
-
       fetchPackages()
-
     } catch (error) {
-
       console.log(error)
-
     }
-
   }
 
   return (
-
     <Container className="py-4">
-
       <Row className="mb-4 align-items-center">
-
         <Col>
           <h1 className="fw-bold">
             Gestión de Paquetes
@@ -70,7 +53,6 @@ const AdminPackages = () => {
         </Col>
 
         <Col className="text-end">
-
           <Button
             as={Link}
             to="/admin/packages/create"
@@ -78,9 +60,7 @@ const AdminPackages = () => {
           >
             Crear Nuevo Paquete
           </Button>
-
         </Col>
-
       </Row>
 
       <Table
@@ -89,35 +69,21 @@ const AdminPackages = () => {
         hover
         responsive
       >
-
         <thead>
-
           <tr>
-
             <th>Título</th>
-
             <th>Destino</th>
-
             <th>Categoría</th>
-
             <th>Duración</th>
-
             <th>Precio</th>
-
             <th>Transporte</th>
-
             <th>Acciones</th>
-
           </tr>
-
         </thead>
 
         <tbody>
-
           {packages.length > 0 ? (
-
             packages.map(pkg => {
-
               const firstCircuit = pkg.circuits?.[0]
 
               const currency =
@@ -125,10 +91,16 @@ const AdminPackages = () => {
                   ? 'US$'
                   : '$'
 
+              // Obtenemos el valor ya sea si viene estructurado en 'mode' o en 'type'
+              const currentTransportMode = pkg.transport?.mode || pkg.transport?.type || 'bus'
+
+              // Comprobamos si coincide con avión (en inglés o variantes en español)
+              const isPlane = 
+                typeof currentTransportMode === 'string' && 
+                ['plane', 'avion', 'avión'].includes(currentTransportMode.toLowerCase())
+
               return (
-
                 <tr key={pkg._id}>
-
                   <td>
                     {pkg.title}
                   </td>
@@ -146,33 +118,19 @@ const AdminPackages = () => {
                   </td>
 
                   <td>
-
                     {currency}
-
                     {' '}
-
                     {firstCircuit?.price?.toLocaleString('es-AR') || 0}
-
                   </td>
 
                   <td>
-
-                    {
-                      pkg.transport?.type === 'plane'
-                        ? 'Avión'
-                        : 'Bus'
-                    }
-
+                    {isPlane ? 'Avión' : 'Bus'}
                     {' - '}
-
-                    {pkg.transport?.category}
-
+                    {pkg.transport?.category || 'Sin especificar'}
                   </td>
 
                   <td>
-
                     <div className="d-flex gap-2">
-
                       <Button
                         as={Link}
                         to={`/admin/packages/edit/${pkg._id}`}
@@ -189,40 +147,25 @@ const AdminPackages = () => {
                       >
                         Eliminar
                       </Button>
-
                     </div>
-
                   </td>
-
                 </tr>
-
               )
-
             })
-
           ) : (
-
             <tr>
-
               <td
                 colSpan="7"
                 className="text-center py-4"
               >
                 No hay paquetes cargados
               </td>
-
             </tr>
-
           )}
-
         </tbody>
-
       </Table>
-
     </Container>
-
   )
-
 }
 
 export default AdminPackages

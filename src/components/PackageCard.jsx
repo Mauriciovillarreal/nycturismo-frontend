@@ -20,6 +20,13 @@ const PackageCard = ({ pkg }) => {
       ? 'US$'
       : '$'
 
+  // Centralizamos la lógica de transporte (revisando mode, type y normalizando el texto)
+  const currentTransportMode = pkg.transport?.mode || pkg.transport?.type || 'bus'
+  
+  const isPlane = 
+    typeof currentTransportMode === 'string' && 
+    ['plane', 'avion', 'avión'].includes(currentTransportMode.toLowerCase())
+
   return (
 
     <Link
@@ -70,7 +77,7 @@ const PackageCard = ({ pkg }) => {
             <div className="packageIcons">
 
               {
-                pkg.transport?.type === 'plane'
+                isPlane 
                   ? <FaPlane />
                   : <FaBus />
               }
@@ -86,14 +93,14 @@ const PackageCard = ({ pkg }) => {
             <div className="packageTransport">
 
               {
-                pkg.transport?.type === 'plane'
+                isPlane 
                   ? 'Avión'
                   : 'Bus'
               }
 
               {' • '}
 
-              {pkg.transport?.category}
+              {pkg.transport?.category || 'Sin especificar'}
 
             </div>
 
@@ -111,7 +118,7 @@ const PackageCard = ({ pkg }) => {
               
               {currencySymbol}
               {' '}
-              {firstCircuit?.price}
+              {firstCircuit?.price?.toLocaleString('es-AR') || 0}
             </h5>
 
           </div>

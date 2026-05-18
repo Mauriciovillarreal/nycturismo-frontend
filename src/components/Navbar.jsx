@@ -53,7 +53,7 @@ const NavbarComponent = () => {
           </a>
 
           <a
-            href='https://wa.me/5491140500111'
+            href='https://wa.me/5491151642289'
             target='_blank'
             rel='noreferrer'
             className='navLink'

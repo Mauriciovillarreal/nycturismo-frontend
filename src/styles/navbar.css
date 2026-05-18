@@ -1,4 +1,8 @@
+nav {
+    z-index: 999999;
+}
 .navbarCustom {
+    z-index: 100000000;
     padding: 15px 0;
     background: rgb(223, 33, 33);
 }

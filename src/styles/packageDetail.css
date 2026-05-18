@@ -50,7 +50,7 @@
     border-radius: 3px;
     padding: 20px;
     box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.055);
+        0 10px 30px rgba(0, 0, 0, 0.329);
     z-index: 10;
 }
 
@@ -216,128 +216,133 @@
 
 
 /* TOP PACKAGEDETAIL */
-
+/* Contenedor principal de la barra de resumen */
 .packageResumeBar {
-  background: white;
-  padding: 4px;
-  display: grid;
-  grid-template-columns:
-    1.2fr
-    1fr
-    1fr
-    320px;
-  gap: 25px;
-  margin-bottom: 5px;
-  border: 1px solid rgb(219, 219, 219);
-}
-
-.resumeItem {
-
-  border-right: 1px solid #eee;
-
-  padding-right: 20px;
-
-}
-
-.resumeLabel {
-  display: block;
-  font-size: 14px;
-  color: #777;
-  margin-bottom: 14px;
-  font-weight: 600;
-}
-.dateTopDetail {
-  font-size: 16px;
-}
-
-.resumeContent {
-
   display: flex;
-
-  gap: 15px;
-
+  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
-
-}
-
-.resumeThumb {
-
-  width: 110px;
-
-  height: 80px;
-
-  object-fit: cover;
-
+  background: #ffffff;
+  padding: 15px 25px;
   border-radius: 12px;
-
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-top: 20px;
+  margin-bottom: 30px;
+  gap: 15px;
 }
 
-.resumeContent h4,
-.resumeTransport h4 {
-
-  font-size: 15px;
-
-  margin: 0;
-
-  font-weight: 700;
-
-}
-
-.resumeContent p,
-.resumeTransport p {
-
-  margin: 4px 0 0;
-
-  color: #666;
-
-}
-
-.resumeTransport {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 14px;
-
-}
-
-.resumeTransport svg {
-
-  font-size: 26px;
-
-  color: #ff8282 !important;
-
-}
-
-.resumePriceBox {
+/* Cada uno de los 4 bloques individuales */
+.resumeItem {
+  flex: 1;
+  min-width: 200px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-
+  position: relative;
 }
 
-.resumePriceBox span {
-  font-size: 14px;
-  color: #777;
-
+/* Línea divisoria vertical entre bloques (solo en pantallas grandes) */
+@media (min-width: 992px) {
+  .resumeItem:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 15%;
+    height: 70%;
+    width: 1px;
+    background-color: #e0e0e0;
+  }
 }
 
-.resumePriceBox h2 {
-  font-size: 20px;
+/* Etiquetas grises superiores (Alojamiento, Transporte, etc.) */
+.resumeLabel {
+  font-size: 0.75rem;
+  text-uppercase: uppercase;
   font-weight: 700;
+  color: #a0a0a0;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
 }
 
-.resumePriceBox p {
-  font-size: 14px;
+/* Estructura interna de contenido (Flex alignment) */
+.resumeContent, 
+.resumeTransport,
+.resumeDateHotelBox,
+.resumePriceInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.resumeButton {
-  width: 100%;
-  border: none !important;
-  background:  #ff8282 !important;
-  border-radius: 40px !important;
-  padding: 6px !important;
+/* Contenedores de texto internos */
+.resumeContent div, 
+.resumeTransport div,
+.resumePriceInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Títulos principales dentro de los bloques (Hotel, Rutas) */
+.resumeContent h4, 
+.resumeTransport h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2d3436;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Subtítulos pequeños (Noches, categorías) */
+.resumeContent p, 
+.resumeTransport p {
+  font-size: 0.8rem;
+  color: #636e72;
+  margin: 2px 0 0 0;
+}
+
+/* Miniatura de la imagen del hotel */
+.resumeThumb {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+/* Caja de iconos para transporte (Avión/Bus) */
+.resumeIconBox {
+  font-size: 1.3rem;
+  color: #ff7575e1; /* Color coral/rojo de tu paleta */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+}
+
+/* Estilos específicos para la sección de Tarifa */
+.resumePriceInfo h4 {
+  font-size: 0.75rem;
+  color: #636e72;
+  margin: 0;
+  font-weight: 500;
+}
+
+.resumePriceInfo h5 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #2d3436;
+  margin: 2px 0 0 0;
+}
+
+/* Helper para textos que no deben romperse en dos líneas */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* MOBILE */

@@ -47,15 +47,10 @@ const CategoryGrid = () => {
     const navigate = useNavigate()
 
     return (
-
         <section className="categorySection">
-
             <div className="categoryContainer">
-
                 <div className="categoryGrid">
-
                     {categories.map((item, index) => (
-
                         <div
                             key={index}
                             className="categoryCard"
@@ -63,26 +58,18 @@ const CategoryGrid = () => {
                                 navigate(`/packages?category=${item.category}`)
                             }
                         >
-
                             <img
                                 src={item.image}
                                 alt={item.title}
                             />
-
                             <div className="categoryOverlay"></div>
-
                             <h2>
                                 {item.title}
                             </h2>
-
                         </div>
-
                     ))}
-
                 </div>
-
             </div>
-
         </section>
     )
 }
