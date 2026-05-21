@@ -16,19 +16,19 @@ const AdminCreatePackage = () => {
 
   const [formData, setFormData] = useState({
     title: '',
-    operatorCode: '', // AGREGADO
+    operatorCode: '', 
     origin: '',
     destination: '',
-    category: '', // Inicializado correctamente como string vacío
+    category: '', 
     description: '',
     days: '',
     nights: '',
     featured: false,
     transportType: 'bus',
-    transportCategory: '',
+    transportCategory: '', // Se limpiará y validará dinámicamente
     images: ['', '', '', '', ''],
     availableDates: [
-      { date: '', hotel: '', hotelImage: '' } // ACTUALIZADO
+      { date: '', hotel: '', hotelImage: '' } 
     ],
     circuits: [
       {
@@ -42,11 +42,22 @@ const AdminCreatePackage = () => {
     ]
   })
 
+  // Controlar el cambio de transporte para resetear la categoría y evitar errores de validación cruzada
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
+    
+    setFormData((prevData) => {
+      const updatedData = {
+        ...prevData,
+        [name]: type === 'checkbox' ? checked : value
+      }
+      
+      // Si cambia el tipo de transporte, reseteamos la categoría para obligar a seleccionar una válida
+      if (name === 'transportType') {
+        updatedData.transportCategory = ''
+      }
+      
+      return updatedData
     })
   }
 
@@ -108,7 +119,7 @@ const AdminCreatePackage = () => {
       ...formData,
       availableDates: [
         ...formData.availableDates,
-        { date: '', hotel: '', hotelImage: '' } // ACTUALIZADO
+        { date: '', hotel: '', hotelImage: '' } 
       ]
     })
   }
@@ -132,18 +143,19 @@ const AdminCreatePackage = () => {
     const data = {
       title: formData.title,
       slug,
-      operatorCode: formData.operatorCode.trim(), // AGREGADO
+      operatorCode: formData.operatorCode.trim(), 
       origin: formData.origin,
       destination: formData.destination,
-      category: formData.category.trim(), // Se limpia de espacios por las dudas
+      category: formData.category.trim(), 
       description: formData.description,
       days: Number(formData.days),
       nights: Number(formData.nights),
       featured: formData.featured,
-      //  COMO DEBE QUEDAR
+      
+      // Sincronizado perfectamente con los enums estrictos del backend
       transport: {
-        mode: formData.transportType, // <-- Cambiado 'type' por 'mode'
-        category: formData.transportCategory.trim().toLowerCase() // <-- Limpieza para que coincida con el enum de Mongoose
+        mode: formData.transportType, 
+        category: formData.transportCategory.trim().toLowerCase() 
       },
 
       images: formData.images
@@ -155,7 +167,7 @@ const AdminCreatePackage = () => {
         .map(item => ({
           date: item.date,
           hotel: item.hotel.trim(),
-          hotelImage: item.hotelImage.trim() // AGREGADO
+          hotelImage: item.hotelImage.trim() 
         })),
 
       circuits: formData.circuits.map(circuit => ({
@@ -177,7 +189,7 @@ const AdminCreatePackage = () => {
       navigate('/admin/packages')
     } catch (error) {
       console.error(error)
-      alert('Error al crear el paquete')
+      alert('Error al crear el paquete. Verificá que los campos de transporte coincidan.')
     }
   }
 
@@ -217,7 +229,7 @@ const AdminCreatePackage = () => {
               </Form.Group>
             </Col>
 
-            {/* CATEGORIA (MODIFICADO A INPUT LIBRE) */}
+            {/* CATEGORIA */}
             <Col md={4}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Categoría</Form.Label>
@@ -226,7 +238,7 @@ const AdminCreatePackage = () => {
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  placeholder="Ej: Miniturismo, Nacionales, Internacional, Escapadas..."
+                  placeholder="Ej: Miniturismo, Nacionales, Internacional..."
                   required
                 />
               </Form.Group>
@@ -305,17 +317,37 @@ const AdminCreatePackage = () => {
               </Form.Group>
             </Col>
 
-            {/* TIPO CATEGORIA TRANSPORTE */}
+            {/* TIPO CATEGORIA TRANSPORTE (MODIFICADO A SELECT DINÁMICO) */}
             <Col md={3}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Tipo/Clase</Form.Label>
-                <Form.Control
-                  type="text"
+                <Form.Select
                   name="transportCategory"
                   value={formData.transportCategory}
                   onChange={handleChange}
-                  placeholder="Ej: semi-cama / business"
-                />
+                  required
+                >
+                  <option value="">Seleccione clase...</option>
+                  
+                  {/* Opciones exclusivas si eligió Bus */}
+                  {formData.transportType === 'bus' && (
+                    <>
+                      <option value="semi-cama">Semi-Cama</option>
+                      <option value="cama">Cama</option>
+                      <option value="semi-cama/cama">Semi-Cama / Cama</option>
+                    </>
+                  )}
+
+                  {/* Opciones exclusivas si eligió Avión */}
+                  {formData.transportType === 'plane' && (
+                    <>
+                      <option value="clase-economica">Clase Económica</option>
+                      <option value="economica-premium">Económica Premium</option>
+                      <option value="clase-ejecutiva">Clase Ejecutiva (Business)</option>
+                      <option value="primera-clase">Primera Clase</option>
+                    </>
+                  )}
+                </Form.Select>
               </Form.Group>
             </Col>
 
@@ -336,7 +368,7 @@ const AdminCreatePackage = () => {
 
             <hr className="my-4 text-muted" />
 
-            {/* ===== URLs DE IMÁGENES INDIVIDUALES ===== */}
+            {/* URLs DE IMÁGENES */}
             <Col md={12} className="mb-3">
               <h4 className="fw-bold m-0"><FaImage className="me-2 text-secondary" />URLs de Imágenes (Máx. 5)</h4>
               <p className="text-muted small mb-0">La primera imagen cargada se tomará como la portada principal del paquete.</p>
@@ -363,7 +395,7 @@ const AdminCreatePackage = () => {
 
             <hr className="my-2 text-muted" />
 
-            {/* ===== FECHAS Y HOTELES DINÁMICOS ===== */}
+            {/* FECHAS Y HOTELES */}
             <Col md={12} className="mb-2">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h4 className="fw-bold m-0">Fechas de Salida y Hoteles asignados</h4>
@@ -382,7 +414,6 @@ const AdminCreatePackage = () => {
               <Card className="p-3 bg-light border-0 rounded-3">
                 {formData.availableDates.map((item, index) => (
                   <Row key={index} className="align-items-end mb-3">
-                    {/* FECHA */}
                     <Col md={3} sm={12}>
                       <Form.Group>
                         {index === 0 && <Form.Label className="small fw-bold text-secondary">Fecha de Salida</Form.Label>}
@@ -395,7 +426,6 @@ const AdminCreatePackage = () => {
                       </Form.Group>
                     </Col>
 
-                    {/* HOTEL */}
                     <Col md={4} sm={12}>
                       <Form.Group>
                         {index === 0 && <Form.Label className="small fw-bold text-secondary">Hotel Asignado</Form.Label>}
@@ -403,13 +433,12 @@ const AdminCreatePackage = () => {
                           type="text"
                           value={item.hotel}
                           onChange={(e) => handleDateChange(index, 'hotel', e.target.value)}
-                          placeholder="Ej: Hotel Pokemon"
+                          placeholder="Ej: Hotel Mundial"
                           required
                         />
                       </Form.Group>
                     </Col>
 
-                    {/* IMAGEN DEL HOTEL */}
                     <Col md={4} sm={12}>
                       <Form.Group>
                         {index === 0 && <Form.Label className="small fw-bold text-secondary">URL Imagen del Hotel</Form.Label>}
@@ -422,7 +451,6 @@ const AdminCreatePackage = () => {
                       </Form.Group>
                     </Col>
 
-                    {/* ACCIÓN ELIMINAR */}
                     <Col md={1} sm={12} className="text-end">
                       <Button
                         variant="outline-danger"
@@ -440,7 +468,7 @@ const AdminCreatePackage = () => {
 
             <hr className="my-2 text-muted" />
 
-            {/* ===== CIRCUITOS Y TARIFAS ===== */}
+            {/* CIRCUITOS Y TARIFAS */}
             <Col md={12} className="mt-2">
               <h4 className="fw-bold mb-3">Opciones de Circuitos / Servicios</h4>
             </Col>
@@ -470,7 +498,7 @@ const AdminCreatePackage = () => {
                         <Form.Control
                           type="text"
                           value={circuit.title}
-                          placeholder="Ej: Circuito Sakura"
+                          placeholder="Ej: Circuito Scaloneta"
                           onChange={(e) => handleCircuitChange(index, 'title', e.target.value)}
                           required
                         />
@@ -496,7 +524,7 @@ const AdminCreatePackage = () => {
                         <Form.Control
                           type="text"
                           value={circuit.description}
-                          placeholder="Ej: Alojamiento 4 estrellas con excursiones principales"
+                          placeholder="Ej: Alojamiento con traslados incluidos"
                           onChange={(e) => handleCircuitChange(index, 'description', e.target.value)}
                         />
                       </Form.Group>
@@ -508,7 +536,7 @@ const AdminCreatePackage = () => {
                         <Form.Control
                           type="number"
                           value={circuit.price}
-                          placeholder="Ej: 5890"
+                          placeholder="Ej: 4890"
                           onChange={(e) => handleCircuitChange(index, 'price', e.target.value)}
                           required
                         />

@@ -1,167 +1,196 @@
-.packageCardLink{
+/* ==========================================================================
+   1. ESTRUCTURA BASE Y ENLACE
+   ========================================================================== */
+.packageCardLink {
     text-decoration: none;
     display: block;
 }
 
-.packageCard{
+.packageCard {
     position: relative;
     width: 100%;
     height: 500px;
     overflow: hidden;
     cursor: pointer;
-
+    border-radius: 6px; /* Pequeño redondeado opcional para matizar las esquinas */
 }
 
-.packageCard:hover img{
-    transform: scale(1.08);
-    transition: transform 0.8s ease;
-}
-
-.packageCardImage{
+/* ==========================================================================
+   2. TRATAMIENTO DE IMAGEN Y CAPAS DE COLOR (OVERLAY)
+   ========================================================================== */
+.packageCardImage {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    /* Se colocó la animación acá para que al retirar el mouse la imagen regrese suave */
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.packageOverlay{
+.packageCard:hover .packageCardImage {
+    transform: scale(1.08);
+}
+
+.packageOverlay {
     position: absolute;
     inset: 0;
+    /* Degradado oscuro inferior para garantizar la lectura de las letras blancas */
     background: linear-gradient(
         to top,
-        rgba(0,0,0,0.88) 0%,
-        rgba(0,0,0,0.35) 45%,
+        rgba(0,0,0,0.92) 0%,
+        rgba(0,0,0,0.4) 50%,
         rgba(0,0,0,0.05) 100%
     );
+    z-index: 2;
 }
 
-.packageTag{
+/* ==========================================================================
+   3. ETIQUETAS E INFORMACIÓN SUPERIOR (TAGS)
+   ========================================================================== */
+.packageTag {
     position: absolute;
     top: 18px;
     left: 18px;
     z-index: 5;
-    background: #ff5f5f;
+    background: #d41717; /* Rojo NYC Travel unificado */
     color: white;
     padding: 7px 14px;
-    border-radius: 999px;
+    border-radius: 25px;
     font-size: 12px;
     font-weight: 700;
-    text-transform: lowercase;
+    text-transform: capitalize; /* Convierte primera letra en Mayúscula automáticamente */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.packageBody{
+/* ==========================================================================
+   4. CONTENEDORES DE TEXTO INTERNOS (BODY & CONTENT)
+   ========================================================================== */
+.packageBody {
     position: absolute;
     inset: 0;
     z-index: 4;
-
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-
     padding: 22px;
-
     color: white;
 }
 
-.packageContent{
+.packageContent {
     width: 100%;
 }
 
-.packageTitle{
+.packageTitle {
     font-size: 21px !important;
-    line-height: 1.1;
-
-    margin: 0 0 16px 0;
-
+    line-height: 1.2;
+    margin: 0 0 14px 0;
     color: rgb(255, 255, 255);
+    font-weight: 700;
+    /* Recorte seguro de texto a máximo 2 renglones */
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-
     overflow: hidden;
 }
 
-.packageDate{
+/* Pastilla de duración: X días • X noches */
+.packageDate {
     display: inline-block;
-
-    background: #ff5f5f;
+    background: #d41717; /* Rojo unificado */
     color: white;
-
-    padding: 10px 16px;
-
-    border-radius: 14px;
-
-    font-size: 15px;
+    padding: 8px 14px;
+    border-radius: 25px;
+    font-size: 14px;
     font-weight: 700;
-
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
-.packageIcons{
+/* Bloque de iconos informativos */
+.packageIcons {
     display: flex;
     align-items: center;
     gap: 14px;
-
-    font-size: 20px;
-
-    margin-bottom: 20px;
-
-    color: white;
+    font-size: 19px;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.95);
 }
 
-.packageFooter{
+/* Texto descriptivo del transporte (Faltaba en tu archivo CSS) */
+.packageTransport {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   5. SECCIÓN DE PRECIOS (FOOTER)
+   ========================================================================== */
+.packageFooter {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.15); /* Divisoria estética tenue */
+    padding-top: 15px;
 }
 
 .packageFooter span {
-  display: block;
-  font-size: 0.95rem;
-  opacity: 0.85;
-
-  margin-right: 8px;
+    display: block;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-right: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .packageFooter h5 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 800;
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #ffffff;
 }
 
-/* TABLET */
-
-@media(max-width: 992px){
-    .packageTitle{
-        font-size: 24px;
+/* ==========================================================================
+   6. SECCIÓN DISPOSITIVOS MEDIANOS (TABLETS)
+   ========================================================================== */
+@media(max-width: 992px) {
+    .packageTitle {
+        font-size: 23px;
     }
-    .packageFooter h5{
-        font-size: 28px;
+    .packageFooter h5 {
+        font-size: 1.7rem;
     }
 }
 
-/* MOBILE */
-
-@media(max-width: 768px){
-    .packageCard{
-        height: 500px;
+/* ==========================================================================
+   7. SECCIÓN DISPOSITIVOS CHICOS (MÓVILES)
+   ========================================================================== */
+@media(max-width: 768px) {
+    .packageCard {
+        height: 560px;
+        
     }
-    .packageBody{
+    .packageBody {
         padding: 18px;
     }
-    .packageTitle{
-        font-size: 22px;
+    .packageTitle {
+        font-size: 20px;
     }
-    .packageDate{
+    .packageDate {
         font-size: 13px;
-        padding: 8px 12px;
+        padding: 6px 12px;
+        margin-bottom: 16px;
     }
-    .packageIcons{
+    .packageIcons {
         font-size: 18px;
-        gap: 10px;
+        gap: 12px;
+        margin-bottom: 6px;
     }
-    .packageFooter h5{
-        font-size: 24px;
+    .packageTransport {
+        font-size: 0.85rem;
+        margin-bottom: 16px;
     }
-
+    .packageFooter h5 {
+        font-size: 1.5rem;
+    }
 }

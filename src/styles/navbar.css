@@ -1,5 +1,5 @@
 nav {
-    z-index: 999999;
+    z-index: 9999;
 }
 .navbarCustom {
     z-index: 100000000;
@@ -120,5 +120,6 @@ nav {
 
     nav {
         background: rgba(223, 33, 33, 0);
+        z-index: 1;
     }
 }

@@ -1,0 +1,227 @@
+/* ==========================================================================
+   1. CONTENEDOR CONTORNO GENERAL (BANNER 100%)
+   ========================================================================== */
+.superFeaturedWrapper {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    height: 36vh; /* Se adapta proporcionalmente a pantallas grandes */
+    overflow: hidden;
+    margin: 30px 0px 90px; /* Despeje superior e inferior con el resto de la Home */
+    display: flex;
+    align-items: center;
+}
+
+.superFeaturedBg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    transition: transform 12s ease; /* Efecto cine lento de fondo */
+}
+
+.superFeaturedWrapper:hover .superFeaturedBg {
+    transform: scale(1.05);
+}
+
+/* Capa oscura progresiva (Izquierda pesada para texto, derecha traslúcida) */
+.superFeaturedOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.92) 0%,
+        rgba(0, 0, 0, 0.6) 50%,
+        rgba(0, 0, 0, 0.2) 100__%
+    );
+    z-index: 2;
+}
+
+/* ==========================================================================
+   2. ALINEACIÓN Y CUERPO DE CONTENIDOS
+   ========================================================================== */
+.superFeaturedContainer {
+    position: relative;
+    z-index: 3;
+    color: white;
+}
+
+.superFeaturedContent {
+    max-width: 700px; /* Acota el texto para que no se desparrame por la pantalla */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Tag Dorado/Premium de Llamado de Atención */
+.superFeaturedTag {
+    background: #ffc02c;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 6px 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(255, 177, 0, 0.25);
+}
+
+.superFeaturedTitle {
+    font-size: 3.2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 1.05;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.829);
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   3. PASTILLAS INFORMATIVAS Y DETALLES
+   ========================================================================== */
+.superFeaturedDetails {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.superFeaturedBadge {
+    background: #d41717; /* Rojo NYC Travel unificado */
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.superFeaturedTransportText {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+}
+
+/* Fila de iconos rápidos */
+.superFeaturedIconsBox {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 35px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    padding-bottom: 20px;
+    width: 100%;
+}
+
+.sIcon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.sIcon svg {
+    color: #d41717; /* Iconos resaltados en rojo institucional */
+    font-size: 17px;
+}
+
+/* ==========================================================================
+   4. PIE DE COMPONENTE (PRECIO Y BOTÓN DE ENTRADA)
+   ========================================================================== */
+.superFeaturedFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.superFeaturedPriceBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.priceLabelBase {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.priceValueBase {
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin: 0;
+    color: #ffffff;
+}
+
+/* Botón de acción premium */
+.superFeaturedBtn {
+    background: #d41717;
+    color: white !important;
+    text-decoration: none;
+    padding: 14px 28px;
+    font-weight: 700;
+    border-radius: 50px;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 23, 23, 0.3);
+}
+
+.superFeaturedBtn:hover {
+    background: #b8121a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 23, 23, 0.5);
+}
+
+/* ==========================================================================
+   5. RESPONSIVE DESIGN (MEDIA QUERIES)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .superFeaturedWrapper {
+        height: 900px;
+        min-height: unset;
+        padding: 20px 0;
+    }
+
+    /* En celulares el degradado pasa a ser de arriba a abajo para cubrir todo el alto */
+    .superFeaturedOverlay {
+        background: linear-gradient(
+            to top,
+            rgba(224, 19, 19, 0.089) 0%,
+            rgba(0, 0, 0, 0.75) 60%,
+            rgba(0, 0, 0, 0.4) 100%
+        );
+    }
+
+    .superFeaturedTitle {
+        font-size: 2.2rem;
+    }
+
+    .superFeaturedIconsBox {
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .superFeaturedFooter {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 25px;
+    }
+
+    .superFeaturedBtn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .priceValueBase {
+        font-size: 1.9rem;
+    }
+}
