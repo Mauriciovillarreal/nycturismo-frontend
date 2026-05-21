@@ -1,180 +1,336 @@
+/* ==========================================================================
+   1. ESTILOS GENERALES Y PAGINA
+   ========================================================================== */
 .packageDetailPage {
-    background: #ffffff;
-}
-
-.galleryWrapper {
-    padding: 40px 40px 0;
-    padding-bottom: 40px;
-}
-
-.galleryContent {
-    position: relative;
-    max-width: 1400px;
-    margin: auto;
-}
-
-.gallerySection {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 1px;
-    height: 520px;
-}
-
-.mainImage img {
-    width: 100%;
-    height: 520px;
-    object-fit: cover;
-}
-
-.sideImages {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-}
-
-.sideImages img {
-    width: 100%;
-    height: 260px;
-    object-fit: cover;
-}
-
-/* FLOATING CARD */
-
-.floatingCard {
-    line-height: 1;
-    position: absolute;
-    right: 40px;
-    bottom: -350px;
-    width: 360px;
-    background: white;
-    border-radius: 3px;
-    padding: 20px;
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.329);
-    z-index: 10;
-}
-
-.flightText {
-    font-size: 14px;
-    color: #666;
-}
-
-.roomTitle {
-    font-size: 22px;
-}
-
-.roomDescription {
-    line-height: 1;
-    font-size: 14px;
-    color: #000000;
-}
-
-.roomDescription span{
-    color: #858585;
-}
-
-.roomDescription p {
-    margin: 0;
-    margin-top: 5px;
-}
-
-.bottomSpace {
-    margin-bottom: 20px;
-}
-
-.priceLabel {
-    margin-top: 50px;
-    font-size: 14px;
-    color: #777;
-}
-
-.mainPrice {
-    font-size: 22px;
-}
-
-.finalPrice {
-    font-size: 15px;
-}
-
-.taxText {
-    font-size: 13px;
-    color: #777;
-    margin-bottom: 20px;
-}
-
-.roomsButton {
-    width: 100%;
-    border: none !important;
-    background:  #ff8282 !important;
-    border-radius: 40px !important;
-    padding: 14px !important;
-    font-size: 16px !important;
-    font-weight: 600 !important;
-}
-
-/* CONTENT */
-
-.packageDetailContent {
-    margin-top: 20px;
-    padding-bottom: 60px;
-}
-
-.packageTitleDetail {
-    font-size: 30px;
-    text-transform: uppercase;
+  background: #ffffff;
+  color: #44423f;
 }
 
 .detailBox {
-    background: white;
-    margin-bottom: 15px;
+  background: white;
+  margin-bottom: 25px;
+  padding: 10px 0; /* Espaciado interno ligero para separar contenidos */
 }
 
-.detailBoxTitle {
-    font-size: 20px;
-    margin-bottom: 20px;
+.section-table-title {
+  color: #44423f;
+  font-weight: 600;
+  font-size: 1.3rem;
+  margin-bottom: 20px;
 }
 
 .detailDescription {
-    font-size: 17px;
-    line-height: 1.2;
+  font-size: 17px;
+  line-height: 1.5;
+  color: #555;
 }
 
-.circuitsContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+/* ==========================================================================
+   2. TOP RESUME BAR (Barra de resumen superior)
+   ========================================================================== */
+.packageResumeBar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 15px 25px;
+  border-radius: 2px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-top: 20px;
+  margin-bottom: 30px;
+  gap: 15px;
 }
 
-.circuitCard {
-    border: 1px solid #d6d6d6;
-    padding: 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.2s;
+.resumeItem {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
 }
 
-.circuitCard:hover {
-    border-color: #ff8282 !important;
+/* Línea divisoria vertical entre bloques (Solo escritorio) */
+@media (min-width: 992px) {
+  .resumeItem:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 15%;
+    height: 70%;
+    width: 1px;
+    background-color: #e0e0e0;
+  }
 }
 
-.activeCircuit {
-    border: 2px solid  #ff8282 !important;
+.resumeLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #a0a0a0;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
 }
 
-.datesTable {
-    width: 100%;
+.resumeContent, 
+.resumeTransport,
+.resumeDateHotelBox,
+.resumePriceInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.datesTable th,
-.datesTable td {
-    padding: 14px;
-    border-bottom: 1px solid #eee;
+.resumeContent div, 
+.resumeTransport div {
+  display: flex;
+  flex-direction: column;
 }
 
-.priceText {
-    font-weight: 600;
+.resumeContent h4, 
+.resumeTransport h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2d3436;
+  margin: 0;
+  line-height: 1.2;
 }
 
+.resumeContent p, 
+.resumeTransport p {
+  font-size: 0.8rem;
+  color: #636e72;
+  margin: 2px 0 0 0;
+}
+
+.resumeThumb {
+  width: 140px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.resumeIconBox {
+  font-size: 1.3rem;
+  color: #ff8282; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+}
+
+.resumePriceInfo h4 {
+  font-size: 0.75rem;
+  color: #636e72;
+  margin: 0;
+  font-weight: 500;
+}
+
+.resumePriceInfo h5 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #2d3436;
+  margin: 2px 0 0 0;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   3. GALERÍA DE IMÁGENES Y CARD FLOTANTE
+   ========================================================================== */
+.galleryWrapper {
+  padding: 40px 40px 0;
+  padding-bottom: 40px;
+}
+
+.galleryContent {
+  position: relative;
+  max-width: 1400px;
+  margin: auto;
+}
+
+.gallerySection {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1px;
+  height: 520px;
+}
+
+.mainImage img {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+}
+
+.sideImages {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.sideImages img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+}
+
+/* Card Flotante Derecha */
+.floatingCard {
+  line-height: 1.3;
+  position: absolute;
+  right: 40px;
+  bottom: -350px;
+  width: 360px;
+  background: white;
+  border-radius: 2px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  border: 1px solid #eee;
+}
+
+.flightText {
+  font-size: 14px;
+  color: #777;
+  font-weight: 500;
+}
+
+.roomTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  color: #44423f;
+}
+
+.roomDescription {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.roomDescription span {
+  color: #858585;
+}
+
+.roomDescription p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.priceLabel {
+  margin-top: 25px;
+  font-size: 13px;
+  color: #777;
+}
+
+.mainPrice {
+  font-size: 28px;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 20px;
+}
+
+.roomsButton {
+  width: 100%;
+  border: none !important;
+  background: #ff8282 !important;
+  border-radius: 40px !important;
+  padding: 14px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+}
+
+.roomsButton:hover {
+  background: #e06c6c !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 130, 130, 0.3);
+}
+
+/* ==========================================================================
+   4 y 5. DESCRIPCIÓN Y DETALLES (Estructura espejo)
+   ========================================================================== */
+
+.circuitsContainer,
+.datesContainerCustom {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+/* Tarjeta base horizontal (Estructura espejo) */
+.circuitCardRow,
+.dateCardRowCustom {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  padding: 16px 20px;
+  display: grid;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.2s ease;
+}
+
+/* Grilla simétrica para Circuitos: 3 columnas */
+.circuitCardRow {
+  grid-template-columns: 1.5fr 3fr 1fr;
+}
+
+/* Grilla simétrica para Tarifas: 4 columnas */
+.dateCardRowCustom {
+  grid-template-columns: 1.2fr 1.8fr 1.5fr 1fr;
+}
+
+
+/* Estado Activo / Seleccionado con el borde e indicador rojo */
+.circuitCardRow.activeCircuit,
+.dateCardRowCustom.activeDateCustom {
+  border: 1px solid #ff8282 !important;
+  box-shadow: 0 4px 12px rgba(255, 130, 130, 0.08);
+}
+
+/* Estilos de tipografías internas (Espejo) */
+.circuitMainTitle,
+.dateMainTitleCustom {
+  font-weight: 700;
+  color: #44423f;
+  font-size: 1rem;
+}
+
+.circuitDescText,
+.dateHotelTextCustom,
+.dateDurationTextCustom {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.dateHotelTextCustom {
+  font-weight: 500;
+}
+
+.circuitPriceText {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #212529;
+  text-align: right; /* Alineación perfecta a la derecha */
+}
+
+/* ==========================================================================
+   6. SECCIÓN ¿QUÉ INCLUYE? (Escritorio)
+   ========================================================================== */
 .includesGrid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -192,219 +348,240 @@
 .includeIcon {
   width: 42px;
   height: 42px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-radius: 50%;
-
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
-
   color: #2f3b52;
-
+  background-color: #f0f2f5;
   margin-bottom: 12px;
 }
 
 .includeItem p {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.4;
-  color: #222;
+  color: #44423f;
   margin: 0;
 }
 
+/* ==========================================================================
+   7. RESPONSIVE DESIGN (Media Queries)
+   ========================================================================== */
 
-/* TOP PACKAGEDETAIL */
-/* Contenedor principal de la barra de resumen */
-.packageResumeBar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  background: #ffffff;
-  padding: 15px 25px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  margin-top: 20px;
-  margin-bottom: 30px;
-  gap: 15px;
-}
-
-/* Cada uno de los 4 bloques individuales */
-.resumeItem {
-  flex: 1;
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-}
-
-/* Línea divisoria vertical entre bloques (solo en pantallas grandes) */
-@media (min-width: 992px) {
-  .resumeItem:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    right: -10px;
-    top: 15%;
-    height: 70%;
-    width: 1px;
-    background-color: #e0e0e0;
-  }
-}
-
-/* Etiquetas grises superiores (Alojamiento, Transporte, etc.) */
-.resumeLabel {
-  font-size: 0.75rem;
-  text-uppercase: uppercase;
-  font-weight: 700;
-  color: #a0a0a0;
-  letter-spacing: 0.5px;
-  margin-bottom: 6px;
-}
-
-/* Estructura interna de contenido (Flex alignment) */
-.resumeContent, 
-.resumeTransport,
-.resumeDateHotelBox,
-.resumePriceInfo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* Contenedores de texto internos */
-.resumeContent div, 
-.resumeTransport div,
-.resumePriceInfo {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Títulos principales dentro de los bloques (Hotel, Rutas) */
-.resumeContent h4, 
-.resumeTransport h4 {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #2d3436;
-  margin: 0;
-  line-height: 1.2;
-}
-
-/* Subtítulos pequeños (Noches, categorías) */
-.resumeContent p, 
-.resumeTransport p {
-  font-size: 0.8rem;
-  color: #636e72;
-  margin: 2px 0 0 0;
-}
-
-/* Miniatura de la imagen del hotel */
-.resumeThumb {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-}
-
-/* Caja de iconos para transporte (Avión/Bus) */
-.resumeIconBox {
-  font-size: 1.3rem;
-  color: #ff7575e1; /* Color coral/rojo de tu paleta */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff;
-  padding: 10px;
-  border-radius: 50%;
-  width: 42px;
-  height: 42px;
-}
-
-/* Estilos específicos para la sección de Tarifa */
-.resumePriceInfo h4 {
-  font-size: 0.75rem;
-  color: #636e72;
-  margin: 0;
-  font-weight: 500;
-}
-
-.resumePriceInfo h5 {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #2d3436;
-  margin: 2px 0 0 0;
-}
-
-/* Helper para textos que no deben romperse en dos líneas */
-.text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* MOBILE */
-
+/* --- TABLETS Y PANTALLAS MEDIANAS (Móvil general) --- */
 @media (max-width: 991px) {
-
   .packageResumeBar {
-    display: none;
+    display: none; /* Oculta la barra superior en pantallas chicas */
   }
 
+  .galleryWrapper {
+    padding: 15px;
+  }
 
-}
-/* MOBILE */
+  .gallerySection {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
 
-@media (max-width: 991px) {
+  .mainImage img {
+    height: 300px;
+  }
+
+  .sideImages {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sideImages img {
+    height: 140px;
+  }
+
+  .floatingCard {
+    position: relative;
+    width: 100%;
+    right: 0;
+    bottom: 0;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  }
+
+  .packageDetailContent {
+    margin-top: 30px;
+    padding-bottom: 40px;
+  }
 
   .includesGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
-
 }
 
+/* --- DISPOSITIVOS MÓVILES (Estructura Unificada de Tarjetas) --- */
+@media screen and (max-width: 768px) {
+  
+  /* --- Transformación de la Tabla de Tarifas --- */
+  .datesTable thead {
+    display: none;
+  }
 
-/* MOBILE */
+  .datesTable, 
+  .datesTable tbody, 
+  .datesTable tr, 
+  .datesTable td {
+    display: block;
+    width: 100%;
+  }
+
+  .datesTable tr {
+    background: #ffffff;
+    border: 1px solid #a71818;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    transition: all 0.2s ease;
+  }
+
+  .datesTable tr.table-active {
+    border: 2px solid #ff8282 !important; /* Borde rojo activo igual a los circuitos */
+    background-color: rgba(255, 130, 130, 0.02);
+    box-shadow: 0 4px 12px rgba(255, 130, 130, 0.1);
+  }
+
+  .datesTable td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 10px 0;
+    border-bottom: 1px dashed #f0f0f0;
+    font-size: 0.9rem;
+  }
+
+  .datesTable td:last-child {
+    border-bottom: none;
+  }
+
+  .datesTable td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+    color: #777;
+    text-align: left;
+    padding-right: 10px;
+    font-size: 0.85rem;
+  }
+
+  /* --- Transformación de las Opciones de Circuito --- */
+  .circuitCardRow {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+  }
+
+  .circuitCardRow .circuitField, 
+  .circuitCardRow .circuitPriceText {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 10px 0;
+    border-bottom: 1px dashed #f0f0f0;
+    font-size: 0.9rem;
+  }
+
+  .circuitCardRow .circuitPriceText {
+    border-bottom: none;
+    font-size: 1.05rem;
+  }
+
+  .circuitCardRow .circuitField::before,
+  .circuitCardRow .circuitPriceText::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+    color: #777;
+    text-align: left;
+    padding-right: 10px;
+    font-size: 0.85rem;
+  }
+
+  /* Ajuste para que descripciones largas no rompan la visualización móvil */
+  .circuitDescText {
+    max-width: 65%;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .priceText {
+    font-size: 1.05rem;
+  }
+}
 
 @media (max-width: 991px) {
+  .packageResumeBar { display: none; }
+  .galleryWrapper { padding: 15px; }
+  .gallerySection { grid-template-columns: 1fr; height: auto; }
+  .mainImage img { height: 300px; }
+  .sideImages { grid-template-columns: 1fr 1fr; }
+  .sideImages img { height: 140px; }
+  .floatingCard { position: relative; width: 100%; right: 0; bottom: 0; margin-top: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+  .packageDetailContent { margin-top: 30px; padding-bottom: 40px; }
+  .includesGrid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+}
 
-    .galleryWrapper {
-        padding: 15px;
-    }
+/* Celulares (Ambas secciones se transforman exactamente igual) */
+@media screen and (max-width: 768px) {
+  
+  .circuitCardRow,
+  .dateCardRowCustom {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+  }
 
-    .gallerySection {
-        grid-template-columns: 1fr;
-        height: auto;
-    }
+  .circuitCardRow .circuitField, 
+  .circuitCardRow .circuitPriceText,
+  .dateCardRowCustom .dateFieldCustom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 10px 0;
+    border-bottom: 1px dashed #f0f0f0;
+    font-size: 0.9rem;
+  }
 
-    .mainImage img {
-        height: 300px;
-    }
+  /* Remoción de bordes en el último ítem de cada tarjeta */
+  .circuitCardRow .circuitPriceText,
+  .dateCardRowCustom .dateFieldCustom:last-child {
+    border-bottom: none;
+    font-size: 1.05rem;
+  }
 
-    .sideImages {
-        grid-template-columns: 1fr 1fr;
-    }
+  /* Inyección de etiquetas dinámicas (data-label) */
+  .circuitCardRow .circuitField::before,
+  .circuitCardRow .circuitPriceText::before,
+  .dateCardRowCustom .dateFieldCustom::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+    color: #777;
+    text-align: left;
+    padding-right: 10px;
+    font-size: 0.85rem;
+  }
 
-    .sideImages img {
-        height: 140px;
-    }
-
-    .floatingCard {
-        position: relative;
-        width: 100%;
-        right: 0;
-        bottom: 0;
-        margin-top: 20px;
-    }
-
-    .packageDetailContent {
-        margin-top: 40px;
-    }
-
-    .packageTitleDetail {
-        font-size: 34px;
-    }
+  .circuitDescText {
+    max-width: 65%;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }

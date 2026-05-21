@@ -26,7 +26,7 @@ const AdminCreatePackage = () => {
     featured: false,
     transportType: 'bus',
     transportCategory: '',
-    images: ['', '', '', '', ''], 
+    images: ['', '', '', '', ''],
     availableDates: [
       { date: '', hotel: '', hotelImage: '' } // ACTUALIZADO
     ],
@@ -140,11 +140,12 @@ const AdminCreatePackage = () => {
       days: Number(formData.days),
       nights: Number(formData.nights),
       featured: formData.featured,
+      //  COMO DEBE QUEDAR
       transport: {
-        type: formData.transportType,
-        category: formData.transportCategory
+        mode: formData.transportType, // <-- Cambiado 'type' por 'mode'
+        category: formData.transportCategory.trim().toLowerCase() // <-- Limpieza para que coincida con el enum de Mongoose
       },
-      
+
       images: formData.images
         .map(url => url.trim())
         .filter(url => url !== ''),
@@ -353,7 +354,7 @@ const AdminCreatePackage = () => {
                       value={url}
                       onChange={(e) => handleImageChange(index, e.target.value)}
                       placeholder="https://ejemplo.com/imagen.jpg"
-                      required={index === 0} 
+                      required={index === 0}
                     />
                   </Form.Group>
                 ))}
@@ -366,9 +367,9 @@ const AdminCreatePackage = () => {
             <Col md={12} className="mb-2">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h4 className="fw-bold m-0">Fechas de Salida y Hoteles asignados</h4>
-                <Button 
-                  variant="outline-primary" 
-                  size="sm" 
+                <Button
+                  variant="outline-primary"
+                  size="sm"
                   onClick={addDateRow}
                   className="d-flex align-items-center gap-1"
                 >
@@ -393,7 +394,7 @@ const AdminCreatePackage = () => {
                         />
                       </Form.Group>
                     </Col>
-                    
+
                     {/* HOTEL */}
                     <Col md={4} sm={12}>
                       <Form.Group>
@@ -452,8 +453,8 @@ const AdminCreatePackage = () => {
                       Opción #{index + 1}
                     </h5>
                     {formData.circuits.length > 1 && (
-                      <Button 
-                        variant="outline-danger" 
+                      <Button
+                        variant="outline-danger"
                         size="sm"
                         onClick={() => removeCircuit(index)}
                       >

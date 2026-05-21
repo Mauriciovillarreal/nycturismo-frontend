@@ -72,11 +72,10 @@ const PackageDetail = () => {
     : 'A confirmar'
 
   const whatsappText = encodeURIComponent(
-    `Hola! Quiero consultar por el paquete "${pkg.title}"\n\n` +
-    `• Opción: ${selectedCircuit?.title || 'Estándar'}\n` +
-    `• Salida: ${formattedSelectedDate}\n` +
-    `• Hotel: ${selectedDateObj?.hotel || 'A combinar'}`
-  )
+    `¡Hola! Me interesa el paquete *${pkg.title}* para la salida del *${formattedSelectedDate}* ` +
+    `(Opción: *${selectedCircuit?.title || 'Estándar'}* • Hotel: *${selectedDateObj?.hotel || 'A confirmar'}*). ` +
+    `¿Podrían confirmarme disponibilidad y detalles? ¡Muchas gracias!`
+  );
 
   const whatsappUrl = `https://wa.me/${phone}?text=${whatsappText}`
   const currencySymbol = selectedCircuit?.currency === 'USD' ? 'US$' : '$'
@@ -179,7 +178,7 @@ const PackageDetail = () => {
 
             <div className="roomDescription">
               <span>Destino</span>
-              <p className="fw-semibold">{pkg.destination}</p>
+              <p>{pkg.destination}</p>
             </div>
 
             <div className="roomDescription">
@@ -226,107 +225,84 @@ const PackageDetail = () => {
             {/* 1. SELECCIONÁ TU OPCIÓN DE SERVICIO */}
             {pkg.circuits?.length > 0 && (
               <div className="detailBox">
-                <h4 className='mb-3'>Seleccioná tu opción de circuito:</h4>
+                <h4 className='mb-3 section-table-title'>Circuitos disponibles:</h4>
                 <div className='circuitsContainer'>
                   {pkg.circuits.map((circuit, index) => (
                     <div
                       key={index}
-                      className={`circuitCard ${selectedCircuit?.title === circuit.title ? 'activeCircuit' : ''}`}
+                      className={`circuitCardRow ${selectedCircuit?.title === circuit.title ? 'activeCircuit' : ''}`}
                       onClick={() => setSelectedCircuit(circuit)}
+                      style={{ cursor: 'pointer' }}
                     >
-                      <h4>{circuit.title}</h4>
-                      <p>{circuit.description}</p>
-                      <strong>
+                      {/* Fila interna 1: Título */}
+                      <div className="circuitField" data-label="Circuito">
+                        <span className="circuitMainTitle">{circuit.title}</span>
+                      </div>
+
+                      {/* Fila interna 2: Descripción */}
+                      <div className="circuitField" data-label="Descripción">
+                        <span className="circuitDescText text-muted">{circuit.description || 'Circuito clásico completo'}</span>
+                      </div>
+
+                      {/* Fila interna 3: Precio */}
+                      <div className="circuitField priceText circuitPriceText" data-label="Precio">
                         {circuit.currency === 'USD' ? 'US$' : '$'} {circuit.price?.toLocaleString('es-AR')}
-                      </strong>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* 2. SELECCIONÁ TU FECHA DE SALIDA */}
-            {pkg.availableDates?.length > 0 && (
-              <div className="detailBox">
-                <h4 className='mb-3'>Seleccioná tu fecha de salida:</h4>
-                <div className="datesSelectorGrid">
-                  {pkg.availableDates.map((item, index) => {
-                    const isSelected = selectedDateObj?.date === item.date;
-                    return (
-                      <div
-                        key={index}
-                        className={`circuitCard ${isSelected ? 'activeCircuit' : ''}`}
-                        onClick={() => setSelectedDateObj(item)}
-                        style={{ cursor: 'pointer', marginBottom: '1rem' }}
-                      >
-                        <Row className="align-items-center py-2">
-                          <Col xs={6}>
-                            <span className="d-block small text-muted text-uppercase fw-bold">Salida</span>
-                            <span className="fw-bold text-dark fs-5">
-                              {new Date(item.date).toLocaleDateString('es-AR', {
-                                day: '2-digit',
-                                month: '2-digit',
-                                year: 'numeric'
-                              })}
-                            </span>
-                          </Col>
-                          <Col xs={6}>
-                            <span className="d-block small text-muted text-uppercase fw-bold">
-                              <FaHotel size={11} className="me-1" /> Hotel Incluido
-                            </span>
-                            <span className="text-secondary fw-semibold text-truncate d-block">
-                              {item.hotel}
-                            </span>
-                          </Col>
-                        </Row>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
+
 
             {/* TABLA RESUMEN */}
+            {/* NUEVO RESUMEN DE TARIFAS (IGUAL A CIRCUÍTOS) */}
             <div className="detailBox">
-              <h4 className='mb-3'>Resumen de tarifas por salida</h4>
-              <table className='datesTable'>
-                <thead>
-                  <tr>
-                    <th>Salida</th>
-                    <th>Hotel Asignado</th>
-                    <th>Duración</th>
-                    <th>Precio ({selectedCircuit?.title})</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pkg.availableDates?.map((item, index) => (
-                    <tr
-                      key={index}
-                      className={selectedDateObj?.date === item.date ? 'table-active fw-bold' : ''}
-                      onClick={() => setSelectedDateObj(item)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <td>
+              <h4 className='mb-3 section-table-title'>Cronograma de salidas y alojamiento: </h4>
+              <div className='datesContainerCustom'>
+                {pkg.availableDates?.map((item, index) => (
+                  <div
+                    key={index}
+                    className={`dateCardRowCustom ${selectedDateObj?.date === item.date ? 'activeDateCustom' : ''}`}
+                    onClick={() => setSelectedDateObj(item)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {/* Columna 1: Fecha de Salida */}
+                    <div className="dateFieldCustom" data-label="Salida">
+                      <span className="dateMainTitleCustom">
                         {new Date(item.date).toLocaleDateString('es-AR', {
                           day: '2-digit',
                           month: '2-digit',
                           year: 'numeric'
                         })}
-                      </td>
-                      <td><FaHotel className="text-muted me-1" /> {item.hotel}</td>
-                      <td>{pkg.days} días / {pkg.nights} noches</td>
-                      <td className='priceText'>
-                        {currencySymbol} {selectedCircuit?.price?.toLocaleString('es-AR')}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </span>
+                    </div>
+
+                    {/* Columna 2: Hotel Asignado */}
+                    <div className="dateFieldCustom" data-label="Hotel Asignado">
+                      <span className="dateHotelTextCustom">
+                        <FaHotel className="text-muted me-1" /> {item.hotel}
+                      </span>
+                    </div>
+
+                    {/* Columna 3: Duración */}
+                    <div className="dateFieldCustom" data-label="Duración">
+                      <span className="dateDurationTextCustom">{pkg.days} días / {pkg.nights} noches</span>
+                    </div>
+
+                    {/* Columna 4: Precio del circuito seleccionado */}
+                    <div className="dateFieldCustom priceText circuitPriceText" data-label={`Precio (${selectedCircuit?.title || 'Circuito'})`}>
+                      {currencySymbol} {selectedCircuit?.price?.toLocaleString('es-AR')}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* INCLUYE */}
             <div className="detailBox">
-              <h4 className='mb-3'>¿Qué incluye la opción {selectedCircuit?.title}?</h4>
+               <h4 className='mb-3 section-table-title'>¿Qué incluye la opción {selectedCircuit?.title}?</h4>
               {selectedCircuit?.includes?.length > 0 ? (
                 <div className='includesGrid'>
                   {selectedCircuit.includes.map((item, index) => (

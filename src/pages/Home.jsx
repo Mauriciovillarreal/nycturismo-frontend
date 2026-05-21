@@ -18,7 +18,7 @@ const Home = () => {
 
 
         <PackageGrid featured />
-
+        
       </Container>
 
     </>

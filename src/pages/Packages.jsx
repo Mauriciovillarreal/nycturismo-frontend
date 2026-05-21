@@ -78,7 +78,7 @@ const Packages = () => {
   if (loading) return <Loader />
 
   return (
-    <Container className="py-5" style={{ minHeight: '80vh' }}>
+    <Container className="py-5" >
       
       {/* HEADER DE LA VISTA */}
       <div className="mb-5 text-center text-md-start">
@@ -152,7 +152,7 @@ const Packages = () => {
         </Col>
 
         {/* GRID PRINCIPAL DE PAQUETES */}
-        <Col lg={9} md={8} xs={12}>
+        <Col>
           {filteredPackages.length > 0 ? (
             <Row className="g-4">
               {filteredPackages.map(pkg => (
@@ -165,7 +165,7 @@ const Packages = () => {
                   xs={12}
                   className="d-flex justify-content-center"
                 >
-                  <div className="w-100" style={{ maxWidth: '360px' }}>
+                  <div className="w-100">
                     <PackageCard pkg={pkg} />
                   </div>
                 </Col>

@@ -12,8 +12,8 @@ import AdminDashboard from './pages/AdminDashboard'
 import AdminPackages from './pages/AdminPackages'
 import AdminCreatePackage from './pages/AdminCreatePackage'
 import AdminEditPackage from './pages/AdminEditPackage'
-import AdminBookings from './pages/AdminBookings'
 import ProtectedRoute from './components/ProtectedRoute'
+import AboutUs from './pages/AboutUs'
 
 function App() {
   return (
@@ -26,13 +26,13 @@ function App() {
             <Route path="packages/:slug" element={<PackageDetail />} />
             <Route path="contact" element={<Contact />} />
             <Route path="login" element={<Login />} />
+            <Route path="/quienes-somos" element={<AboutUs />} />
           </Route>
           <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
             <Route index element={<AdminDashboard />} />
             <Route path="packages" element={<AdminPackages />} />
             <Route path="packages/create" element={<AdminCreatePackage />} />
             <Route path="packages/edit/:id" element={<AdminEditPackage />} />
-            <Route path="bookings" element={<AdminBookings />} />
           </Route>
         </Routes>
       </Router>

@@ -1,0 +1,155 @@
+/* ==========================================================================
+   Variables de Diseño
+   ========================================================================== */
+:root {
+  --footer-bg: #44423f;         /* El gris que pediste */
+  --footer-bg-dark: #353331;    /* Un tono más oscuro para el copyright */
+  --footer-text: #dcdad7;       /* Gris claro texturizado para legibilidad */
+  --footer-text-muted: #b5b2ae; /* Para textos secundarios */
+  --footer-white: #ffffff;
+  --footer-accent: #ffffff;     /* Color de acento para hovers (puedes cambiarlo por el de tu marca) */
+  --transition-smooth: all 0.3s ease;
+}
+
+/* ==========================================================================
+   Estilos Generales del Footer
+   ========================================================================== */
+.main-footer {
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Logo */
+.footer-logo {
+  max-height: 50px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Texto de descripción */
+.footer-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--footer-text);
+}
+
+/* Títulos de las secciones */
+.footer-title {
+  color: var(--footer-white);
+  font-size: 1.15rem;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+/* Línea sutil decorativa debajo de los títulos */
+.footer-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 35px;
+  height: 2px;
+  background-color: var(--footer-accent);
+}
+
+/* ==========================================================================
+   Enlaces y Navegación (Columnas 2 y 3)
+   ========================================================================== */
+.footer-link-item {
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: var(--footer-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  transition: var(--transition-smooth);
+}
+
+/* Efecto Flecha interactiva */
+.link-arrow {
+  font-size: 0.75rem;
+  margin-right: 6px;
+  opacity: 0;
+  transform: translateX(-5px);
+  transition: var(--transition-smooth);
+  color: var(--footer-accent);
+}
+
+/* Hover de los links */
+.footer-links a:hover {
+  color: var(--footer-white);
+  padding-left: 5px;
+}
+
+.footer-links a:hover .link-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.footer-legal-text {
+  font-size: 0.9rem;
+  color: var(--footer-text); /* Cambiado de 'muted' al gris claro principal */
+  opacity: 1.99;             /* Le da un toque sutil sin llegar a apagarse */
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   Sección de Contacto (Columna 4)
+   ========================================================================== */
+.contact-icon {
+  color: var(--footer-accent);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.contact-text {
+  font-size: 0.95rem;
+}
+
+.contact-link {
+  color: var(--footer-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: var(--transition-smooth);
+}
+
+.contact-link:hover {
+  color: var(--footer-white);
+}
+
+/* ==========================================================================
+   Redes Sociales
+   ========================================================================== */
+.footer-socials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  color: var(--footer-white);
+  border-radius: 50%;
+  margin-right: 10px;
+  font-size: 1.1rem;
+  transition: var(--transition-smooth);
+}
+
+
+/* ==========================================================================
+   Barra Inferior (Copyright)
+   ========================================================================== */
+.footer-bottom {
+  background-color: var(--footer-bg-dark);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-copyright {
+  color: var(--footer-text-muted) !important;
+  font-size: 0.85rem;
+}

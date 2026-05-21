@@ -41,7 +41,7 @@ const NavbarComponent = () => {
             VENTAS:
           </span>
 
-          <a
+          <div
             href='tel:08102201031'
             className='navLink'
           >
@@ -50,7 +50,7 @@ const NavbarComponent = () => {
 
             4627-7994
 
-          </a>
+          </div>
 
           <a
             href='https://wa.me/5491151642289'
