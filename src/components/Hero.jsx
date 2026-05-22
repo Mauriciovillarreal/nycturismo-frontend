@@ -234,13 +234,13 @@ const Hero = () => {
          ========================================== */}
       <Container fluid className='bannerMobile'>
         <div className='overlayContent'>
-          <Container fluid>
+          <Container >
             <h1>
               PAQUETES <span>TURÍSTICOS</span>
             </h1>
 
             {/* Beneficios con los íconos de la biblioteca pintados de blanco */}
-            <div className='beneficios'>
+            <Container className='beneficios'>
               <div className='beneficioItem'>
                 <FaPlane className='beneficioIcon' /> <span>Vuelos</span>
               </div>
@@ -249,14 +249,12 @@ const Hero = () => {
                 <FaHotel className='beneficioIcon' /> <span>Hoteles</span>
               </div>
 
-              <div className='beneficioItem'>
-                <FaBus className='beneficioIcon' /> <span>Traslados</span>
-              </div>
+          
 
               <div className='beneficioItem'>
                 <FaSuitcaseRolling className='beneficioIcon' /> <span>Asistencia</span>
               </div>
-            </div>
+            </Container>
           </Container>
         </div>
       </Container>

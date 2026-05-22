@@ -90,7 +90,7 @@
     gap: 6px;
     cursor: pointer;
     margin-left: auto;
-    margin-right: 10px;
+    margin-right: 20px;
     margin-top: 10px;
     z-index: 9999999;
 }
@@ -249,12 +249,9 @@
         z-index: 20;
     }
     .bannerMobile {
-
-
-
     background-image:
         linear-gradient(80deg, #ffffff00 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%),
-        url('../img/banner2.jpg');
+        url('../img/banner2.jpg');    
 }
 
     /* Aseguramos que el banner ocupe exactamente la pantalla completa */
@@ -279,8 +276,7 @@
         bottom: 0;
         left: 0;
         width: 100%;        
-        backdrop-filter: blur(5px);   
-        padding: 15px 10px;          
+        padding-bottom: 20px;
     }
 
     /* Ajustamos los items para que queden compactos en la barra */
@@ -289,9 +285,10 @@
         align-items: center;
         justify-content: center;
         font-size: 0.90rem;     /* Letra más chica para asegurar que entre en cualquier cel */
-        font-weight: 600;
+        font-weight: 400;
         flex: 1;
         text-align: center;
+        gap: 5px;                /* Menos espacio entre ícono y texto para formato móvil */
     }
 
     .beneficioIcon {
