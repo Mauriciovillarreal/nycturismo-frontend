@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Container, Form, Button, Row, Col, Collapse } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { 
-  FaMapMarkerAlt, 
-  FaPlaneDeparture, 
-  FaCalendarAlt, 
+import {
+  FaMapMarkerAlt,
+  FaPlaneDeparture,
+  FaCalendarAlt,
   FaSearch,
-  FaPlane, 
+  FaPlane,
   FaHotel,
-  FaBus,          
-  FaSuitcaseRolling 
+  FaBus,
+  FaSuitcaseRolling
 } from 'react-icons/fa';
 import '../styles/hero.css';
 
@@ -95,7 +95,7 @@ const Hero = () => {
         <Container className='d-none d-lg-block'>
           <Form className='searchBar'>
             <Row className='g-3 align-items-center'>
-              
+
               {/* Selector: Origen */}
               <Col lg={3}>
                 <div className='selectWrapper'>
@@ -167,7 +167,7 @@ const Hero = () => {
         <Collapse in={showFilters}>
           <div className='d-lg-none mobileSearchMenu'>
             <Form className='searchBarMobile'>
-              
+
               {/* Móvil Origen */}
               <div className='selectWrapper mb-2'>
                 <FaPlaneDeparture className='selectIcon' />
@@ -234,29 +234,29 @@ const Hero = () => {
          ========================================== */}
       <Container fluid className='bannerMobile'>
         <div className='overlayContent'>
-          <Container>
+          <Container fluid>
             <h1>
               PAQUETES <span>TURÍSTICOS</span>
             </h1>
-            
+
             {/* Beneficios con los íconos de la biblioteca pintados de blanco */}
             <div className='beneficios'>
-  <div className='beneficioItem'>
-    <FaPlane className='beneficioIcon' /> <span>Vuelos</span>
-  </div>
-  
-  <div className='beneficioItem'>
-    <FaHotel className='beneficioIcon' /> <span>Hoteles</span>
-  </div>
+              <div className='beneficioItem'>
+                <FaPlane className='beneficioIcon' /> <span>Vuelos</span>
+              </div>
 
-  <div className='beneficioItem'>
-    <FaBus className='beneficioIcon' /> <span>Traslados</span>
-  </div>
+              <div className='beneficioItem'>
+                <FaHotel className='beneficioIcon' /> <span>Hoteles</span>
+              </div>
 
-  <div className='beneficioItem'>
-    <FaSuitcaseRolling className='beneficioIcon' /> <span>Asistencia</span>
-  </div>
-</div>
+              <div className='beneficioItem'>
+                <FaBus className='beneficioIcon' /> <span>Traslados</span>
+              </div>
+
+              <div className='beneficioItem'>
+                <FaSuitcaseRolling className='beneficioIcon' /> <span>Asistencia</span>
+              </div>
+            </div>
           </Container>
         </div>
       </Container>

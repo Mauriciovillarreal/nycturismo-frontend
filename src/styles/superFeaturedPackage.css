@@ -7,7 +7,7 @@
     min-height: 400px;
     height: 36vh; /* Se adapta proporcionalmente a pantallas grandes */
     overflow: hidden;
-    margin: 30px 0px 90px; /* Despeje superior e inferior con el resto de la Home */
+    margin: 0px 0px 90px; /* Despeje superior e inferior con el resto de la Home */
     display: flex;
     align-items: center;
 }
@@ -24,6 +24,7 @@
 
 .superFeaturedWrapper:hover .superFeaturedBg {
     transform: scale(1.05);
+     transition: transform 12s ease;
 }
 
 /* Capa oscura progresiva (Izquierda pesada para texto, derecha traslúcida) */
@@ -162,23 +163,16 @@
 
 /* Botón de acción premium */
 .superFeaturedBtn {
-    background: #d41717;
-    color: white !important;
-    text-decoration: none;
-    padding: 14px 28px;
-    font-weight: 700;
-    border-radius: 50px;
-    font-size: 15px;
-    display: inline-flex;
-    align-items: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(212, 23, 23, 0.3);
-}
 
-.superFeaturedBtn:hover {
-    background: #b8121a;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(212, 23, 23, 0.5);
+
+    text-decoration: none;
+
+
+
+    font-size: 15px;
+
+
+
 }
 
 /* ==========================================================================

@@ -16,7 +16,8 @@
 .searchBar {
     background: white;
     padding: 12px;
-    border-radius: 1px; /* Un toque leve de redondeado para estilizar la barra blanca */
+    border-radius: 1px;
+    /* Un toque leve de redondeado para estilizar la barra blanca */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     margin-top: 70px;
 }
@@ -57,7 +58,8 @@
     width: 100%;
     height: 52px;
     border: none !important;
-    background: #d41717 !important; /* Rojo NYC Travel */
+    background: #d41717 !important;
+    /* Rojo NYC Travel */
     color: white !important;
     font-weight: 600;
     display: flex;
@@ -134,8 +136,8 @@
     position: relative;
     min-height: 450px;
     /* Unificado al Rojo Institucional con degradado fluido hacia transparente */
-    background-image: 
-        linear-gradient(80deg, #d41717 0%, rgba(212, 23, 23, 0.4) 50%, rgba(255, 255, 255, 0) 100%), 
+    background-image:
+        linear-gradient(80deg, #d41717 0%, rgba(212, 23, 23, 0.4) 50%, rgba(255, 255, 255, 0) 100%),
         url('../img/banner2.jpg');
     background-size: cover;
     background-position: center;
@@ -220,16 +222,20 @@
 .beneficioItem {
     display: flex;
     align-items: center;
-    gap: 10px; /* Separación del ícono con la palabra */
+    gap: 10px;
+    /* Separación del ícono con la palabra */
     font-size: 1.2rem;
     font-weight: 600;
     color: white;
 }
 
 .beneficioIcon {
-    font-size: 24px; /* Tamaño perfecto para que resalte */
-    color: white; /* Forzado de color blanco puro */
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); /* Sombra suave para despegar del banner */
+    font-size: 24px;
+    /* Tamaño perfecto para que resalte */
+    color: white;
+    /* Forzado de color blanco puro */
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    /* Sombra suave para despegar del banner */
 }
 
 /* ==========================================================================
@@ -242,7 +248,54 @@
         right: 10px;
         z-index: 20;
     }
+    .bannerMobile {
+
+
+
+    background-image:
+        linear-gradient(80deg, #ffffff00 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%),
+        url('../img/banner2.jpg');
+}
+
+    /* Aseguramos que el banner ocupe exactamente la pantalla completa */
+    .bannerMobile {
+        height: 96vh; 
+        min-height: 96vh;
+    }
+
     .overlayContent {
-        padding: 140px 0px 40px;
+        height: 100%;
+        padding: 10px 0px 0px; /* Espacio arriba para el buscador, 0 abajo */
+        justify-content: flex-start;
+    }
+
+    .overlayContent h1 {
+        font-size: 2.8rem;
+    }
+
+    /* CONVERTIMOS LA SECCIÓN EN UN FOOTER ABSOLUTO */
+    .beneficios {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;        
+        backdrop-filter: blur(5px);   
+        padding: 15px 10px;          
+    }
+
+    /* Ajustamos los items para que queden compactos en la barra */
+    .beneficioItem {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.90rem;     /* Letra más chica para asegurar que entre en cualquier cel */
+        font-weight: 600;
+        flex: 1;
+        text-align: center;
+    }
+
+    .beneficioIcon {
+        font-size: 18px;        /* Íconos un poco más sutiles para el formato footer */
+        filter: none;           /* Ya no necesitan sombra porque tienen el fondo oscuro */
     }
 }

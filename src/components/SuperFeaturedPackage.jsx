@@ -18,7 +18,8 @@ const SuperFeaturedPackage = ({ pkg }) => {
     ['plane', 'avion', 'avión'].includes(currentTransportMode.toLowerCase());
 
   return (
-    <div className="superFeaturedWrapper">
+           <Link to={`/packages/${pkg.slug}`} className="superFeaturedBtn">
+              <div className="superFeaturedWrapper">
       {/* IMAGEN DE FONDO EN ALTA DEFINICIÓN */}
       <img 
         src={ 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e'} 
@@ -61,14 +62,14 @@ const SuperFeaturedPackage = ({ pkg }) => {
               </h3>
             </div>
 
-            <Link to={`/packages/${pkg.slug}`} className="superFeaturedBtn">
-              Ver Detalle del Viaje <FaArrowRight className="ms-2" />
-            </Link>
+     
           </div>
 
         </div>
       </Container>
     </div>
+            </Link>
+   
   );
 };
 
