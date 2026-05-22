@@ -43,22 +43,58 @@ const Packages = () => {
     }
   }
 
-  // LÓGICA DE FILTRADO
+  // LÓGICA DE FILTRADO COMPLETA
   const filteredPackages = packages.filter(pkg => {
-    const matchSearch = pkg.destination?.toLowerCase().includes(search.toLowerCase()) ||
-                        pkg.title?.toLowerCase().includes(search.toLowerCase())
-
-    const matchOrigin = !origin || pkg.origin === origin
-    const matchDestination = !destination || pkg.destination === destination
     
-    const matchDate = !date || pkg.availableDates?.some(
-      item => new Date(item).toISOString().split('T')[0] === date.split('T')[0]
-    )
+    // 1. FILTRO DE ORIGEN (Si existe en la URL, debe coincidir exactamente)
+    if (origin && pkg?.origin !== origin) {
+      return false;
+    }
 
-    const matchCategory = !category || pkg.category?.toLowerCase() === category.toLowerCase()
+    // 2. FILTRO DE DESTINO (Si existe en la URL, debe coincidir exactamente)
+    if (destination && pkg?.destination !== destination) {
+      return false;
+    }
 
-    return matchSearch && matchOrigin && matchDestination && matchDate && matchCategory
-  })
+    // 3. FILTRO DE CATEGORÍA (Por si lo usás en el sitio)
+    if (category && pkg?.category !== category) {
+      return false;
+    }
+
+    // 4. FILTRO DE BUSCADOR RÁPIDO (Barra lateral: busca por título o descripción)
+    if (search) {
+      const term = search.toLowerCase();
+      const matchTitle = pkg?.title?.toLowerCase().includes(term);
+      const matchDescription = pkg?.description?.toLowerCase().includes(term);
+      const matchDest = pkg?.destination?.toLowerCase().includes(term);
+      
+      if (!matchTitle && !matchDescription && !matchDest) {
+        return false;
+      }
+    }
+
+    // 5. FILTRO DE FECHA (Tu lógica existente optimizada)
+    if (date) {
+      const searchDate = new Date(date);
+      if (isNaN(searchDate.getTime())) return false; 
+      
+      const searchDateISO = searchDate.toISOString().split('T')[0];
+
+      const hasMatchingDate = pkg.availableDates?.some(item => {
+        const pkgDateStr = item?.date ? item.date : item; 
+        const pDate = new Date(pkgDateStr);
+        
+        if (isNaN(pDate.getTime())) return false; 
+        
+        return pDate.toISOString().split('T')[0] === searchDateISO;
+      });
+
+      if (!hasMatchingDate) return false;
+    }
+
+    // Si pasó todos los filtros activos, el paquete es válido para mostrar
+    return true;
+  });
 
   // DETERMINACIÓN DEL TÍTULO DINÁMICO
   const getPageTitle = () => {

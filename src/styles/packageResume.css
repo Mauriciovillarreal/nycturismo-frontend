@@ -1,0 +1,133 @@
+/* Contenedor e hilos generales */
+.packageResumeBar {
+  background: #ffffff;
+  border-radius: 0px !important;
+}
+
+.resumeSection {
+  min-height: 125px;
+  background: white !important;
+}
+
+/* Etiquetas grises */
+.resumeLabel {
+  font-size: 0.72rem !important;
+  letter-spacing: 0.5px;
+}
+
+/* Limita el ancho del bloque de textos para que no flote hacia la derecha */
+.price-block-wrapper {
+  max-width: 240px;
+}
+
+/* Alineación por defecto para escritorio */
+.bg-action-section {
+  background-color: #F8FAFC;
+  border-top: 1px solid #e2e8f0;
+}
+
+@media (min-width: 992px) {
+  .bg-action-section {
+    border-top: none;
+    border-left: 1px solid #e2e8f0;
+    background-color: #F1F5F9; /* Fondo sutil para la zona de acción */
+  }
+}
+
+/* Acciones en azul descriptivo */
+.small-action-btn, .extra-btn {
+  font-size: 0.75rem !important;
+  color: #4356FF !important;
+  font-weight: 600;
+}
+
+/* Miniatura del Hotel */
+.resumeThumb {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+}
+
+.regimen-badge {
+  font-size: 0.6rem !important;
+  padding: 2px 4px !important;
+  opacity: 0.9;
+}
+
+/* Línea de trayecto (Despegar Style) */
+.location-route {
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+.route-line {
+  border-bottom: 2px solid #cbd5e1;
+  height: 2px;
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+.directo-text {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  background: #ffffff;
+  padding: 0 6px;
+  color: #10b981;
+  font-weight: 600;
+}
+
+/* Tipografía de tarifas */
+.price-display {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #1a1a1a !important;
+}
+
+.base-text {
+  font-size: 0.7rem !important;
+}
+
+/* Botón Rojo Despegar */
+.btn-despegar-style {
+  background-color: rgb(255, 118, 117) !important;
+  border: none !important;
+  border-radius: 50px !important;
+  font-size: 0.90rem;
+  letter-spacing: 0.3px;
+  transition: background 0.2s ease;
+}
+.textDanger h6 {
+  color: rgb(255, 118, 117) !important;
+}
+/* Secciones de color de fondo sutiles */
+.bg-action-section {
+  background-color: #F8FAFC;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Responsivo para pantallas de escritorio */
+@media (min-width: 992px) {
+  .border-lg-end {
+    border-right: 1px solid #e2e8f0 !important;
+  }
+  .bg-light-desktop {
+    background-color: #FAFAFA;
+  }
+  .bg-action-section {
+    border-top: none;
+    border-left: 1px solid #e2e8f0;
+    background-color: #F1F5F9;
+  }
+}
+
+/* Truncado personalizado a dos líneas para celulares */
+.text-truncate-2-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}

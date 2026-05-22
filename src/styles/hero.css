@@ -1,141 +1,9 @@
 /* ==========================================================================
-   1. CONTENEDOR DEL BUSCADOR GENERAL
-   ========================================================================== */
-.heroSearchContainer {
-    position: absolute;
-    top: 10px;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 20;
-}
-
-/* ==========================================================================
-   2. BARRA DE BÚSQUEDA (ESCRITORIO)
-   ========================================================================== */
-.searchBar {
-    background: white;
-    padding: 12px;
-    border-radius: 1px;
-    /* Un toque leve de redondeado para estilizar la barra blanca */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    margin-top: 70px;
-}
-
-/* ==========================================================================
-   3. MAQUETACIÓN INTERNA DE LOS SELECTORES (Inputs)
-   ========================================================================== */
-.selectWrapper {
-    position: relative;
-}
-
-.selectIcon {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666;
-    z-index: 5;
-    font-size: 15px;
-}
-
-.customSelect {
-    height: 52px;
-    border: 1px solid #e5e5e5 !important;
-    padding-left: 42px !important;
-    font-weight: 500;
-    box-shadow: none !important;
-}
-
-.customSelect:focus {
-    box-shadow: none !important;
-}
-
-/* ==========================================================================
-   4. BOTÓN BUSCAR (ROJO MARCA)
-   ========================================================================== */
-.searchButton {
-    width: 100%;
-    height: 52px;
-    border: none !important;
-    background: #d41717 !important;
-    /* Rojo NYC Travel */
-    color: white !important;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: 0.3s;
-}
-
-.searchButton:hover {
-    background: #b8121a !important;
-}
-
-.searchButton:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* ==========================================================================
-   5. MENU Y BOTÓN DE BÚSQUEDA (MÓVIL)
-   ========================================================================== */
-.mobileMenuButton {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 6px;
-    cursor: pointer;
-    margin-left: auto;
-    margin-right: 20px;
-    margin-top: 10px;
-    z-index: 9999999;
-}
-
-.mobileMenuButton .line {
-    width: 30px;
-    height: 3px;
-    background: rgb(0, 0, 0);
-    border-radius: 10px;
-    transition: 0.3s;
-    z-index: 9999999;
-}
-
-/* Animaciones del menú Hamburguesa a Cruz */
-.mobileMenuButton .open1 {
-    transform: rotate(45deg) translate(6px, 6px);
-}
-
-.mobileMenuButton .open2 {
-    opacity: 0;
-}
-
-.mobileMenuButton .open3 {
-    transform: rotate(-45deg) translate(7px, -7px);
-}
-
-/* Contenedor del desplegable en Móviles */
-.mobileSearchMenu {
-    background: white;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-.searchBarMobile {
-    display: flex;
-    flex-direction: column;
-}
-
-/* ==========================================================================
-   6. SECCIÓN BANNER PRINCIPAL (HERO BACKGROUND)
+   1. SECCIÓN BANNER PRINCIPAL (HERO BACKGROUND)
    ========================================================================== */
 .bannerMobile {
     position: relative;
     min-height: 450px;
-    /* Unificado al Rojo Institucional con degradado fluido hacia transparente */
     background-image:
         linear-gradient(80deg, #d41717 0%, rgba(212, 23, 23, 0.4) 50%, rgba(255, 255, 255, 0) 100%),
         url('../img/banner2.jpg');
@@ -186,13 +54,28 @@
 /* Beneficios incluidos */
 .beneficios {
     display: flex;
-    gap: 20px;
+    gap: 25px;
     margin-top: 30px;
     flex-wrap: wrap;
 }
 
+.beneficioItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+}
+
+.beneficioIcon {
+    font-size: 24px;
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
 /* ==========================================================================
-   7. COMPONENTES EXTRA / RESERVADOS (Sin uso actual en HTML)
+   2. COMPONENTES EXTRA / RESERVADOS
    ========================================================================== */
 .topIcon img {
     width: 100px;
@@ -212,57 +95,21 @@
     width: fit-content;
 }
 
-.beneficios {
-    display: flex;
-    gap: 25px;
-    margin-top: 30px;
-    flex-wrap: wrap;
-}
-
-.beneficioItem {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    /* Separación del ícono con la palabra */
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: white;
-}
-
-.beneficioIcon {
-    font-size: 24px;
-    /* Tamaño perfecto para que resalte */
-    color: white;
-    /* Forzado de color blanco puro */
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    /* Sombra suave para despegar del banner */
-}
-
 /* ==========================================================================
-   8. MEDIA QUERIES (Responsivo Celulares)
+   3. MEDIA QUERIES (Responsivo Celulares)
    ========================================================================== */
 @media(max-width: 768px) {
-    .heroSearchContainer {
-        position: absolute;
-        top: 0px;
-        right: 10px;
-        z-index: 20;
-    }
     .bannerMobile {
-    background-image:
-        linear-gradient(80deg, #ffffff00 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%),
-        url('../img/banner2.jpg');    
-}
-
-    /* Aseguramos que el banner ocupe exactamente la pantalla completa */
-    .bannerMobile {
+        background-image:
+            linear-gradient(80deg, #ffffff00 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%),
+            url('../img/banner2.jpg');    
         height: 96vh; 
         min-height: 96vh;
     }
 
     .overlayContent {
         height: 100%;
-        padding: 10px 0px 0px; /* Espacio arriba para el buscador, 0 abajo */
+        padding: 10px 0px 0px;
         justify-content: flex-start;
     }
 
@@ -279,20 +126,19 @@
         padding-bottom: 20px;
     }
 
-    /* Ajustamos los items para que queden compactos en la barra */
     .beneficioItem {
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.90rem;     /* Letra más chica para asegurar que entre en cualquier cel */
+        font-size: 0.90rem;
         font-weight: 400;
         flex: 1;
         text-align: center;
-        gap: 5px;                /* Menos espacio entre ícono y texto para formato móvil */
+        gap: 5px;
     }
 
     .beneficioIcon {
-        font-size: 18px;        /* Íconos un poco más sutiles para el formato footer */
-        filter: none;           /* Ya no necesitan sombra porque tienen el fondo oscuro */
+        font-size: 18px;
+        filter: none;
     }
 }

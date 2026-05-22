@@ -1,73 +1,75 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Form, Button, Row, Col, Collapse } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import {
-  FaMapMarkerAlt,
-  FaPlaneDeparture,
-  FaCalendarAlt,
-  FaSearch,
-  FaPlane,
-  FaHotel,
-  FaBus,
-  FaSuitcaseRolling
-} from 'react-icons/fa';
+import SearchBar from './SearchBar'; 
+import { FaPlane, FaHotel, FaSuitcaseRolling } from 'react-icons/fa';
 import '../styles/hero.css';
 
 const Hero = () => {
   const navigate = useNavigate();
 
-  // --- ESTADOS ---
-  const [packages, setPackages] = useState([]);
+  // --- ESTADOS DE SELECCIÓN ---
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [date, setDate] = useState('');
 
+  // --- ESTADOS DE DATOS ---
+  const [packages, setPackages] = useState([]);
   const [origins, setOrigins] = useState([]);
   const [destinations, setDestinations] = useState([]);
   const [dates, setDates] = useState([]);
-  const [showFilters, setShowFilters] = useState(false);
 
-  // --- EFFECT: CARGA INICIAL DE PAQUETES ---
+  // --- CARGA INICIAL DE PAQUETES ---
   useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const res = await api.get('/packages');
+        // Nos aseguramos de que res.data sea un array, si no ponemos array vacío
+        const data = Array.isArray(res.data) ? res.data : [];
+        setPackages(data);
+
+        const uniqueOrigins = [...new Set(data.map(pkg => pkg?.origin).filter(Boolean))];
+        const uniqueDestinations = [...new Set(data.map(pkg => pkg?.destination).filter(Boolean))];
+
+        setOrigins(uniqueOrigins);
+        setDestinations(uniqueDestinations);
+      } catch (error) {
+        console.error('Error al cargar paquetes:', error);
+      }
+    };
+    
     fetchPackages();
   }, []);
 
-  const fetchPackages = async () => {
-    try {
-      const res = await api.get('/packages');
-      setPackages(res.data);
-
-      const uniqueOrigins = [...new Set(res.data.map(pkg => pkg.origin))];
-      const uniqueDestinations = [...new Set(res.data.map(pkg => pkg.destination))];
-
-      setOrigins(uniqueOrigins);
-      setDestinations(uniqueDestinations);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // --- EFFECT: FILTRADO DE FECHAS SEGÚN ORIGEN Y DESTINO ---
+  // --- FILTRADO EN TIEMPO REAL (CON DEFENSAS EXTREMAS) ---
   useEffect(() => {
     if (origin && destination) {
       const filteredPackages = packages.filter(pkg =>
-        pkg.origin === origin && pkg.destination === destination
+        pkg?.origin === origin && pkg?.destination === destination
       );
 
       let availableDates = [];
       filteredPackages.forEach(pkg => {
-        availableDates.push(...pkg.availableDates);
+        // Validamos con Optional Chaining que exista el array
+        if (pkg?.availableDates && Array.isArray(pkg.availableDates)) {
+          // Filtramos primero los items válidos que tengan la propiedad .date antes de mapear
+          const datesOnly = pkg.availableDates
+            .filter(item => item && item.date) 
+            .map(item => item.date);
+            
+          availableDates.push(...datesOnly);
+        }
       });
 
-      const uniqueDates = [...new Set(availableDates)];
-      setDates(uniqueDates);
+      // Eliminamos duplicados de las fechas planas
+      setDates([...new Set(availableDates)]);
     } else {
       setDates([]);
     }
   }, [origin, destination, packages]);
 
-  // --- ACCIÓN: BUSCAR ---
+  // --- ACCIÓN: REDIRECCIÓN AL BUSCAR ---
   const handleSearch = () => {
     if (!origin || !destination) return;
     navigate(`/packages?origin=${origin}&destination=${destination}&date=${date}`);
@@ -75,182 +77,31 @@ const Hero = () => {
 
   return (
     <div className='heroWrapper'>
+      
+      {/* Componente de búsqueda modularizado */}
+      <SearchBar 
+        origin={origin} setOrigin={setOrigin}
+        destination={destination} setDestination={setDestination}
+        date={date} setDate={setDate}
+        origins={origins} destinations={destinations} dates={dates}
+        onSearch={handleSearch}
+      />
 
-      {/* ==========================================
-         SECCIÓN: BUSCADOR GENERAL (CONTAINER)
-         ========================================== */}
-      <div className='heroSearchContainer'>
-
-        {/* BOTÓN HAMBURGUESA (Solo Móvil) */}
-        <div
-          className='mobileMenuButton d-lg-none'
-          onClick={() => setShowFilters(!showFilters)}
-        >
-          <span className={showFilters ? 'line open1' : 'line'}></span>
-          <span className={showFilters ? 'line open2' : 'line'}></span>
-          <span className={showFilters ? 'line open3' : 'line'}></span>
-        </div>
-
-        {/* BUSCADOR ESCRITORIO (Oculto en móvil) */}
-        <Container className='d-none d-lg-block'>
-          <Form className='searchBar'>
-            <Row className='g-3 align-items-center'>
-
-              {/* Selector: Origen */}
-              <Col lg={3}>
-                <div className='selectWrapper'>
-                  <FaPlaneDeparture className='selectIcon' />
-                  <Form.Select
-                    value={origin}
-                    onChange={(e) => setOrigin(e.target.value)}
-                    className='customSelect'
-                  >
-                    <option value=''>Origen</option>
-                    {origins.map((item, index) => (
-                      <option key={index} value={item}>{item}</option>
-                    ))}
-                  </Form.Select>
-                </div>
-              </Col>
-
-              {/* Selector: Destino */}
-              <Col lg={3}>
-                <div className='selectWrapper'>
-                  <FaMapMarkerAlt className='selectIcon' />
-                  <Form.Select
-                    value={destination}
-                    onChange={(e) => setDestination(e.target.value)}
-                    className='customSelect'
-                  >
-                    <option value=''>Destino</option>
-                    {destinations.map((item, index) => (
-                      <option key={index} value={item}>{item}</option>
-                    ))}
-                  </Form.Select>
-                </div>
-              </Col>
-
-              {/* Selector: Fecha */}
-              <Col lg={3}>
-                <div className='selectWrapper'>
-                  <FaCalendarAlt className='selectIcon' />
-                  <Form.Select
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className='customSelect'
-                  >
-                    <option value=''>Fechas disponibles</option>
-                    {dates.map((item, index) => (
-                      <option key={index} value={item}>
-                        {new Date(item).toLocaleDateString('es-AR')}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </div>
-              </Col>
-
-              {/* Botón de envío */}
-              <Col lg={3}>
-                <Button
-                  className='searchButton'
-                  onClick={handleSearch}
-                  disabled={!origin || !destination}
-                >
-                  <FaSearch /> Buscar
-                </Button>
-              </Col>
-            </Row>
-          </Form>
-        </Container>
-
-        {/* BUSCADOR DESPLEGABLE MÓVIL (Oculto en Escritorio) */}
-        <Collapse in={showFilters}>
-          <div className='d-lg-none mobileSearchMenu'>
-            <Form className='searchBarMobile'>
-
-              {/* Móvil Origen */}
-              <div className='selectWrapper mb-2'>
-                <FaPlaneDeparture className='selectIcon' />
-                <Form.Select
-                  value={origin}
-                  onChange={(e) => setOrigin(e.target.value)}
-                  className='customSelect'
-                >
-                  <option value=''>Origen</option>
-                  {origins.map((item, index) => (
-                    <option key={index} value={item}>{item}</option>
-                  ))}
-                </Form.Select>
-              </div>
-
-              {/* Móvil Destino */}
-              <div className='selectWrapper mb-2'>
-                <FaMapMarkerAlt className='selectIcon' />
-                <Form.Select
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  className='customSelect'
-                >
-                  <option value=''>Destino</option>
-                  {destinations.map((item, index) => (
-                    <option key={index} value={item}>{item}</option>
-                  ))}
-                </Form.Select>
-              </div>
-
-              {/* Móvil Fecha */}
-              <div className='selectWrapper mb-3'>
-                <FaCalendarAlt className='selectIcon' />
-                <Form.Select
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className='customSelect'
-                >
-                  <option value=''>Fecha</option>
-                  {dates.map((item, index) => (
-                    <option key={index} value={item}>
-                      {new Date(item).toLocaleDateString('es-AR')}
-                    </option>
-                  ))}
-                </Form.Select>
-              </div>
-
-              {/* Móvil Botón */}
-              <Button
-                className='searchButton'
-                onClick={handleSearch}
-                disabled={!origin || !destination}
-              >
-                <FaSearch /> Buscar
-              </Button>
-            </Form>
-          </div>
-        </Collapse>
-
-      </div>
-
-      {/* ==========================================
-         SECCIÓN: BANNER PRINCIPAL DE FONDO
-         ========================================== */}
+      {/* SECCIÓN: BANNER PRINCIPAL DE FONDO */}
       <Container fluid className='bannerMobile'>
         <div className='overlayContent'>
-          <Container >
+          <Container>
             <h1>
               PAQUETES <span>TURÍSTICOS</span>
             </h1>
 
-            {/* Beneficios con los íconos de la biblioteca pintados de blanco */}
             <Container className='beneficios'>
               <div className='beneficioItem'>
                 <FaPlane className='beneficioIcon' /> <span>Vuelos</span>
               </div>
-
               <div className='beneficioItem'>
                 <FaHotel className='beneficioIcon' /> <span>Hoteles</span>
               </div>
-
-          
-
               <div className='beneficioItem'>
                 <FaSuitcaseRolling className='beneficioIcon' /> <span>Asistencia</span>
               </div>

@@ -9,7 +9,7 @@
 .detailBox {
   background: white;
   margin-bottom: 25px;
-  padding: 10px 0; /* Espaciado interno ligero para separar contenidos */
+  padding: 10px 0;
 }
 
 .section-table-title {
@@ -28,121 +28,7 @@
 /* ==========================================================================
    2. TOP RESUME BAR (Barra de resumen superior)
    ========================================================================== */
-.packageResumeBar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  background: #ffffff;
-  padding: 15px 25px;
-  border-radius: 2px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  margin-top: 20px;
-  margin-bottom: 30px;
-  gap: 15px;
-}
-
-.resumeItem {
-  flex: 1;
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-}
-
-/* Línea divisoria vertical entre bloques (Solo escritorio) */
-@media (min-width: 992px) {
-  .resumeItem:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    right: -10px;
-    top: 15%;
-    height: 70%;
-    width: 1px;
-    background-color: #e0e0e0;
-  }
-}
-
-.resumeLabel {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: #a0a0a0;
-  letter-spacing: 0.5px;
-  margin-bottom: 6px;
-}
-
-.resumeContent, 
-.resumeTransport,
-.resumeDateHotelBox,
-.resumePriceInfo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.resumeContent div, 
-.resumeTransport div {
-  display: flex;
-  flex-direction: column;
-}
-
-.resumeContent h4, 
-.resumeTransport h4 {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #2d3436;
-  margin: 0;
-  line-height: 1.2;
-}
-
-.resumeContent p, 
-.resumeTransport p {
-  font-size: 0.8rem;
-  color: #636e72;
-  margin: 2px 0 0 0;
-}
-
-.resumeThumb {
-  width: 140px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 2px;
-}
-
-.resumeIconBox {
-  font-size: 1.3rem;
-  color: #ff8282; 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff;
-  padding: 10px;
-  border-radius: 50%;
-  width: 42px;
-  height: 42px;
-}
-
-.resumePriceInfo h4 {
-  font-size: 0.75rem;
-  color: #636e72;
-  margin: 0;
-  font-weight: 500;
-}
-
-.resumePriceInfo h5 {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: #2d3436;
-  margin: 2px 0 0 0;
-}
-
-.text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+/* Contenedor principal estilizado */
 
 /* ==========================================================================
    3. GALERÍA DE IMÁGENES Y CARD FLOTANTE
@@ -183,7 +69,6 @@
   object-fit: cover;
 }
 
-/* Card Flotante Derecha */
 .floatingCard {
   line-height: 1.3;
   position: absolute;
@@ -262,7 +147,6 @@
 /* ==========================================================================
    4 y 5. DESCRIPCIÓN Y DETALLES (Estructura espejo)
    ========================================================================== */
-
 .circuitsContainer,
 .datesContainerCustom {
   display: flex;
@@ -271,7 +155,6 @@
   margin-top: 15px;
 }
 
-/* Tarjeta base horizontal (Estructura espejo) */
 .circuitCardRow,
 .dateCardRowCustom {
   background: #ffffff;
@@ -284,25 +167,20 @@
   transition: all 0.2s ease;
 }
 
-/* Grilla simétrica para Circuitos: 3 columnas */
 .circuitCardRow {
   grid-template-columns: 1.5fr 3fr 1fr;
 }
 
-/* Grilla simétrica para Tarifas: 4 columnas */
 .dateCardRowCustom {
   grid-template-columns: 1.2fr 1.8fr 1.5fr 1fr;
 }
 
-
-/* Estado Activo / Seleccionado con el borde e indicador rojo */
 .circuitCardRow.activeCircuit,
 .dateCardRowCustom.activeDateCustom {
   border: 1px solid #ff8282 !important;
   box-shadow: 0 4px 12px rgba(255, 130, 130, 0.08);
 }
 
-/* Estilos de tipografías internas (Espejo) */
 .circuitMainTitle,
 .dateMainTitleCustom {
   font-weight: 700;
@@ -325,11 +203,15 @@
   font-size: 1.1rem;
   font-weight: 700;
   color: #212529;
-  text-align: right; /* Alineación perfecta a la derecha */
+  text-align: right;
+}
+
+.detailCol {
+  margin-right: 420px;
 }
 
 /* ==========================================================================
-   6. SECCIÓN ¿QUÉ INCLUYE? (Escritorio)
+   6. SECCIÓN ¿QUÉ INCLUYE?
    ========================================================================== */
 .includesGrid {
   display: grid;
@@ -369,174 +251,43 @@
 /* ==========================================================================
    7. RESPONSIVE DESIGN (Media Queries)
    ========================================================================== */
-
-/* --- TABLETS Y PANTALLAS MEDIANAS (Móvil general) --- */
-@media (max-width: 991px) {
+@media (max-width: 1200px) {
   .packageResumeBar {
-    display: none; /* Oculta la barra superior en pantallas chicas */
+    display: none; 
   }
-
-  .galleryWrapper {
-    padding: 15px;
+  .galleryWrapper { 
+    padding: 15px; 
   }
-
-  .gallerySection {
-    grid-template-columns: 1fr;
-    height: auto;
+  .gallerySection { 
+    grid-template-columns: 1fr; height: auto; 
   }
-
-  .mainImage img {
-    height: 300px;
+  .mainImage img { 
+    height: 300px; 
   }
-
-  .sideImages {
-    grid-template-columns: 1fr 1fr;
+  .sideImages { 
+    grid-template-columns: 1fr 1fr; 
   }
-
-  .sideImages img {
-    height: 140px;
+  .sideImages img { 
+    height: 140px; 
   }
-
-  .floatingCard {
-    position: relative;
-    width: 100%;
-    right: 0;
-    bottom: 0;
-    margin-top: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  .floatingCard { 
+    position: relative; width: 100%; right: 0; bottom: 0; margin-top: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
   }
-
-  .packageDetailContent {
-    margin-top: 30px;
-    padding-bottom: 40px;
+  .packageDetailContent { 
+    margin-top: 30px; 
+    padding-bottom: 40px; 
+    padding-right: 15px;
   }
-
-  .includesGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+  .includesGrid { 
+    grid-template-columns: repeat(2, 1fr); gap: 20px; 
+  }
+  .detailCol {
+    margin-right: 0px;
   }
 }
 
-/* --- DISPOSITIVOS MÓVILES (Estructura Unificada de Tarjetas) --- */
+/* DISPOSITIVOS MÓVILES (Celulares) */
 @media screen and (max-width: 768px) {
-  
-  /* --- Transformación de la Tabla de Tarifas --- */
-  .datesTable thead {
-    display: none;
-  }
-
-  .datesTable, 
-  .datesTable tbody, 
-  .datesTable tr, 
-  .datesTable td {
-    display: block;
-    width: 100%;
-  }
-
-  .datesTable tr {
-    background: #ffffff;
-    border: 1px solid #a71818;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    padding: 10px 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    transition: all 0.2s ease;
-  }
-
-  .datesTable tr.table-active {
-    border: 2px solid #ff8282 !important; /* Borde rojo activo igual a los circuitos */
-    background-color: rgba(255, 130, 130, 0.02);
-    box-shadow: 0 4px 12px rgba(255, 130, 130, 0.1);
-  }
-
-  .datesTable td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: right;
-    padding: 10px 0;
-    border-bottom: 1px dashed #f0f0f0;
-    font-size: 0.9rem;
-  }
-
-  .datesTable td:last-child {
-    border-bottom: none;
-  }
-
-  .datesTable td::before {
-    content: attr(data-label);
-    float: left;
-    font-weight: 600;
-    color: #777;
-    text-align: left;
-    padding-right: 10px;
-    font-size: 0.85rem;
-  }
-
-  /* --- Transformación de las Opciones de Circuito --- */
-  .circuitCardRow {
-    display: block;
-    width: 100%;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-  }
-
-  .circuitCardRow .circuitField, 
-  .circuitCardRow .circuitPriceText {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: right;
-    padding: 10px 0;
-    border-bottom: 1px dashed #f0f0f0;
-    font-size: 0.9rem;
-  }
-
-  .circuitCardRow .circuitPriceText {
-    border-bottom: none;
-    font-size: 1.05rem;
-  }
-
-  .circuitCardRow .circuitField::before,
-  .circuitCardRow .circuitPriceText::before {
-    content: attr(data-label);
-    float: left;
-    font-weight: 600;
-    color: #777;
-    text-align: left;
-    padding-right: 10px;
-    font-size: 0.85rem;
-  }
-
-  /* Ajuste para que descripciones largas no rompan la visualización móvil */
-  .circuitDescText {
-    max-width: 65%;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .priceText {
-    font-size: 1.05rem;
-  }
-}
-
-@media (max-width: 991px) {
-  .packageResumeBar { display: none; }
-  .galleryWrapper { padding: 15px; }
-  .gallerySection { grid-template-columns: 1fr; height: auto; }
-  .mainImage img { height: 300px; }
-  .sideImages { grid-template-columns: 1fr 1fr; }
-  .sideImages img { height: 140px; }
-  .floatingCard { position: relative; width: 100%; right: 0; bottom: 0; margin-top: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-  .packageDetailContent { margin-top: 30px; padding-bottom: 40px; }
-  .includesGrid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-}
-
-/* Celulares (Ambas secciones se transforman exactamente igual) */
-@media screen and (max-width: 768px) {
-  
   .circuitCardRow,
   .dateCardRowCustom {
     display: block;
@@ -555,16 +306,16 @@
     padding: 10px 0;
     border-bottom: 1px dashed #f0f0f0;
     font-size: 0.9rem;
+    gap: 15px; /* Evita que los textos se peguen en pantallas muy angostas */
   }
 
-  /* Remoción de bordes en el último ítem de cada tarjeta */
   .circuitCardRow .circuitPriceText,
   .dateCardRowCustom .dateFieldCustom:last-child {
     border-bottom: none;
     font-size: 1.05rem;
   }
 
-  /* Inyección de etiquetas dinámicas (data-label) */
+  /* Inyección de etiquetas dinámicas */
   .circuitCardRow .circuitField::before,
   .circuitCardRow .circuitPriceText::before,
   .dateCardRowCustom .dateFieldCustom::before {
@@ -577,11 +328,18 @@
     font-size: 0.85rem;
   }
 
+  /* SOLUCIÓN AL TEXTO CORTADO: Permitimos saltos de línea y alineamos a la derecha */
   .circuitDescText {
     max-width: 65%;
     display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal; /* CORREGIDO: Permite que el texto quiebre y use múltiples renglones */
+    overflow: visible;   /* CORREGIDO: Remueve la restricción de desborde */
+    text-overflow: clip; /* CORREGIDO: Quita los tres puntos flotantes molestos */
+    text-align: right;   /* Alinea el bloque completo a la derecha para emparejar con el data-label */
+    word-break: break-word; /* Rompe palabras ultra largas si es necesario */
+  }
+
+  .priceText {
+    font-size: 1.05rem;
   }
 }
