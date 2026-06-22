@@ -34,9 +34,7 @@ const Home = () => {
       
       <CategoryGrid />
       
-      {/* 4. Renderiza el banner premium solo si ya encontró el paquete en la base de datos */}
-      {japonPkg && <SuperFeaturedPackage pkg={japonPkg} />}
-      
+   
       <Container className="py-5">
         <PackageGrid featured />
       </Container>
