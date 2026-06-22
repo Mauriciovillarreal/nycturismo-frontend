@@ -18,6 +18,7 @@ const SuperFeaturedPackage = ({ pkg }) => {
     ['plane', 'avion', 'avión'].includes(currentTransportMode.toLowerCase());
 
   return (
+    <Container>
            <Link to={`/packages/${pkg.slug}`} className="superFeaturedBtn">
               <div className="superFeaturedWrapper">
       {/* IMAGEN DE FONDO EN ALTA DEFINICIÓN */}
@@ -69,6 +70,7 @@ const SuperFeaturedPackage = ({ pkg }) => {
       </Container>
     </div>
             </Link>
+            </Container>
    
   );
 };

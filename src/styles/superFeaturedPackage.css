@@ -5,7 +5,7 @@
     position: relative;
     width: 100%;
     min-height: 400px;
-    height: 36vh; /* Se adapta proporcionalmente a pantallas grandes */
+    height: 30vh; /* Se adapta proporcionalmente a pantallas grandes */
     overflow: hidden;
     margin: 0px 0px 90px; /* Despeje superior e inferior con el resto de la Home */
     display: flex;

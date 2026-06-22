@@ -26,8 +26,8 @@ const Footer = () => {
                 Tu próximo destino está más cerca de lo que imaginás. Llevamos años organizando las mejores experiencias de viaje nacionales e internacionales.
               </p>
               <div className="footer-socials mt-4">
-                <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram"><FaInstagram /></a>
-                <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook"><FaFacebookF /></a>
+                <a href="https://www.instagram.com/nyctravelviajes?igsh=cWtra3JxamhkbWVl" target="_blank" rel="noreferrer" aria-label="Instagram"><FaInstagram /></a>
+                <a href="https://www.facebook.com/share/1D9ZSBoKme/?mibextid=wwXIfr" target="_blank" rel="noreferrer" aria-label="Facebook"><FaFacebookF /></a>
               </div>
             </div>
           </Col>
@@ -44,19 +44,19 @@ const Footer = () => {
           </Col>
 
           {/* COLUMNA 3: ENLACES CORPORATIVOS / LEGALES */}
-       {/* COLUMNA 3: ENLACES CORPORATIVOS / LEGALES */}
-<Col lg={2} md={6} sm={6} xs={6}>
-  <h5 className="footer-title">Empresa</h5>
-  <ul className="footer-links list-unstyled">
-    {/* Cambiado de <a> a <Link> apuntando a la nueva ruta */}
-    <li className="footer-link-item">
-      <Link to="/quienes-somos">
-        <FaChevronRight className="link-arrow" /> Quiénes somos
-      </Link>
-    </li>
-    <li className="mt-3"><span className="footer-legal-text">LEG 7865 D.N.T 27692</span></li>
-  </ul>
-</Col>
+          {/* COLUMNA 3: ENLACES CORPORATIVOS / LEGALES */}
+          <Col lg={2} md={6} sm={6} xs={6}>
+            <h5 className="footer-title">Empresa</h5>
+            <ul className="footer-links list-unstyled">
+              {/* Cambiado de <a> a <Link> apuntando a la nueva ruta */}
+              <li className="footer-link-item">
+                <Link to="/quienes-somos">
+                  <FaChevronRight className="link-arrow" /> Quiénes somos
+                </Link>
+              </li>
+              <li className="mt-3"><span className="footer-legal-text">LEG 7865 D.N.T 27692</span></li>
+            </ul>
+          </Col>
 
           {/* COLUMNA 4: DATOS DE CONTACTO */}
           <Col lg={4} md={6} sm={12}>

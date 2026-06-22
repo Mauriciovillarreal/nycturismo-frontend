@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../styles/CategoryGrid.css'
+import Container from 'react-bootstrap/Container'
 
 const categories = [
 
@@ -30,7 +31,7 @@ const categories = [
 
     {
         title: 'Nacionales',
-        image: 'https://cdn-imgix.headout.com/media/images/b8da531f-7c2a-4cbb-b677-18716d86366a-1747818847273-276449.jpg?auto=compress%2Cformat&w=900&h=562.5&q=90&ar=16%3A10&crop=faces%2Ccenter&fit=crop',
+        image: 'https://tripin.travel/wp-content/uploads/2016/12/parque-nacional-los-glaciares-perito-moreno-1-lonelyplanet-fcbk-1024x538.jpg',
         category: 'Nacionales'
     },
 
@@ -47,6 +48,8 @@ const CategoryGrid = () => {
     const navigate = useNavigate()
 
     return (
+        <Container>
+
         <section className="categorySection">
             <div className="categoryContainer">
                 <div className="categoryGrid">
@@ -71,6 +74,7 @@ const CategoryGrid = () => {
                 </div>
             </div>
         </section>
+         </Container>
     )
 }
 
