@@ -43,6 +43,11 @@
 }
 
 .categoryCard h2 {
+  text-transform: uppercase !important;
+  font-size: 1.5rem !important;
+}
+
+.categoryCard h2 {
     position: absolute;
 
     top: 50%;

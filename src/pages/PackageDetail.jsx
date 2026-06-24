@@ -84,7 +84,7 @@ const PackageDetail = () => {
 
       {/* ===== LLAMADO AL COMPONENTE HIJO ===== */}
       <Container>
-        <PackageResumeBar 
+        <PackageResumeBar
           pkg={pkg}
           selectedCircuit={selectedCircuit}
           selectedDateObj={selectedDateObj}
@@ -113,7 +113,7 @@ const PackageDetail = () => {
           </div>
 
           {/* CARD FLOTANTE DERECHA */}
-          <div className='floatingCard'>
+          <div className='floatingCard '>
             <div className='floatingTop'>
               <span className='flightText'>
                 {pkg.transport?.mode === 'plane' || pkg.transport?.type === 'plane'
@@ -122,10 +122,10 @@ const PackageDetail = () => {
               </span>
             </div>
 
-            <h3 className='roomTitle'>{pkg.title}</h3>
+            <h3 className='roomTitle '>{pkg.title}</h3>
             <p className='roomDescription text-muted small'>{selectedCircuit?.description || 'Paquete turístico completo'}</p>
 
-            <div className="roomDescription">
+            <div className="roomDescription ">
               <span>Destino</span>
               <p>{pkg.destination}</p>
             </div>
@@ -211,6 +211,7 @@ const PackageDetail = () => {
                     <div className="dateFieldCustom" data-label="Salida">
                       <span className="dateMainTitleCustom">
                         {new Date(item.date).toLocaleDateString('es-AR', {
+                          timeZone: 'UTC',
                           day: '2-digit',
                           month: '2-digit',
                           year: 'numeric'
@@ -235,7 +236,7 @@ const PackageDetail = () => {
 
             {/* INCLUYE */}
             <div className="detailBox">
-               <h4 className='mb-3 section-table-title'>¿Qué incluye la opción {selectedCircuit?.title}?</h4>
+              <h4 className='mb-3 section-table-title'>¿Qué incluye la opción {selectedCircuit?.title}?</h4>
               {selectedCircuit?.includes?.length > 0 ? (
                 <div className='includesGrid'>
                   {selectedCircuit.includes.map((item, index) => (

@@ -26,7 +26,7 @@ const Footer = () => {
                 Tu próximo destino está más cerca de lo que imaginás. Llevamos años organizando las mejores experiencias de viaje nacionales e internacionales.
               </p>
               <div className="footer-socials mt-4">
-                <a href="https://www.instagram.com/nyctravelviajes?igsh=cWtra3JxamhkbWVl" target="_blank" rel="noreferrer" aria-label="Instagram"><FaInstagram /></a>
+                <a href="https://www.instagram.com/nyctravelviajes/" target="_blank" rel="noreferrer" aria-label="Instagram"><FaInstagram /></a>
                 <a href="https://www.facebook.com/share/1D9ZSBoKme/?mibextid=wwXIfr" target="_blank" rel="noreferrer" aria-label="Facebook"><FaFacebookF /></a>
               </div>
             </div>

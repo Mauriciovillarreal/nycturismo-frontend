@@ -3,25 +3,28 @@ import {
   Container,
   Row,
   Col,
-  Form,
-  InputGroup,
   Card,
   Badge
 } from 'react-bootstrap'
-import { useSearchParams, useNavigate } from 'react-router-dom'
-import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaTags, FaTimes } from 'react-icons/fa'
+import { useSearchParams } from 'react-router-dom'
+import {
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaTags,
+  FaTimes
+} from 'react-icons/fa'
 
 import PackageCard from '../components/PackageCard'
 import Loader from '../components/Loader'
 import api from '../services/api'
 
+import '../styles/Packages.css'
+
 const Packages = () => {
   const [packages, setPackages] = useState([])
   const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
 
   const [searchParams, setSearchParams] = useSearchParams()
-  const navigate = useNavigate()
 
   const origin = searchParams.get('origin')
   const destination = searchParams.get('destination')
@@ -43,69 +46,52 @@ const Packages = () => {
     }
   }
 
-  // LÓGICA DE FILTRADO COMPLETA
   const filteredPackages = packages.filter(pkg => {
-    
-    // 1. FILTRO DE ORIGEN (Si existe en la URL, debe coincidir exactamente)
+    // FILTRO DE ORIGEN
     if (origin && pkg?.origin !== origin) {
-      return false;
+      return false
     }
 
-    // 2. FILTRO DE DESTINO (Si existe en la URL, debe coincidir exactamente)
+    // FILTRO DE DESTINO
     if (destination && pkg?.destination !== destination) {
-      return false;
+      return false
     }
 
-    // 3. FILTRO DE CATEGORÍA (Por si lo usás en el sitio)
+    // FILTRO DE CATEGORÍA
     if (category && pkg?.category !== category) {
-      return false;
+      return false
     }
 
-    // 4. FILTRO DE BUSCADOR RÁPIDO (Barra lateral: busca por título o descripción)
-    if (search) {
-      const term = search.toLowerCase();
-      const matchTitle = pkg?.title?.toLowerCase().includes(term);
-      const matchDescription = pkg?.description?.toLowerCase().includes(term);
-      const matchDest = pkg?.destination?.toLowerCase().includes(term);
-      
-      if (!matchTitle && !matchDescription && !matchDest) {
-        return false;
-      }
-    }
-
-    // 5. FILTRO DE FECHA (Tu lógica existente optimizada)
+    // FILTRO DE FECHA
     if (date) {
-      const searchDate = new Date(date);
-      if (isNaN(searchDate.getTime())) return false; 
-      
-      const searchDateISO = searchDate.toISOString().split('T')[0];
+      const searchDate = new Date(date)
+
+      if (isNaN(searchDate.getTime())) return false
+
+      const searchDateISO = searchDate.toISOString().split('T')[0]
 
       const hasMatchingDate = pkg.availableDates?.some(item => {
-        const pkgDateStr = item?.date ? item.date : item; 
-        const pDate = new Date(pkgDateStr);
-        
-        if (isNaN(pDate.getTime())) return false; 
-        
-        return pDate.toISOString().split('T')[0] === searchDateISO;
-      });
+        const pkgDateStr = item?.date ? item.date : item
+        const pDate = new Date(pkgDateStr)
 
-      if (!hasMatchingDate) return false;
+        if (isNaN(pDate.getTime())) return false
+
+        return pDate.toISOString().split('T')[0] === searchDateISO
+      })
+
+      if (!hasMatchingDate) return false
     }
 
-    // Si pasó todos los filtros activos, el paquete es válido para mostrar
-    return true;
-  });
+    return true
+  })
 
-  // DETERMINACIÓN DEL TÍTULO DINÁMICO
   const getPageTitle = () => {
-    if (category) return `Explorá Paquetes: ${category}`
+    if (category) return `${category}`
     if (destination) return `Viajes a ${destination}`
-    if (search) return `Resultados para "${search}"`
     return 'Nuestros Paquetes Turísticos'
   }
 
-  // FUNCIÓN PARA LIMPIAR UN FILTRO ESPECÍFICO
-  const removeFilter = (key) => {
+  const removeFilter = key => {
     const newParams = new URLSearchParams(searchParams)
     newParams.delete(key)
     setSearchParams(newParams)
@@ -114,109 +100,38 @@ const Packages = () => {
   if (loading) return <Loader />
 
   return (
-    <Container className="py-5" >
-      
-      {/* HEADER DE LA VISTA */}
+    <Container className="py-5">
+      {/* HEADER */}
       <div className="mb-5 text-center text-md-start">
-        <h1 className="fw-extrabold display-5 text-dark mb-2">{getPageTitle()}</h1>
-        <p className="text-muted fs-5">
-          Descubrí las mejores experiencias preparadas para tu próximo viaje.
-        </p>
-        
-        {/* BADGES DE FILTROS ACTIVOS */}
-        <div className="d-flex flex-wrap gap-2 mt-3 justify-content-center justify-content-md-start">
-          {category && (
-            <Badge bg="primary" className="p-2 d-flex align-items-center gap-2 fs-6 fw-normal">
-              <FaTags /> Categoría: {category}
-              <FaTimes style={{ cursor: 'pointer' }} onClick={() => removeFilter('category')} />
-            </Badge>
-          )}
-          {destination && (
-            <Badge bg="success" className="p-2 d-flex align-items-center gap-2 fs-6 fw-normal">
-              <FaMapMarkerAlt /> Destino: {destination}
-              <FaTimes style={{ cursor: 'pointer' }} onClick={() => removeFilter('destination')} />
-            </Badge>
-          )}
-          {origin && (
-            <Badge bg="info" className="p-2 d-flex align-items-center gap-2 fs-6 fw-normal text-white">
-              <FaMapMarkerAlt /> Origen: {origin}
-              <FaTimes style={{ cursor: 'pointer' }} onClick={() => removeFilter('origin')} />
-            </Badge>
-          )}
-          {date && (
-            <Badge bg="warning" className="p-2 d-flex align-items-center gap-2 fs-6 fw-normal text-dark">
-              <FaCalendarAlt /> Fecha: {new Date(date).toLocaleDateString('es-AR')}
-              <FaTimes style={{ cursor: 'pointer' }} onClick={() => removeFilter('date')} />
-            </Badge>
-          )}
-        </div>
+        <h1 className="text-center titlePackagesFiltered">
+          {getPageTitle()}
+        </h1>
       </div>
 
-      <Row className="g-4">
-        
-        {/* SIDEBAR DE CONTROL Y BÚSQUEDA */}
-        <Col lg={3} md={4} xs={12}>
-          <Card className="border-0 shadow-sm p-3 sticky-top" style={{ top: '20px', zIndex: 10 }}>
-            <h5 className="fw-bold text-secondary mb-3 d-flex align-items-center gap-2">
-              <FaSearch size={16} /> Filtrar resultados
-            </h5>
-            
-            <Form onSubmit={(e) => e.preventDefault()}>
-              <Form.Group className="mb-3">
-                <Form.Label className="small fw-bold text-muted text-uppercase">Buscador rápido</Form.Label>
-                <InputGroup>
-                  <Form.Control
-                    type="text"
-                    placeholder="Ej. Tokio, Bariloche..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="border-end-0"
-                  />
-                  <InputGroup.Text className="bg-white border-start-0 text-muted">
-                    <FaSearch />
-                  </InputGroup.Text>
-                </InputGroup>
-              </Form.Group>
-            </Form>
-
-            <div className="pt-2 border-top text-center">
-              <span className="small text-muted fw-semibold">
-                {filteredPackages.length} {filteredPackages.length === 1 ? 'paquete encontrado' : 'paquetes encontrados'}
-              </span>
-            </div>
-          </Card>
+      {/* GRID DE RESULTADOS */}
+      <Row>
+   <Col xs={12}>
+  {filteredPackages.length > 0 ? (
+    <Row className="g-4 justify-content-center">
+      {filteredPackages.map(pkg => (
+        <Col
+          key={pkg._id}
+          xxl={2.1}
+          xl={3}
+          lg={4}
+          md={6}
+          sm={12}
+        >
+          <PackageCard pkg={pkg} />
         </Col>
+      ))}
+    </Row>
+  ) : (
 
-        {/* GRID PRINCIPAL DE PAQUETES */}
-        <Col>
-          {filteredPackages.length > 0 ? (
-            <Row className="g-4">
-              {filteredPackages.map(pkg => (
-                <Col
-                  key={pkg._id}
-                  xl={4}    // 3 tarjetas por fila en pantallas muy grandes
-                  lg={6}    // 2 tarjetas por fila en pantallas grandes
-                  md={12}   // 1 tarjeta completa en tablets si el sidebar ocupa espacio
-                  sm={12}
-                  xs={12}
-                  className="d-flex justify-content-center"
-                >
-                  <div className="w-100">
-                    <PackageCard pkg={pkg} />
-                  </div>
-                </Col>
-              ))}
-            </Row>
-          ) : (
-            <Card className="border-0 shadow-sm p-5 text-center text-muted">
-              <div className="py-4">
-                <h4 className="fw-bold text-dark mb-2">No encontramos coincidencias</h4>
-                <p className="mb-0">Intentá modificando los criterios de búsqueda o limpiando los filtros aplicados.</p>
-              </div>
-            </Card>
-          )}
-        </Col>
+      <h4>No se encontraron paquetes</h4>
 
+  )}
+</Col>
       </Row>
     </Container>
   )
