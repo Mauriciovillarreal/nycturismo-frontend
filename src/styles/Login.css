@@ -1,0 +1,125 @@
+.login-page {
+    display: flex;
+    min-height: 80vh;
+}
+
+/* Mitad izquierda */
+.login-image {
+    width: 80%;
+    background-image: url('/img/banner.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.login-image .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    padding: 2rem;
+}
+
+.login-image h1 {
+    font-size: 4rem;
+    font-weight: 700;
+}
+
+.login-image p {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+
+/* Mitad derecha */
+.login-form-container {
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card input {
+    border-radius: 0px;
+}
+
+.loginForm button {
+    width: 50%;
+    border-radius: 0px;
+    background-color: #ff3838;
+    color: white;
+}
+/* Inputs blancos */
+.login-card .form-control {
+    background-color: #fff !important;
+    border: 1px solid #ced4da;
+    border-radius: 0;
+}
+
+/* Cuando haces click */
+.login-card .form-control:focus {
+    background-color: #fff !important;
+    border-color: #ff3838;
+    box-shadow: none;
+}
+
+/* Chrome autocomplete */
+.login-card input:-webkit-autofill,
+.login-card input:-webkit-autofill:hover,
+.login-card input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    -webkit-text-fill-color: #000 !important;
+}
+.loginForm button:hover {
+    border-radius: 0px;
+    background-color: #ff6969;
+    color: rgb(255, 255, 255);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 450px;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+}
+
+.login-card h2 {
+    font-weight: 700;
+    color: #44423f;
+}
+
+.login-btn {
+    justify-content: center;
+    align-items: center;
+    width: 100% !important;
+    height: 45px;
+    font-weight: 600;
+    margin: 0 auto;
+    display: block;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .login-page {
+        flex-direction: column;
+    }
+
+    .login-image {
+        width: 100%;
+        height: 250px;
+    }
+
+    .login-form-container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .login-card {
+        max-width: 100%;
+    }
+}
