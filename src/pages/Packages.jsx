@@ -102,7 +102,7 @@ const Packages = () => {
   return (
     <Container className="py-5">
       {/* HEADER */}
-      <div className="mb-5 text-center text-md-start">
+      <div className="mb-5 text-center text-md-start titlePackagesFiltered">
         <h1 className="text-center titlePackagesFiltered">
           {getPageTitle()}
         </h1>

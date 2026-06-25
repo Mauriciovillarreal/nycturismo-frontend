@@ -58,7 +58,6 @@
     border-radius: 25px;
     font-size: 12px;
     font-weight: 700;
-    text-transform: capitalize; /* Convierte primera letra en Mayúscula automáticamente */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 

@@ -2,6 +2,6 @@
     font-size: 2rem;
     text-align: center;
     font: bold;
-    text-transform: uppercase;
+    text-transform: uppercase !important;
     color: rgb(156, 156, 156);
 }

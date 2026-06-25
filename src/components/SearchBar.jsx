@@ -4,12 +4,12 @@ import { FaMapMarkerAlt, FaPlaneDeparture, FaCalendarAlt, FaSearch } from 'react
 
 import '../styles/searchBar.css'
 
-const SearchBar = ({ 
-  origin, setOrigin, 
-  destination, setDestination, 
-  date, setDate, 
-  origins, destinations, dates, 
-  onSearch 
+const SearchBar = ({
+  origin, setOrigin,
+  destination, setDestination,
+  date, setDate,
+  origins, destinations, dates,
+  onSearch
 }) => {
   const [showFilters, setShowFilters] = useState(false);
 
@@ -77,7 +77,9 @@ const SearchBar = ({
                     const validDate = new Date(item);
                     return (
                       <option key={index} value={item}>
-                        {!isNaN(validDate) ? validDate.toLocaleDateString('es-AR') : 'Fecha inválida'}
+                        {!isNaN(validDate) ? validDate.toLocaleDateString('es-AR', {
+                          timeZone: 'UTC'
+                        }) : 'Fecha inválida'}
                       </option>
                     );
                   })}
@@ -146,7 +148,9 @@ const SearchBar = ({
                   const validDate = new Date(item);
                   return (
                     <option key={index} value={item}>
-                      {!isNaN(validDate) ? validDate.toLocaleDateString('es-AR') : 'Fecha inválida'}
+                       {!isNaN(validDate) ? validDate.toLocaleDateString('es-AR', {
+                          timeZone: 'UTC'
+                        }) : 'Fecha inválida'}
                     </option>
                   );
                 })}

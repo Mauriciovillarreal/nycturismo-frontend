@@ -61,13 +61,14 @@ const PackageDetail = () => {
 
   const phone = '5491151642289'
 
-  const formattedSelectedDate = selectedDateObj?.date
-    ? new Date(selectedDateObj.date).toLocaleDateString('es-AR', {
+ const formattedSelectedDate = selectedDateObj?.date
+  ? new Date(selectedDateObj.date).toLocaleDateString('es-AR', {
+      timeZone: 'UTC',
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
     })
-    : 'A confirmar'
+  : 'A confirmar'
 
   const whatsappText = encodeURIComponent(
     `¡Hola! Me interesa el paquete *${pkg.title}* para la salida del *${formattedSelectedDate}* ` +
