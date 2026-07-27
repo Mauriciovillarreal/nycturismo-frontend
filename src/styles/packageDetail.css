@@ -242,6 +242,17 @@
   margin: 0;
 }
 
+/* Color cuando el radio button está seleccionado */
+.checkOption .form-check-input:checked {
+  background-color: #ff7675; /* O el color rojo/coral exacto de tu marca */
+  border-color: #ff7675;
+}
+
+/* Color del borde cuando pasa el mouse o hace foco (opcional, para evitar el azul de Bootstrap) */
+.checkOption .form-check-input:focus {
+  border-color: #ff7675;
+  box-shadow: 0 0 0 0.25rem rgba(255, 118, 117, 0.25);
+}
 /* ==========================================================================
    7. RESPONSIVE DESIGN (Media Queries)
    ========================================================================== */

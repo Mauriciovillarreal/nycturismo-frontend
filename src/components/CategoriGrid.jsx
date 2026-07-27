@@ -37,9 +37,9 @@ const categories = [
     },
 
     {
-        title: 'Vacaciones de invierno',
-        image: 'https://www.memo.com.ar/files/image/36/36924/62967713518c9.jpg',
-        category: 'Vacaciones de invierno'
+        title: 'Vacaciones de verano',
+        image: 'https://img.wpfc.ml/90d/k7/0d6cum.png',
+        category: 'Vacaciones de verano'
     }
 
 ]

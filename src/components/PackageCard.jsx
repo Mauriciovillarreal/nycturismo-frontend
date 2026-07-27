@@ -4,70 +4,112 @@ import { FaPlane, FaHotel, FaBus, FaSuitcaseRolling } from 'react-icons/fa';
 import '../styles/packageCard.css';
 
 const PackageCard = ({ pkg }) => {
-  // Obtención del primer circuito para extraer la moneda y el precio base
-  const firstCircuit = pkg.circuits?.[0];
-  const currencySymbol = firstCircuit?.currency === 'USD' ? 'US$' : '$';
 
-  // Centralización y normalización de la lógica de transporte
-  const currentTransportMode = pkg.transport?.mode || pkg.transport?.type || 'bus';
-  const isPlane = 
-    typeof currentTransportMode === 'string' && 
-    ['plane', 'avion', 'avión'].includes(currentTransportMode.toLowerCase());
+  // ===========================
+  // MONEDA
+  // ===========================
+
+  const currencySymbol = pkg.currency === 'USD' ? 'US$' : '$';
+
+  // ===========================
+  // PRECIO MÁS BAJO
+  // ===========================
+
+  const getLowestPrice = () => {
+    const prices = [];
+
+    pkg.circuits?.forEach(circuit => {
+      circuit.hotels?.forEach(hotel => {
+        hotel.departures?.forEach(departure => {
+          departure.prices?.forEach(price => {
+            if (typeof price.amount === 'number') {
+              prices.push(price.amount);
+            }
+          });
+        });
+      });
+    });
+
+    return prices.length ? Math.min(...prices) : null;
+  };
+
+  const lowestPrice = getLowestPrice();
+
+  // ===========================
+  // TRANSPORTE
+  // ===========================
+
+  const currentTransportMode =
+    pkg.transport?.mode ||
+    pkg.transport?.type ||
+    'bus';
+
+  const isPlane =
+    typeof currentTransportMode === 'string' &&
+    ['plane', 'avion', 'avión'].includes(
+      currentTransportMode.toLowerCase()
+    );
 
   return (
-    <Link to={`/packages/${pkg.slug}`} className="packageCardLink">
+    <Link
+      to={`/packages/${pkg.slug}`}
+      className="packageCardLink"
+    >
       <div className="packageCard">
-        
-        {/* IMAGEN DE FONDO DE LA TARJETA */}
+
+        {/* Imagen */}
         <img
           src={pkg.images?.[0]}
           alt={pkg.title}
           className="packageCardImage"
         />
+
         <div className="packageOverlay"></div>
 
-        {/* ETIQUETA SUPERIOR: CATEGORÍA */}
+        {/* Categoría */}
         <div className="packageTag">
           {pkg.category}
         </div>
 
-        {/* CUERPO DE LA TARJETA */}
+        {/* Contenido */}
         <div className="packageBody">
+
           <div className="packageContent">
-            
-            {/* Título del paquete */}
+
             <h3 className="packageTitle">
               {pkg.title}
             </h3>
 
-            {/* Pastilla de Duración */}
             <div className="packageDate">
               {pkg.days} días • {pkg.nights} noches
             </div>
 
-            {/* Iconos de Servicios Incluidos */}
             <div className="packageIcons">
               {isPlane ? <FaPlane /> : <FaBus />}
               <FaHotel />
               <FaSuitcaseRolling />
             </div>
 
-            {/* Descripción del Transporte */}
             <div className="packageTransport">
-              {isPlane ? 'Avión' : 'Bus'} • {pkg.transport?.category || 'Sin especificar'}
+              {isPlane ? 'Avión' : 'Bus'} •{' '}
+              {pkg.transport?.category || 'Sin especificar'}
             </div>
 
           </div>
 
-          {/* PIE DE LA TARJETA: PRECIO BASE */}
+          {/* Precio */}
           <div className="packageFooter">
             <span>Desde</span>
+
             <h5>
-              {currencySymbol}{firstCircuit?.price?.toLocaleString('es-AR') || 0}
+              {lowestPrice !== null
+                ? `${currencySymbol}${lowestPrice.toLocaleString('es-AR')}`
+                : 'Consultar'}
             </h5>
           </div>
 
         </div>
+
       </div>
     </Link>
   );
