@@ -107,15 +107,25 @@ const PackageDetail = () => {
 
   const optionNameText = typeof selectedOption === 'string' ? selectedOption : selectedOption?.name || 'Estándar'
 
-  // Mensaje adaptado para WhatsApp según el tipo de viaje
-  const hotelInfoMsg = isDayTrip ? '' : ` • Hotel: *${selectedHotel?.name || 'A confirmar'}*`
-  
-  const whatsappText = encodeURIComponent(
-    `¡Hola! Me interesa el paquete *${pkg.title}* para la salida del *${formattedSelectedDate}* ` +
-    `(Circuito: *${selectedCircuit?.title || 'Estándar'}* • Opción: *${optionNameText}*${hotelInfoMsg}). ` +
-    `¿Podrían confirmarme disponibilidad y detalles? ¡Muchas gracias!`
-  )
+  // MENSAJE ADAPTADO PARA WHATSAPP SEGÚN EL TIPO DE VIAJE
+  let rawWhatsappText = ''
 
+  if (isDayTrip) {
+    // Texto personalizado para Miniturismo / Salidas en el día
+    rawWhatsappText =
+      `¡Hola! Me interesa la excursión de miniturismo *${pkg.title}* ` +
+      `para la salida del *${formattedSelectedDate}*. ` +
+      `¿Podrían confirmarme disponibilidad, punto de encuentro y detalles del viaje? ¡Muchas gracias!`
+  } else {
+    // Texto para paquetes tradicionales con estadía
+    const hotelName = selectedHotel?.name || 'A confirmar'
+    rawWhatsappText =
+      `¡Hola! Me interesa el paquete *${pkg.title}* para la salida del *${formattedSelectedDate}* ` +
+      `(Circuito: *${selectedCircuit?.title || 'Estándar'}* • Opción: *${optionNameText}* • Hotel: *${hotelName}*). ` +
+      `¿Podrían confirmarme disponibilidad y detalles? ¡Muchas gracias!`
+  }
+
+  const whatsappText = encodeURIComponent(rawWhatsappText)
   const whatsappUrl = `https://wa.me/${phone}?text=${whatsappText}`
   const currencySymbol = pkg.currency === 'USD' ? 'US$' : '$'
   const hotelThumbnail = selectedHotel?.image || pkg.images?.[0]
@@ -164,8 +174,8 @@ const PackageDetail = () => {
                 {isDayTrip
                   ? 'Excursión de 1 Día'
                   : pkg.transport?.mode === 'plane' || pkg.transport?.type === 'plane'
-                  ? 'Vuelo + Alojamiento'
-                  : 'Bus + Alojamiento'}
+                    ? 'Vuelo + Alojamiento'
+                    : 'Bus + Alojamiento'}
               </span>
             </div>
 
@@ -195,7 +205,7 @@ const PackageDetail = () => {
               </div>
             )}
 
-            <span className='priceLabel mt-3 d-block'>Valor por persona</span>
+            <span className='priceLabel mt-3 d-block'>Valor por persona en base doble</span>
             <h2 className='mainPrice'>
               {currencySymbol} {currentPrice?.toLocaleString('es-AR')}
             </h2>
@@ -248,9 +258,9 @@ const PackageDetail = () => {
                           </span>
 
                           {isSelected && circuit.options?.length > 0 && (
-                            <div className="mt-2 pt-2 border-top" onClick={(e) => e.stopPropagation()}>
-                              <span className="fw-bold small text-dark d-block mb-1">Opciones disponibles:</span>
-                              <Form className="d-flex flex-wrap gap-3">
+                            <div className="circuitOptionsMobile mt-2 pt-2 border-top" onClick={(e) => e.stopPropagation()}>
+                              <span className="fw-bold small text-dark d-block mb-2">Opciones disponibles:</span>
+                              <Form className="d-flex flex-column gap-2">
                                 {circuit.options.map((opt, optIdx) => {
                                   const optName = typeof opt === 'string' ? opt : opt.name
                                   const currentSelectedName = typeof selectedOption === 'string' ? selectedOption : selectedOption?.name

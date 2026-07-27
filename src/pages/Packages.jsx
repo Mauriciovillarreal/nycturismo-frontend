@@ -2,17 +2,9 @@
 import {
   Container,
   Row,
-  Col,
-  Card,
-  Badge
+  Col
 } from 'react-bootstrap'
 import { useSearchParams } from 'react-router-dom'
-import {
-  FaMapMarkerAlt,
-  FaCalendarAlt,
-  FaTags,
-  FaTimes
-} from 'react-icons/fa'
 
 import PackageCard from '../components/PackageCard'
 import Loader from '../components/Loader'
@@ -91,12 +83,6 @@ const Packages = () => {
     return 'Nuestros Paquetes Turísticos'
   }
 
-  const removeFilter = key => {
-    const newParams = new URLSearchParams(searchParams)
-    newParams.delete(key)
-    setSearchParams(newParams)
-  }
-
   if (loading) return <Loader />
 
   return (
@@ -110,28 +96,39 @@ const Packages = () => {
 
       {/* GRID DE RESULTADOS */}
       <Row>
-   <Col xs={12}>
-  {filteredPackages.length > 0 ? (
-    <Row className="g-4 justify-content-center">
-      {filteredPackages.map(pkg => (
-        <Col
-          key={pkg._id}
-          xxl={2.1}
-          xl={3}
-          lg={4}
-          md={6}
-          sm={12}
-        >
-          <PackageCard pkg={pkg} />
+        <Col xs={12}>
+          {filteredPackages.length > 0 ? (
+            <Row className="g-4 justify-content-center">
+              {filteredPackages.map(pkg => {
+                // Evaluamos si el paquete es de Miniturismo
+                const isDayTrip =
+                  pkg.category?.toLowerCase() === 'miniturismo' ||
+                  pkg.nights === 0 ||
+                  pkg.nights === '0'
+
+                return (
+                  <Col
+                    key={pkg._id}
+                    // Si es Miniturismo -> 3 por fila (xxl/xl=4). Si es tradicional -> 4 por fila (xxl/xl=3).
+                    xxl={isDayTrip ? 4 : 3}
+                    xl={isDayTrip ? 4 : 3}
+                    lg={isDayTrip ? 6 : 4}
+                    md={6}
+                    sm={12}
+                    xs={12}
+                  >
+                    <PackageCard pkg={pkg} />
+                  </Col>
+                )
+              })}
+            </Row>
+          ) : (
+            <div className="text-center py-5">
+              <h4>No se encontraron paquetes para la búsqueda seleccionada</h4>
+            </div>
+          )}
         </Col>
-      ))}
-    </Row>
-  ) : (
-
-      <h4>No se encontraron paquetes</h4>
-
-  )}
-</Col>
+        
       </Row>
     </Container>
   )

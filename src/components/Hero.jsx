@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Carousel } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import SearchBar from './SearchBar'; 
@@ -25,7 +25,6 @@ const Hero = () => {
     const fetchPackages = async () => {
       try {
         const res = await api.get('/packages');
-        // Nos aseguramos de que res.data sea un array, si no ponemos array vacío
         const data = Array.isArray(res.data) ? res.data : [];
         setPackages(data);
 
@@ -42,7 +41,7 @@ const Hero = () => {
     fetchPackages();
   }, []);
 
-  // --- FILTRADO EN TIEMPO REAL (CON DEFENSAS EXTREMAS) ---
+  // --- FILTRADO EN TIEMPO REAL ---
   useEffect(() => {
     if (origin && destination) {
       const filteredPackages = packages.filter(pkg =>
@@ -51,9 +50,7 @@ const Hero = () => {
 
       let availableDates = [];
       filteredPackages.forEach(pkg => {
-        // Validamos con Optional Chaining que exista el array
         if (pkg?.availableDates && Array.isArray(pkg.availableDates)) {
-          // Filtramos primero los items válidos que tengan la propiedad .date antes de mapear
           const datesOnly = pkg.availableDates
             .filter(item => item && item.date) 
             .map(item => item.date);
@@ -62,7 +59,6 @@ const Hero = () => {
         }
       });
 
-      // Eliminamos duplicados de las fechas planas
       setDates([...new Set(availableDates)]);
     } else {
       setDates([]);
@@ -87,27 +83,64 @@ const Hero = () => {
         onSearch={handleSearch}
       />
 
-      {/* SECCIÓN: BANNER PRINCIPAL DE FONDO */}
-      <Container fluid className='bannerMobile'>
-        <div className='overlayContent'>
-          <Container>
-            <h1>
-              PAQUETES <span>TURÍSTICOS</span>
-            </h1>
+      {/* SECCIÓN: BANNER PRINCIPAL CON CARRUSEL */}
+      <Container fluid className='bannerContainer p-0'>
+        
+        <Carousel fade controls={false} indicators={false} interval={2200} className="heroCarousel">
+          
+          {/* SLIDE 1 */}
+          <Carousel.Item>
+            <div 
+              className="carouselSlide" 
+              style={{ backgroundImage: "url('/img/banner1.png')" }}
+            >
+              {/* Gradiente y contenido exclusivo para la diapositiva 1 */}
+              <div className="bannerOverlayGradient"></div>
+              
+              <div className='overlayContent'>
+                <Container>
+                  <h1>
+                    PAQUETES <span>TURÍSTICOS</span>
+                  </h1>
 
-            <Container className='beneficios'>
-              <div className='beneficioItem'>
-                <FaPlane className='beneficioIcon' /> <span>Vuelos</span>
+                  <Container className='beneficios'>
+                    <div className='beneficioItem'>
+                      <FaPlane className='beneficioIcon' /> <span>Vuelos</span>
+                    </div>
+                    <div className='beneficioItem'>
+                      <FaHotel className='beneficioIcon' /> <span>Hoteles</span>
+                    </div>
+                    <div className='beneficioItem'>
+                      <FaSuitcaseRolling className='beneficioIcon' /> <span>Asistencia</span>
+                    </div>
+                  </Container>
+                </Container>
               </div>
-              <div className='beneficioItem'>
-                <FaHotel className='beneficioIcon' /> <span>Hoteles</span>
+            </div>
+          </Carousel.Item>
+
+          {/* SLIDE 2 */}
+          <Carousel.Item>
+            <div 
+              className="carouselSlide" 
+              style={{ backgroundImage: "url('/img/banner2.jpg')" }}
+            >
+              {/* Gradiente opcional para slide 2 */}
+              <div className="bannerOverlayGradient"></div>
+
+              {/* Aquí puedes poner otro título o texto personalizado para el Banner 2 si lo deseas */}
+              <div className='overlayContent'>
+                <Container>
+                  <h1>
+                    VERANO 2027<span>ANTICIPATE</span>
+                  </h1>
+                </Container>
               </div>
-              <div className='beneficioItem'>
-                <FaSuitcaseRolling className='beneficioIcon' /> <span>Asistencia</span>
-              </div>
-            </Container>
-          </Container>
-        </div>
+            </div>
+          </Carousel.Item>
+
+        </Carousel>
+
       </Container>
 
     </div>

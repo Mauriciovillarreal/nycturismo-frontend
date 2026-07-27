@@ -149,6 +149,160 @@
     color: #ffffff;
 }
 
+
+/* =========================================================
+   ESTILOS MINITURISMO (Estilo Card Blanco Moderno)
+   ========================================================= */
+
+.miniCard {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eef2f5;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.miniCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Imagen y Badge */
+.miniCardImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 190px;
+  overflow: hidden;
+}
+
+.miniCardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.miniCardBadge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background-color: #eb2525;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Cuerpo */
+.miniCardBody {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.miniCardTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 14px;
+  line-height: 1.3;
+}
+
+/* Fila de Iconos */
+.miniCardIconsRow {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.miniCardIconItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #eb2525;
+  font-size: 1.2rem;
+}
+
+.miniCardIconItem span {
+  font-size: 0.72rem;
+  color:  #eb2525;
+  font-weight: 500;
+}
+
+/* Fila Inferior (Incluye + Precio) */
+.miniCardFooterRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 14px;
+  margin-top: auto;
+}
+
+.miniCardIncludes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  padding-right: 12px;
+}
+
+.miniCardIncludes li {
+  font-size: 0.82rem;
+  color: #475569;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.miniCheckIcon {
+  color: #10b981;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+/* Columna de Precio */
+.miniCardPriceCol {
+  border-left: 1px solid #e2e8f0;
+  padding-left: 14px;
+  text-align: right;
+  min-width: 120px;
+}
+
+.miniCardPriceLabel {
+  display: block;
+  font-size: 0.72rem;
+  color: #64748b;
+  margin-bottom: 2px;
+}
+
+.miniCardPriceValue {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.miniCardTaxLabel {
+  display: block;
+  font-size: 0.68rem;
+  color: #94a3b8;
+  margin-top: 3px;
+}
 /* ==========================================================================
    6. SECCIÓN DISPOSITIVOS MEDIANOS (TABLETS)
    ========================================================================== */

@@ -14,3 +14,96 @@
    color: rgb(156, 156, 156);
    margin-bottom: 20px;
 }
+/* Correcciones para evitar desbordes en Miniturismo */
+.miniCardFooterRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 12px;
+  margin-top: auto;
+  gap: 8px; /* Evita que se peguen los dos bloques */
+}
+
+.miniCardIncludes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  min-width: 0; /* Permite que los textos largos se trunquen sin romper el contenedor */
+}
+
+.miniCardIncludes li {
+  font-size: 0.8rem;
+  color: #475569;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Pone '...' si la viñeta es larguísima */
+}
+
+.miniCardPriceCol {
+  border-left: 1px solid #e2e8f0;
+  padding-left: 10px;
+  text-align: right;
+  flex-shrink: 0; /* Impide que la columna del precio se aplaste */
+}
+
+.miniCardPriceValue {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+/* Correcciones para evitar desbordes en Miniturismo */
+.miniCardFooterRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 12px;
+  margin-top: auto;
+  gap: 8px; /* Evita que se peguen los dos bloques */
+}
+
+.miniCardIncludes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  min-width: 0; /* Permite que los textos largos se trunquen sin romper el contenedor */
+}
+
+.miniCardIncludes li {
+  font-size: 0.8rem;
+  color: #475569;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Pone '...' si la viñeta es larguísima */
+}
+
+.miniCardPriceCol {
+  border-left: 1px solid #e2e8f0;
+  padding-left: 10px;
+  text-align: right;
+  flex-shrink: 0; /* Impide que la columna del precio se aplaste */
+}
+
+.miniCardPriceValue {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.1;
+  white-space: nowrap;
+}

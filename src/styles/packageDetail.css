@@ -256,6 +256,80 @@
 /* ==========================================================================
    7. RESPONSIVE DESIGN (Media Queries)
    ========================================================================== */
+   /* DISPOSITIVOS MÓVILES (Celulares) */
+@media screen and (max-width: 768px) {
+
+  .circuitCardRow,
+  .dateCardRowCustom {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 15px;
+  }
+
+  .circuitCardRow .circuitField,
+  .circuitCardRow .circuitPriceText,
+  .dateCardRowCustom .dateFieldCustom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 10px 0;
+    border-bottom: 1px dashed #f0f0f0;
+    font-size: 0.9rem;
+    gap: 15px;
+  }
+
+  /* ===== FIX PARA DESCRIPCIÓN Y OPCIONES EN MÓVIL ===== */
+  .circuitCardRow .circuitField[data-label="Descripción"] {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .circuitCardRow .circuitField[data-label="Descripción"]::before {
+    margin-bottom: 6px;
+  }
+
+  .circuitDescText {
+    max-width: 100% !important;
+    width: 100%;
+    text-align: left !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* Contenedor de "Opciones disponibles" en celular */
+  .circuitOptionsMobile {
+    width: 100%;
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px dashed #e0e0e0;
+  }
+
+  .circuitOptionsMobile .form-check {
+    width: 100%;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .circuitCardRow .circuitPriceText,
+  .dateCardRowCustom .dateFieldCustom:last-child {
+    border-bottom: none;
+    font-size: 1.05rem;
+  }
+
+  /* Inyección de etiquetas dinámicas */
+  .circuitCardRow .circuitField::before,
+  .circuitCardRow .circuitPriceText::before,
+  .dateCardRowCustom .dateFieldCustom::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #777;
+    font-size: 0.85rem;
+  }
+}
 @media (max-width: 1200px) {
   .packageResumeBar {
     display: none;
