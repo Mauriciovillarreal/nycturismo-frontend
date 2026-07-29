@@ -358,7 +358,7 @@ const PackageDetail = () => {
             </div>
 
             <h3 className='roomTitle '>{pkg.title}</h3>
-    
+
 
             <div className="roomDescription ">
               <span>Destino</span>
@@ -411,6 +411,71 @@ const PackageDetail = () => {
                 />
               )}
             </div>
+
+            {/* HOTELES DISPONIBLES */}
+            {!isDayTrip && availableHotelsForSelectedDate.length > 0 && (
+              <div className="detailBox">
+
+                <div className='hotelsContainer'>
+                  {availableHotelsForSelectedDate.map((hotel, hIdx) => {
+                    const isHotelSelected = selectedHotel?.name === hotel.name
+
+                    const depForHotel = hotel.departures?.find(
+                      (dep) => new Date(dep.date).toISOString().split('T')[0] === selectedDateStr
+                    )
+                    const hotelPrice = getCalculatedPrice(depForHotel, selectedOption)
+
+                    return (
+                      <div
+                        key={hIdx}
+                        onClick={() => setSelectedHotel(hotel)}
+                        className={`hotelCardRow ${isHotelSelected ? 'activeHotel' : ''}`}
+                      >
+                        <div className="g-0 gridHotel">
+                          <div xs={12} sm={4} md={3} className="hotelImgCol">
+                            {hotel.image ? (
+                              <img
+                                src={hotel.image}
+                                alt={hotel.name}
+                                className="hotelImage"
+                              />
+                            ) : (
+                              <div className="hotelImgPlaceholder">
+                                <FaHotel size={30} />
+                              </div>
+                            )}
+                          </div>
+
+                          <div xs={12} sm={8} md={6} className="px-3 py-2 py-sm-0">
+                            <div className="gap-2 mb-1 marginTopHotel">
+                              <h6 className="hotelTitle m-0">
+                                {hotel.name}
+                              </h6>
+                              {hotel.stars > 0 && (
+                                <span className="hotelStars" >
+                                  {Array.from({ length: Number(hotel.stars) }, (_, index) => (
+                                    <FaStar key={index} />
+                                  ))}
+                                </span>
+                              )}
+                            </div>
+
+                            {hotel.city && (
+                              <p className="hotelCity text-muted small m-0">
+                                <FaMapMarkerAlt className="me-1" /> {hotel.city}
+                              </p>
+                            )}
+                          </div>
+
+
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
 
             <span className='priceLabel mt-2 d-block'>Valor por persona en base doble</span>
             <h2 className='mainPrice'>
@@ -498,72 +563,9 @@ const PackageDetail = () => {
               </div>
             )}
 
-            {/* HOTELES DISPONIBLES */}
-            {!isDayTrip && availableHotelsForSelectedDate.length > 0 && (
-              <div className="detailBox">
-
-                <div className='hotelsContainer'>
-                  {availableHotelsForSelectedDate.map((hotel, hIdx) => {
-                    const isHotelSelected = selectedHotel?.name === hotel.name
-
-                    const depForHotel = hotel.departures?.find(
-                      (dep) => new Date(dep.date).toISOString().split('T')[0] === selectedDateStr
-                    )
-                    const hotelPrice = getCalculatedPrice(depForHotel, selectedOption)
-
-                    return (
-                      <div
-                        key={hIdx}
-                        onClick={() => setSelectedHotel(hotel)}
-                        className={`hotelCardRow ${isHotelSelected ? 'activeHotel' : ''}`}
-                      >
-                        <Row className="g-0">
-                          <Col xs={12} sm={4} md={3} className="hotelImgCol">
-                            {hotel.image ? (
-                              <img
-                                src={hotel.image}
-                                alt={hotel.name}
-                                className="hotelImage"
-                              />
-                            ) : (
-                              <div className="hotelImgPlaceholder">
-                                <FaHotel size={30} />
-                              </div>
-                            )}
-                          </Col>
-
-                          <Col xs={12} sm={8} md={6} className="px-3 py-2 py-sm-0">
-                            <div className="gap-2 mb-1 marginTopHotel">
-                              <h6 className="hotelTitle m-0">
-                                {hotel.name}
-                              </h6>
-                              {hotel.stars > 0 && (
-                                <span className="hotelStars" >
-                                  {Array.from({ length: Number(hotel.stars) }, (_, index) => (
-                                    <FaStar key={index} />
-                                  ))}
-                                </span>
-                              )}
-                            </div>
-
-                            {hotel.city && (
-                              <p className="hotelCity text-muted small m-0">
-                                <FaMapMarkerAlt className="me-1" /> {hotel.city}
-                              </p>
-                            )}
-                          </Col>
-
-
-                        </Row>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
 
             {/* QUÉ INCLUYE */}
-            <div className="detailBox">
+            <div className="detailBox detailBoxIncludes">
               <h4 className='mb-3 section-table-title'>¿Qué incluye la opción {selectedCircuit?.title}?</h4>
               {selectedCircuit?.includes?.length > 0 ? (
                 <div className='includesGrid'>

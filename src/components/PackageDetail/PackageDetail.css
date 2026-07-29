@@ -12,6 +12,11 @@
   padding: 10px 0;
 }
 
+.detailBoxIncludes {
+  margin-top: 60px;
+  margin-bottom: 80px;
+}
+
 .section-table-title {
   color: #44423f;
   font-weight: 600;
@@ -433,10 +438,13 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+.gridHotel {
+  display: grid;
+  grid-template-columns: 40% 60%;
+}
 
 .hotelCardRow:hover {
   box-shadow: 0 4px 12px rgba(182, 182, 182, 0.411);
-
 }
 
 .hotelCardRow.activeHotel {
@@ -444,7 +452,7 @@
 }
 
 .hotelImgCol {
-  height: 150px;
+  height: 58px;
 }
 
 .hotelImage {
@@ -466,11 +474,11 @@
 .hotelTitle {
   font-weight: bold;
   color: #2d3436;
-  font-size: 1.05rem;
+  font-size: 13px;
 }
 
 .hotelStars {
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   color: #000000;
   font-weight: bold;
   display: flex;
@@ -478,8 +486,14 @@
   gap: 2px;
 }
 
+.marginTopHotel p {
+  margin-top: 5px;
+  font-size: 0.75rem;
+  color: #bd0505;
+}
+
 .hotelCity {
-  font-size: 0.85rem;
+  font-size: 12px !important;
 }
 
 .hotelPriceLabel {
@@ -487,12 +501,12 @@
 }
 
 .hotelPriceValue {
-  color: #2d3436;
+  color: #4c93a7;
   font-size: 1.2rem;
 }
 
 .marginTopHotel {
-  margin-top: 10px;
+  margin-top: 6px;
 }
 
 
