@@ -422,16 +422,21 @@
 .hotelsContainer {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 22px;
 }
 
 .hotelCardRow {
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e0e0e000;
   background-color: #ffffff;
   border-radius: 0px;
-  padding: 0px 16px 0px 0px;
+  padding: 0px 0px 0px 0px;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.hotelCardRow:hover {
+  box-shadow: 0 4px 12px rgba(182, 182, 182, 0.411);
+
 }
 
 .hotelCardRow.activeHotel {
@@ -446,7 +451,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 0px;
 }
 
 .hotelImgPlaceholder {

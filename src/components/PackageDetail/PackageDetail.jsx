@@ -358,7 +358,7 @@ const PackageDetail = () => {
             </div>
 
             <h3 className='roomTitle '>{pkg.title}</h3>
-            <p className='roomDescription text-muted small'>{selectedCircuit?.description || 'Paquete turístico completo'}</p>
+    
 
             <div className="roomDescription ">
               <span>Destino</span>
