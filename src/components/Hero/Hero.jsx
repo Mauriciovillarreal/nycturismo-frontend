@@ -86,7 +86,7 @@ const Hero = () => {
       {/* SECCIÓN: BANNER PRINCIPAL CON CARRUSEL */}
       <Container fluid className='bannerContainer p-0'>
         
-        <Carousel fade controls={false} indicators={false} interval={2200} className="heroCarousel">
+        <Carousel fade controls={false} indicators={false} interval={1200} className="heroCarousel">
           
           {/* SLIDE 1 */}
           <Carousel.Item>

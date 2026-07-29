@@ -257,6 +257,238 @@
 .paddingTopIncludes {
   padding-top: 60px;
 }
+
+/* =========================================================
+   SELECTOR DE FECHA Y POPOVER
+   ========================================================= */
+.assignedHotelText {
+  color: #ff7675;
+}
+
+.datePickerTrigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  text-align: left;
+  border: 1.5px solid #d63031;
+  border-radius: 0px;
+  background-color: #ffffff;
+  color: #2d3436;
+  font-weight: 600;
+  font-size: 0.88rem;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.datePickerTrigger.active {
+  background-color: #fff5f5;
+}
+
+.calendarIcon {
+  color: #d63031;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.datePickerPopover {
+  position: absolute;
+  top: 105%;
+  left: 0;
+  width: 100%;
+  max-width: 350px;
+  background-color: #ffffff;
+  border-radius: 0px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid #eee;
+  z-index: 1050;
+  padding: 16px;
+}
+
+.popoverHeaderTitle {
+  font-weight: bold;
+  color: #2d3436;
+  font-size: 0.95rem;
+}
+
+.calendarNavBtn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #555;
+}
+
+.calendarMonthTitle {
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #2d3436;
+  letter-spacing: 0.5px;
+}
+
+.calendarWeekGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.calendarWeekDay {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #a4b0be;
+}
+
+.calendarDaysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 6px;
+  text-align: center;
+}
+
+.calendarDayCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 2px;
+  border-radius: 0px;
+  cursor: default;
+  background-color: transparent;
+  color: #dcdde1;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.calendarDayCell.available {
+  cursor: pointer;
+  background-color: #fff5f5;
+  color: #2d3436;
+}
+
+.calendarDayCell.selected {
+  background-color: #d63031;
+  color: #ffffff;
+  border: 1px solid #d63031;
+}
+
+.calendarDayCell.selected .calendarDayPrice {
+  color: #ffffff;
+}
+
+.calendarDayNumber {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.calendarDayPrice {
+  font-size: 0.62rem;
+  margin-top: 2px;
+  color: #d63031;
+  font-weight: bold;
+}
+
+.popoverStayText {
+  display: block;
+  color: #6c757d;
+  font-size: 0.72rem;
+}
+
+.popoverPriceText {
+  font-size: 0.9rem;
+  color: #d63031;
+}
+
+.popoverPerPersonText {
+  font-size: 0.7rem;
+  color: #666;
+}
+
+.popoverReadyBtn {
+  background-color: #d63031 !important;
+  border-color: #d63031 !important;
+  border-radius: 0px !important;
+  padding: 4px 18px !important;
+  font-weight: bold !important;
+  font-size: 0.8rem !important;
+}
+
+/* =========================================================
+   CONTENEDOR Y TARJETAS DE HOTELES (ESTILO CIRCUITO)
+   ========================================================= */
+.hotelsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hotelCardRow {
+  border: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  border-radius: 0px;
+  padding: 0px 16px 0px 0px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hotelCardRow.activeHotel {
+  border: 1px solid #fd5b5bc9;
+}
+
+.hotelImgCol {
+  height: 150px;
+}
+
+.hotelImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0px;
+}
+
+.hotelImgPlaceholder {
+  width: 100%;
+  height: 100%;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a4b0be;
+}
+
+.hotelTitle {
+  font-weight: bold;
+  color: #2d3436;
+  font-size: 1.05rem;
+}
+
+.hotelStars {
+  font-size: 0.8rem;
+  color: #f1c40f;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.hotelCity {
+  font-size: 0.85rem;
+}
+
+.hotelPriceLabel {
+  font-size: 0.72rem;
+}
+
+.hotelPriceValue {
+  color: #2d3436;
+  font-size: 1.2rem;
+}
+
+
+
 /* ==========================================================================
    7. RESPONSIVE DESIGN (Media Queries)
    ========================================================================== */

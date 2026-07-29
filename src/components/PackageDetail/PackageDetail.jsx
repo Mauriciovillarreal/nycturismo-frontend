@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect, useRef } from 'react'
 import { Container, Row, Col, Button, Form } from 'react-bootstrap'
-import { FaWhatsapp, FaHotel, FaCalendarAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
+import { FaWhatsapp, FaHotel, FaCalendarAlt, FaChevronLeft, FaChevronRight, FaStar, FaMapMarkerAlt } from 'react-icons/fa'
 import { useParams } from 'react-router-dom'
 import Loader from '../Loader/Loader.jsx'
 import api from '../../services/api.js'
@@ -9,30 +9,29 @@ import PackageResumeBar from '../PackageResumeBar/PackageResumeBar.jsx'
 import '../PackageDetail/PackageDetail.css'
 
 // =========================================================
-// SUB-COMPONENTE: POPUP CALENDARIO FLOTANTE (ESTILO DESPEGAR)
+// SUB-COMPONENTE: POPUP CALENDARIO FLOTANTE
 // =========================================================
 const DatePickerPopover = ({ departures, selectedDeparture, onSelectDate, onClose, isDayTrip, currencySymbol, pkgDays }) => {
   const popoverRef = useRef(null)
 
-  // Mapa de fechas disponibles para rápida búsqueda: "YYYY-MM-DD" -> departureObj
   const departureMap = React.useMemo(() => {
     const map = new Map()
     departures.forEach((dep) => {
       if (dep.date) {
         const dateStr = new Date(dep.date).toISOString().split('T')[0]
-        map.set(dateStr, dep)
+        if (!map.has(dateStr)) {
+          map.set(dateStr, dep)
+        }
       }
     })
     return map
   }, [departures])
 
-  // Fecha inicial para el mes visible
   const initialDate = departures[0]?.date ? new Date(departures[0].date) : new Date()
   const [currentMonth, setCurrentMonth] = useState(
     new Date(Date.UTC(initialDate.getUTCFullYear(), initialDate.getUTCMonth(), 1))
   )
 
-  // Cerrar al hacer clic afuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target)) {
@@ -51,14 +50,11 @@ const DatePickerPopover = ({ departures, selectedDeparture, onSelectDate, onClos
     setCurrentMonth(new Date(Date.UTC(currentMonth.getUTCFullYear(), currentMonth.getUTCMonth() + 1, 1)))
   }
 
-  // Generar días del mes actual
   const year = currentMonth.getUTCFullYear()
   const month = currentMonth.getUTCMonth()
   const monthName = currentMonth.toLocaleDateString('es-AR', { timeZone: 'UTC', month: 'long' })
   const formattedMonthName = monthName.toUpperCase()
 
-  // Día de la semana en que arranca el mes (0=Dom, 1=Lun...)
-  // Ajustamos a 0=Lun, 1=Mar ... 6=Dom para que coincida con LU MA MI JU VI SA DO
   let firstDayOfWeek = new Date(Date.UTC(year, month, 1)).getUTCDay() - 1
   if (firstDayOfWeek === -1) firstDayOfWeek = 6
 
@@ -74,7 +70,6 @@ const DatePickerPopover = ({ departures, selectedDeparture, onSelectDate, onClos
 
   const weekDays = ['LU', 'MA', 'MI', 'JU', 'VI', 'SA', 'DO']
 
-  // Formateador corto de precio (ej: $642.680 -> 642 K)
   const formatShortPrice = (amount) => {
     if (!amount) return ''
     if (amount >= 1000000) return `${(amount / 1000000).toFixed(2).replace('.', ',')} M`
@@ -83,60 +78,32 @@ const DatePickerPopover = ({ departures, selectedDeparture, onSelectDate, onClos
   }
 
   return (
-    <div
-      ref={popoverRef}
-      style={{
-        position: 'absolute',
-        top: '105%',
-        left: '0',
-        width: '100%',
-        maxWidth: '350px',
-        backgroundColor: '#ffffff',
-        borderRadius: '16px',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-        border: '1px solid #eee',
-        zIndex: 1050,
-        padding: '16px',
-        fontFamily: 'inherit'
-      }}
-    >
-      {/* Encabezado */}
+    <div ref={popoverRef} className="datePickerPopover">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <span className="fw-bold text-dark" style={{ fontSize: '0.95rem' }}>Salidas disponibles</span>
+        <span className="popoverHeaderTitle">Salidas disponibles</span>
       </div>
 
-      {/* Navegador del Mes */}
       <div className="d-flex justify-content-between align-items-center mb-3 px-1">
-        <button
-          onClick={handlePrevMonth}
-          type="button"
-          style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '4px', color: '#555' }}
-        >
+        <button onClick={handlePrevMonth} type="button" className="calendarNavBtn">
           <FaChevronLeft size={12} />
         </button>
-        <span className="fw-bold" style={{ fontSize: '0.85rem', color: '#2d3436', letterSpacing: '0.5px' }}>
+        <span className="calendarMonthTitle">
           {formattedMonthName} {year}
         </span>
-        <button
-          onClick={handleNextMonth}
-          type="button"
-          style={{ border: 'none', background: 'none', cursor: 'pointer', padding: '4px', color: '#555' }}
-        >
+        <button onClick={handleNextMonth} type="button" className="calendarNavBtn">
           <FaChevronRight size={12} />
         </button>
       </div>
 
-      {/* Días de la semana */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', marginBottom: '6px' }}>
+      <div className="calendarWeekGrid">
         {weekDays.map((d, idx) => (
-          <span key={idx} style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#a4b0be' }}>
+          <span key={idx} className="calendarWeekDay">
             {d}
           </span>
         ))}
       </div>
 
-      {/* Grilla de Días */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', rowGap: '6px', textAlign: 'center' }}>
+      <div className="calendarDaysGrid">
         {calendarDays.map((day, idx) => {
           if (!day) return <div key={idx} />
 
@@ -152,7 +119,6 @@ const DatePickerPopover = ({ departures, selectedDeparture, onSelectDate, onClos
             : null
           const isSelected = selectedDateStr === dateKey
 
-          // Obtener precio para mostrar bajo el número si está disponible
           const dayPrice = isAvailable && departureObj.calculatedPrice ? departureObj.calculatedPrice : null
 
           return (
@@ -163,26 +129,13 @@ const DatePickerPopover = ({ departures, selectedDeparture, onSelectDate, onClos
                   onSelectDate(departureObj)
                 }
               }}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '42px',
-                padding: '2px',
-                borderRadius: '8px',
-                cursor: isAvailable ? 'pointer' : 'default',
-                backgroundColor: isSelected ? '#d63031' : isAvailable ? '#fff5f5' : 'transparent',
-                color: isSelected ? '#ffffff' : isAvailable ? '#2d3436' : '#dcdde1',
-                border: isSelected ? '1px solid #d63031' : '1px solid transparent',
-                transition: 'all 0.15s ease'
-              }}
+              className={`calendarDayCell ${isAvailable ? 'available' : ''} ${isSelected ? 'selected' : ''}`}
             >
-              <span style={{ fontSize: '0.85rem', fontWeight: isAvailable ? 'bold' : 'normal', lineHeight: '1' }}>
+              <span className={`calendarDayNumber ${isAvailable ? 'fw-bold' : ''}`}>
                 {day}
               </span>
               {isAvailable && (
-                <span style={{ fontSize: '0.62rem', marginTop: '2px', color: isSelected ? '#ffffff' : '#d63031', fontWeight: 'bold' }}>
+                <span className="calendarDayPrice">
                   {formatShortPrice(dayPrice)}
                 </span>
               )}
@@ -191,29 +144,17 @@ const DatePickerPopover = ({ departures, selectedDeparture, onSelectDate, onClos
         })}
       </div>
 
-      {/* Footer desplegable */}
       <div className="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
         <div>
-          <span className="d-block text-muted" style={{ fontSize: '0.72rem' }}>
+          <span className="popoverStayText">
             {isDayTrip ? 'Excursión de 1 día' : `Estadía: ${pkgDays} días`}
           </span>
-          <strong style={{ fontSize: '0.9rem', color: '#d63031' }}>
+          <strong className="popoverPriceText">
             {currencySymbol} {selectedDeparture?.calculatedPrice?.toLocaleString('es-AR') || '0'}
           </strong>
-          <span style={{ fontSize: '0.7rem', color: '#666' }}> /persona</span>
+          <span className="popoverPerPersonText"> /persona</span>
         </div>
-        <Button
-          onClick={onClose}
-          size="sm"
-          style={{
-            backgroundColor: '#d63031',
-            borderColor: '#d63031',
-            borderRadius: '20px',
-            padding: '4px 18px',
-            fontWeight: 'bold',
-            fontSize: '0.8rem'
-          }}
-        >
+        <Button onClick={onClose} size="sm" className="popoverReadyBtn">
           Listo
         </Button>
       </div>
@@ -235,14 +176,12 @@ const PackageDetail = () => {
   const [selectedHotel, setSelectedHotel] = useState(null)
   const [selectedDeparture, setSelectedDeparture] = useState(null)
 
-  // Control para abrir / cerrar el menú flotante del calendario
   const [showCalendar, setShowCalendar] = useState(false)
 
   useEffect(() => {
     fetchPackage()
   }, [slug])
 
-  // EFECTO DE CASCADA AL CAMBIAR CIRCUITO
   useEffect(() => {
     if (selectedCircuit) {
       const firstOpt = selectedCircuit.options?.[0] || null
@@ -256,11 +195,17 @@ const PackageDetail = () => {
     }
   }, [selectedCircuit])
 
-  // EFECTO AL CAMBIAR HOTEL
   useEffect(() => {
-    if (selectedHotel) {
-      const firstDeparture = selectedHotel.departures?.[0] || null
-      setSelectedDeparture(firstDeparture)
+    if (selectedHotel && selectedDeparture) {
+      const activeDateStr = new Date(selectedDeparture.date).toISOString().split('T')[0]
+      const matchingDep = selectedHotel.departures?.find(
+        (dep) => new Date(dep.date).toISOString().split('T')[0] === activeDateStr
+      )
+      if (matchingDep) {
+        setSelectedDeparture(matchingDep)
+      } else {
+        setSelectedDeparture(selectedHotel.departures?.[0] || null)
+      }
     }
   }, [selectedHotel])
 
@@ -344,7 +289,6 @@ const PackageDetail = () => {
   const currencySymbol = pkg.currency === 'USD' ? 'US$' : '$'
   const hotelThumbnail = selectedHotel?.image || pkg.images?.[0]
 
-  // Consolidar todas las salidas del circuito actual agregando precio precalculado
   const allCircuitDepartures = []
   selectedCircuit?.hotels?.forEach((hotel) => {
     hotel.departures?.forEach((dep) => {
@@ -357,10 +301,19 @@ const PackageDetail = () => {
     })
   })
 
+  const selectedDateStr = selectedDeparture?.date
+    ? new Date(selectedDeparture.date).toISOString().split('T')[0]
+    : null
+
+  const availableHotelsForSelectedDate = selectedCircuit?.hotels?.filter((hotel) => {
+    return hotel.departures?.some(
+      (dep) => new Date(dep.date).toISOString().split('T')[0] === selectedDateStr
+    )
+  }) || []
+
   return (
     <section className='packageDetailPage'>
 
-      {/* ===== BARRA RESUMEN INFERIOR / SUPERIOR ===== */}
       <Container>
         <PackageResumeBar
           pkg={pkg}
@@ -378,7 +331,6 @@ const PackageDetail = () => {
         />
       </Container>
 
-      {/* ===== GALERIA + CARD DERECHA ===== */}
       <Container className='galleryWrapper'>
         <div className='galleryContent'>
 
@@ -394,7 +346,6 @@ const PackageDetail = () => {
             </div>
           </div>
 
-          {/* CARD FLOTANTE DERECHA */}
           <div className='floatingCard '>
             <div className='floatingTop'>
               <span className='flightText'>
@@ -407,51 +358,7 @@ const PackageDetail = () => {
             </div>
 
             <h3 className='roomTitle '>{pkg.title}</h3>
-            
-            {/* BOTÓN SELECTOR DE FECHAS ESTILO DESPEGAR / VUELOS */}
-            <div className="position-relative mt-3 mb-2">
-              <label className="d-block text-muted small mb-1 fw-semibold">Fecha de salida</label>
-              <button
-                type="button"
-                onClick={() => setShowCalendar(!showCalendar)}
-                className="w-100 d-flex align-items-center gap-2 px-3 py-2 text-start"
-                style={{
-                  border: '1.5px solid #d63031',
-                  borderRadius: '30px',
-                  backgroundColor: showCalendar ? '#fff5f5' : '#ffffff',
-                  color: '#2d3436',
-                  fontWeight: '600',
-                  fontSize: '0.88rem',
-                  outline: 'none',
-                  cursor: 'pointer',
-                  boxShadow: showCalendar ? '0 0 0 3px rgba(214, 48, 49, 0.15)' : 'none',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <FaCalendarAlt style={{ color: '#d63031', fontSize: '1rem', flexShrink: 0 }} />
-                <span className="text-truncate flex-grow-1">
-                  Salida: {formattedSelectedDate}
-                </span>
-              </button>
-
-              {/* MODAL / POPOVER DE CALENDARIO DE DÍAS Y PRECIOS */}
-              {showCalendar && (
-                <DatePickerPopover
-                  departures={allCircuitDepartures}
-                  selectedDeparture={selectedDeparture}
-                  onSelectDate={(dep) => {
-                    setSelectedHotel(dep.hotel)
-                    setSelectedDeparture(dep)
-                    setShowCalendar(false)
-                  }}
-                  onClose={() => setShowCalendar(false)}
-                  isDayTrip={isDayTrip}
-                  currencySymbol={currencySymbol}
-                  pkgDays={pkg.days}
-                />
-              )}
-            </div>
-
+            <p className='roomDescription text-muted small'>{selectedCircuit?.description || 'Paquete turístico completo'}</p>
 
             <div className="roomDescription ">
               <span>Destino</span>
@@ -469,13 +376,41 @@ const PackageDetail = () => {
             </div>
 
             {!isDayTrip && (
-              <div className="roomDescription border-top pt-2 mt-2" style={{ color: '#ff7675' }}>
+              <div className="roomDescription border-top pt-2 mt-2 assignedHotelText">
                 <span>Hotel asignado</span>
                 <p className="fw-bold"><FaHotel className="me-1" /> {selectedHotel?.name || 'A confirmar'}</p>
               </div>
             )}
 
+            <div className="position-relative mt-3 mb-2">
+              <label className="d-block text-muted small mb-1 fw-semibold">Fecha de salida</label>
+              <button
+                type="button"
+                onClick={() => setShowCalendar(!showCalendar)}
+                className={`datePickerTrigger ${showCalendar ? 'active' : ''}`}
+              >
+                <FaCalendarAlt className="calendarIcon" />
+                <span className="text-truncate flex-grow-1">
+                  Salida: {formattedSelectedDate}
+                </span>
+              </button>
 
+              {showCalendar && (
+                <DatePickerPopover
+                  departures={allCircuitDepartures}
+                  selectedDeparture={selectedDeparture}
+                  onSelectDate={(dep) => {
+                    setSelectedHotel(dep.hotel)
+                    setSelectedDeparture(dep)
+                    setShowCalendar(false)
+                  }}
+                  onClose={() => setShowCalendar(false)}
+                  isDayTrip={isDayTrip}
+                  currencySymbol={currencySymbol}
+                  pkgDays={pkg.days}
+                />
+              )}
+            </div>
 
             <span className='priceLabel mt-2 d-block'>Valor por persona en base doble</span>
             <h2 className='mainPrice'>
@@ -493,7 +428,6 @@ const PackageDetail = () => {
         </div>
       </Container>
 
-      {/* ===== CONTENIDO Y DETALLES ===== */}
       <Container className='packageDetailContent'>
         <Row>
           <Col className='detailCol'>
@@ -518,7 +452,6 @@ const PackageDetail = () => {
                         key={index}
                         className={`circuitCardRow ${isSelected ? 'activeCircuit' : ''}`}
                         onClick={() => setSelectedCircuit(circuit)}
-                        style={{ cursor: 'pointer' }}
                       >
                         <div className="circuitField" data-label="Circuito">
                           <span className="circuitMainTitle">{circuit.title}</span>
@@ -565,9 +498,71 @@ const PackageDetail = () => {
               </div>
             )}
 
+            {/* HOTELES DISPONIBLES */}
+            {!isDayTrip && availableHotelsForSelectedDate.length > 0 && (
+              <div className="detailBox">
+
+                <div className='hotelsContainer'>
+                  {availableHotelsForSelectedDate.map((hotel, hIdx) => {
+                    const isHotelSelected = selectedHotel?.name === hotel.name
+
+                    const depForHotel = hotel.departures?.find(
+                      (dep) => new Date(dep.date).toISOString().split('T')[0] === selectedDateStr
+                    )
+                    const hotelPrice = getCalculatedPrice(depForHotel, selectedOption)
+
+                    return (
+                      <div
+                        key={hIdx}
+                        onClick={() => setSelectedHotel(hotel)}
+                        className={`hotelCardRow ${isHotelSelected ? 'activeHotel' : ''}`}
+                      >
+                        <Row className="g-0 align-items-center">
+                          <Col xs={12} sm={4} md={3} className="hotelImgCol">
+                            {hotel.image ? (
+                              <img
+                                src={hotel.image}
+                                alt={hotel.name}
+                                className="hotelImage"
+                              />
+                            ) : (
+                              <div className="hotelImgPlaceholder">
+                                <FaHotel size={30} />
+                              </div>
+                            )}
+                          </Col>
+
+                          <Col xs={12} sm={8} md={6} className="px-3 py-2 py-sm-0">
+                            <div className="d-flex align-items-center gap-2 mb-1">
+                              <h6 className="hotelTitle m-0">
+                                {hotel.name}
+                              </h6>
+                              {hotel.stars && (
+                                <span className="hotelStars">
+                                  {hotel.stars} <FaStar />
+                                </span>
+                              )}
+                            </div>
+
+                            {hotel.city && (
+                              <p className="hotelCity text-muted small m-0">
+                                <FaMapMarkerAlt className="me-1 text-danger" /> {hotel.city}
+                              </p>
+                            )}
+                          </Col>
+
+                          
+                        </Row>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* QUÉ INCLUYE */}
-            <div className="detailBox paddingTopIncludes">
-              <h4 className='mb-3 section-table-title'>Incluye</h4>
+            <div className="detailBox">
+              <h4 className='mb-3 section-table-title'>¿Qué incluye la opción {selectedCircuit?.title}?</h4>
               {selectedCircuit?.includes?.length > 0 ? (
                 <div className='includesGrid'>
                   {selectedCircuit.includes.map((item, index) => (
@@ -583,6 +578,8 @@ const PackageDetail = () => {
             </div>
 
           </Col>
+
+          
         </Row>
       </Container>
     </section>
