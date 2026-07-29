@@ -467,7 +467,7 @@
 
 .hotelStars {
   font-size: 0.8rem;
-  color: #f1c40f;
+  color: #000000;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -485,6 +485,10 @@
 .hotelPriceValue {
   color: #2d3436;
   font-size: 1.2rem;
+}
+
+.marginTopHotel {
+  margin-top: 10px;
 }
 
 

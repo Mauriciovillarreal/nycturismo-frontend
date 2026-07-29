@@ -439,7 +439,7 @@ const PackageDetail = () => {
             {/* CIRCUITOS DISPONIBLES */}
             {!isDayTrip && pkg.circuits?.length > 0 && (
               <div className="detailBox">
-           
+
                 <div className='circuitsContainer'>
                   {pkg.circuits.map((circuit, index) => {
                     const isSelected = selectedCircuit?.title === circuit.title
@@ -517,7 +517,7 @@ const PackageDetail = () => {
                         onClick={() => setSelectedHotel(hotel)}
                         className={`hotelCardRow ${isHotelSelected ? 'activeHotel' : ''}`}
                       >
-                        <Row className="g-0 align-items-center">
+                        <Row className="g-0">
                           <Col xs={12} sm={4} md={3} className="hotelImgCol">
                             {hotel.image ? (
                               <img
@@ -533,25 +533,27 @@ const PackageDetail = () => {
                           </Col>
 
                           <Col xs={12} sm={8} md={6} className="px-3 py-2 py-sm-0">
-                            <div className="d-flex align-items-center gap-2 mb-1">
+                            <div className="gap-2 mb-1 marginTopHotel">
                               <h6 className="hotelTitle m-0">
                                 {hotel.name}
                               </h6>
-                              {hotel.stars && (
-                                <span className="hotelStars">
-                                  {hotel.stars} <FaStar />
+                              {hotel.stars > 0 && (
+                                <span className="hotelStars" >
+                                  {Array.from({ length: Number(hotel.stars) }, (_, index) => (
+                                    <FaStar key={index} />
+                                  ))}
                                 </span>
                               )}
                             </div>
 
                             {hotel.city && (
                               <p className="hotelCity text-muted small m-0">
-                                <FaMapMarkerAlt className="me-1 text-danger" /> {hotel.city}
+                                <FaMapMarkerAlt className="me-1" /> {hotel.city}
                               </p>
                             )}
                           </Col>
 
-                          
+
                         </Row>
                       </div>
                     )
@@ -579,7 +581,7 @@ const PackageDetail = () => {
 
           </Col>
 
-          
+
         </Row>
       </Container>
     </section>
