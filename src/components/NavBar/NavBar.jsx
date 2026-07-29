@@ -12,7 +12,7 @@ import {
   FaWhatsapp
 } from 'react-icons/fa'
 
-import '../NavBar/Navbar.css'
+import '../NavBar/NavBar.css'
 
 const NavBar = () => {
 
