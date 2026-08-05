@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/sitemap.xml",
-      "destination": "https://nycturismo-backend.onrender.com//sitemap.xml"
+      "destination": "https://nycturismo-backend.onrender.com/sitemap.xml"
     },
     {
       "source": "/(.*)",
