@@ -20,7 +20,7 @@ const categories = [
 
     {
         title: 'Miniturismo',
-        image: 'https://www.codigobaires.com.ar/adjuntos/800/codigoba/2025/04/imagepng.jpg',
+        image: 'https://iili.io/CrApDRp.png',
         category: 'Miniturismo'
     },
 
