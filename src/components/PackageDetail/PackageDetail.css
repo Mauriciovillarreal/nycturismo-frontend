@@ -153,7 +153,9 @@
   gap: 12px;
   margin-top: 15px;
 }
-
+.detailDescription {
+  white-space: pre-line;
+}
 .circuitCardRow,
 .dateCardRowCustom {
   background: #ffffff;
@@ -509,7 +511,57 @@
   margin-top: 6px;
 }
 
+/*         --------- */
 
+/* Contenedor del selector */
+.currencySelectorContainer {
+  margin-bottom: 0.5rem;
+}
+
+/* Etiqueta superior */
+.currencyLabel {
+  display: block;
+  color: #6c757d;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Grupo de botones */
+.currencyButtonGroup {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #ff7070;
+}
+
+/* Estilo base del botón */
+.currencyBtn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  background-color: transparent;
+  color: #ff7070;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Efecto hover */
+.currencyBtn:hover {
+  background-color: #fff0f0;
+}
+
+/* Botón Activo (Rojo de la imagen) */
+.currencyBtn.active {
+  background-color: #ff7070;
+  color: #ffffff;
+}
+
+.currencyBtn.active:hover {
+  background-color: #e65c5c; /* Un tono ligeramente más oscuro al presionar */
+}
 
 /* ==========================================================================
    7. RESPONSIVE DESIGN (Media Queries)

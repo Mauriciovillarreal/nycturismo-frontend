@@ -23,7 +23,7 @@ const AdminEditPackage = () => {
     description: '',
     days: '',
     nights: '',
-    currency: 'ARS',
+    acceptedCurrencies: ['ARS'],
     featured: false,
     transportType: 'bus',
     transportCategory: '',
@@ -40,11 +40,19 @@ const AdminEditPackage = () => {
       const res = await api.get(`/packages/id/${id}`)
       const pkg = res.data
 
-      // Normalizamos el tipo de transporte heredado por si viene en español
       const rawMode = pkg.transport?.mode || pkg.transport?.type || 'bus'
       let normalizedMode = 'bus'
       if (typeof rawMode === 'string' && (rawMode.toLowerCase() === 'avion' || rawMode.toLowerCase() === 'avión' || rawMode.toLowerCase() === 'plane')) {
         normalizedMode = 'plane'
+      }
+
+      // Monedas aceptadas (Soporte multimoneda + fallback al campo previo pkg.currency)
+      let initialCurrencies = pkg.acceptedCurrencies || []
+      if (initialCurrencies.length === 0 && pkg.currency) {
+        initialCurrencies = [pkg.currency]
+      }
+      if (initialCurrencies.length === 0) {
+        initialCurrencies = ['ARS']
       }
 
       setFormData({
@@ -56,7 +64,7 @@ const AdminEditPackage = () => {
         description: pkg.description || '',
         days: pkg.days || '',
         nights: pkg.nights || '',
-        currency: pkg.currency || 'ARS',
+        acceptedCurrencies: initialCurrencies,
         featured: pkg.featured || false,
         transportType: normalizedMode,
         transportCategory: pkg.transport?.category?.toLowerCase() || '',
@@ -83,12 +91,14 @@ const AdminEditPackage = () => {
             departures: hotel.departures?.map(dep => {
               const dateFormatted = dep.date ? new Date(dep.date).toISOString().split('T')[0] : ''
               
-              // Mapeo y sincronización de precios según las opciones existentes
               const prices = options.map(opt => {
                 const foundPrice = dep.prices?.find(p => p.option === opt.name)
                 return {
                   option: opt.name,
-                  amount: foundPrice ? foundPrice.amount : ''
+                  amounts: {
+                    ars: foundPrice?.amounts?.ars ?? (foundPrice?.amount ?? ''),
+                    usd: foundPrice?.amounts?.usd ?? ''
+                  }
                 }
               })
 
@@ -130,6 +140,19 @@ const AdminEditPackage = () => {
         [name]: type === 'checkbox' ? checked : value
       })
     }
+  }
+
+  // --- HANDLER DE MONEDAS ACEPTADAS ---
+  const handleCurrencyToggle = (curr) => {
+    const current = [...formData.acceptedCurrencies]
+    let updated = []
+    if (current.includes(curr)) {
+      if (current.length === 1) return // Requiere al menos una moneda
+      updated = current.filter(c => c !== curr)
+    } else {
+      updated = [...current, curr]
+    }
+    setFormData({ ...formData, acceptedCurrencies: updated })
   }
 
   // --- MANEJO DE IMÁGENES ---
@@ -174,7 +197,6 @@ const AdminEditPackage = () => {
     const oldName = updatedCircuits[circuitIndex].options[optionIndex].name
     updatedCircuits[circuitIndex].options[optionIndex].name = value
 
-    // Sincronizar el nombre de la opción en todas las salidas del circuito
     updatedCircuits[circuitIndex].hotels.forEach(hotel => {
       hotel.departures.forEach(dep => {
         dep.prices.forEach(priceObj => {
@@ -193,12 +215,11 @@ const AdminEditPackage = () => {
     const newOption = { name: '' }
     updatedCircuits[circuitIndex].options.push(newOption)
 
-    // Sincronizar: Agregar precio vacío a todas las salidas de todos los hoteles del circuito
     updatedCircuits[circuitIndex].hotels.forEach(hotel => {
       hotel.departures.forEach(dep => {
         dep.prices.push({
           option: '',
-          amount: ''
+          amounts: { ars: '', usd: '' }
         })
       })
     })
@@ -208,11 +229,8 @@ const AdminEditPackage = () => {
 
   const removeOption = (circuitIndex, optionIndex) => {
     const updatedCircuits = [...formData.circuits]
-    const optionToRemove = updatedCircuits[circuitIndex].options[optionIndex].name
-
     updatedCircuits[circuitIndex].options.splice(optionIndex, 1)
 
-    // Sincronizar: Eliminar la opción correspondiente del array de precios de todas las salidas
     updatedCircuits[circuitIndex].hotels.forEach(hotel => {
       hotel.departures.forEach(dep => {
         dep.prices = dep.prices.filter((_, pIdx) => pIdx !== optionIndex)
@@ -258,10 +276,9 @@ const AdminEditPackage = () => {
     const updatedCircuits = [...formData.circuits]
     const options = updatedCircuits[circuitIndex].options || []
 
-    // Al crear una salida, se le inicializan los precios vinculados a las opciones actuales
     const initialPrices = options.map(opt => ({
       option: opt.name,
-      amount: ''
+      amounts: { ars: '', usd: '' }
     }))
 
     updatedCircuits[circuitIndex].hotels[hotelIndex].departures.push({
@@ -278,10 +295,16 @@ const AdminEditPackage = () => {
     setFormData({ ...formData, circuits: updatedCircuits })
   }
 
-  // --- HANDLER DE PRECIOS ---
-  const handlePriceChange = (circuitIndex, hotelIndex, departureIndex, priceIndex, value) => {
+  // --- HANDLER DE PRECIOS MULTI-MONEDA ---
+  const handlePriceChange = (circuitIndex, hotelIndex, departureIndex, priceIndex, curr, value) => {
     const updatedCircuits = [...formData.circuits]
-    updatedCircuits[circuitIndex].hotels[hotelIndex].departures[departureIndex].prices[priceIndex].amount = value
+    const targetPrice = updatedCircuits[circuitIndex].hotels[hotelIndex].departures[departureIndex].prices[priceIndex]
+    
+    if (!targetPrice.amounts) {
+      targetPrice.amounts = { ars: '', usd: '' }
+    }
+    
+    targetPrice.amounts[curr] = value
     setFormData({ ...formData, circuits: updatedCircuits })
   }
 
@@ -304,7 +327,8 @@ const AdminEditPackage = () => {
       description: formData.description,
       days: Number(formData.days),
       nights: Number(formData.nights),
-      currency: formData.currency,
+      acceptedCurrencies: formData.acceptedCurrencies,
+      currency: formData.acceptedCurrencies[0] || 'ARS',
       featured: formData.featured,
       transport: {
         mode: formData.transportType,
@@ -333,7 +357,10 @@ const AdminEditPackage = () => {
                 .filter(p => p.option && p.option.trim() !== '')
                 .map(p => ({
                   option: p.option.trim(),
-                  amount: Number(p.amount) || 0
+                  amounts: {
+                    ars: p.amounts?.ars !== '' && p.amounts?.ars !== null ? Number(p.amounts.ars) : null,
+                    usd: p.amounts?.usd !== '' && p.amounts?.usd !== null ? Number(p.amounts.usd) : null
+                  }
                 }))
             }))
         }))
@@ -454,18 +481,26 @@ const AdminEditPackage = () => {
               </Form.Group>
             </Col>
 
-            {/* Moneda General */}
+            {/* Monedas Aceptadas */}
             <Col md={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Moneda</Form.Label>
-                <Form.Select
-                  name="currency"
-                  value={formData.currency}
-                  onChange={handleChange}
-                >
-                  <option value="ARS">Pesos (ARS)</option>
-                  <option value="USD">Dólares (USD)</option>
-                </Form.Select>
+                <Form.Label className="fw-semibold">Monedas Aceptadas</Form.Label>
+                <div className="d-flex gap-3 pt-1">
+                  <Form.Check
+                    type="checkbox"
+                    id="edit-curr-ars"
+                    label="Pesos (ARS)"
+                    checked={formData.acceptedCurrencies.includes('ARS')}
+                    onChange={() => handleCurrencyToggle('ARS')}
+                  />
+                  <Form.Check
+                    type="checkbox"
+                    id="edit-curr-usd"
+                    label="Dólares (USD)"
+                    checked={formData.acceptedCurrencies.includes('USD')}
+                    onChange={() => handleCurrencyToggle('USD')}
+                  />
+                </div>
               </Form.Group>
             </Col>
 
@@ -774,7 +809,7 @@ const AdminEditPackage = () => {
                                       </Col>
                                     </Row>
 
-                                    {/* PRECIOS POR CADA OPCIÓN DEL CIRCUITO */}
+                                    {/* PRECIOS MULTI-MONEDA POR OPCIÓN */}
                                     <div className="border-top pt-2 mt-2">
                                       <Form.Label className="small fw-semibold text-dark mb-2">
                                         Precios por Opción
@@ -784,21 +819,46 @@ const AdminEditPackage = () => {
                                           Agregue opciones al circuito para cargar precios en esta salida.
                                         </p>
                                       ) : (
-                                        <Row className="g-2">
+                                        <Row className="g-3">
                                           {dep.prices.map((priceObj, pIndex) => (
-                                            <Col md={4} key={pIndex}>
-                                              <Form.Group>
-                                                <Form.Label className="small text-muted mb-0">
+                                            <Col md={6} key={pIndex}>
+                                              <div className="p-2 border rounded bg-light">
+                                                <span className="d-block small fw-bold text-secondary mb-1">
                                                   {priceObj.option || `Opción ${pIndex + 1}`}
-                                                </Form.Label>
-                                                <Form.Control
-                                                  type="number"
-                                                  placeholder="Monto"
-                                                  value={priceObj.amount}
-                                                  onChange={(e) => handlePriceChange(cIndex, hIndex, dIndex, pIndex, e.target.value)}
-                                                  required
-                                                />
-                                              </Form.Group>
+                                                </span>
+                                                <Row className="g-1">
+                                                  {formData.acceptedCurrencies.includes('ARS') && (
+                                                    <Col>
+                                                      <Form.Group>
+                                                        <Form.Label className="small text-muted mb-0" style={{ fontSize: '0.75rem' }}>
+                                                          Monto ARS ($)
+                                                        </Form.Label>
+                                                        <Form.Control
+                                                          type="number"
+                                                          placeholder="$ ARS"
+                                                          value={priceObj.amounts?.ars ?? ''}
+                                                          onChange={(e) => handlePriceChange(cIndex, hIndex, dIndex, pIndex, 'ars', e.target.value)}
+                                                        />
+                                                      </Form.Group>
+                                                    </Col>
+                                                  )}
+                                                  {formData.acceptedCurrencies.includes('USD') && (
+                                                    <Col>
+                                                      <Form.Group>
+                                                        <Form.Label className="small text-muted mb-0" style={{ fontSize: '0.75rem' }}>
+                                                          Monto USD (US$)
+                                                        </Form.Label>
+                                                        <Form.Control
+                                                          type="number"
+                                                          placeholder="US$ USD"
+                                                          value={priceObj.amounts?.usd ?? ''}
+                                                          onChange={(e) => handlePriceChange(cIndex, hIndex, dIndex, pIndex, 'usd', e.target.value)}
+                                                        />
+                                                      </Form.Group>
+                                                    </Col>
+                                                  )}
+                                                </Row>
+                                              </div>
                                             </Col>
                                           ))}
                                         </Row>

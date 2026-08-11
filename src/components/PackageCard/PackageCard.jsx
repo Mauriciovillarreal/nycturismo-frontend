@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fa';
 import '../PackageCard/PackageCard.css';
 
-const PackageCard = ({ pkg }) => {
+const PackageCard = ({ pkg, calculatedPrice, currencySymbol: propSymbol }) => {
   // ===========================
   // EVALUAR SI ES MINITURISMO
   // ===========================
@@ -22,27 +22,74 @@ const PackageCard = ({ pkg }) => {
     pkg.nights === '0';
 
   // ===========================
-  // MONEDA
+  // MONEDA Y SÍMBOLO
   // ===========================
-  const currencySymbol = pkg.currency === 'USD' ? 'USD ' : '$';
+  const isUsdOnly =
+    Array.isArray(pkg.acceptedCurrencies) &&
+    pkg.acceptedCurrencies.includes('USD') &&
+    !pkg.acceptedCurrencies.includes('ARS');
+
+  const getCurrencySymbol = () => {
+    if (propSymbol) return propSymbol;
+    if (isUsdOnly || pkg.currency === 'USD') return 'US$ ';
+    return '$ ';
+  };
+
+  const currencySymbol = getCurrencySymbol();
 
   // ===========================
-  // PRECIO MÁS BAJO
+  // PRECIO MÁS BAJO (EXTRACCIÓN ROBUSTA)
   // ===========================
   const getLowestPrice = () => {
+    // 1. Si viene precalculado desde el componente padre
+    if (typeof calculatedPrice === 'number' && calculatedPrice > 0) {
+      return calculatedPrice;
+    }
+
     const prices = [];
+
     pkg.circuits?.forEach((circuit) => {
       circuit.hotels?.forEach((hotel) => {
         hotel.departures?.forEach((departure) => {
           departure.prices?.forEach((price) => {
-            if (typeof price.amount === 'number') {
-              prices.push(price.amount);
+            // A) Estructura moderna 'amounts'
+            if (price.amounts) {
+              const usdVal = Number(price.amounts.usd);
+              const arsVal = Number(price.amounts.ars);
+
+              if (isUsdOnly) {
+                if (!isNaN(usdVal) && usdVal > 0) prices.push(usdVal);
+              } else {
+                if (!isNaN(arsVal) && arsVal > 0) prices.push(arsVal);
+                else if (!isNaN(usdVal) && usdVal > 0) prices.push(usdVal);
+              }
+            }
+            // B) Estrategia de compatibilidad / fallback
+            else {
+              const usdFlat = Number(price.amountUsd);
+              const mainAmount = Number(price.amount);
+
+              if (isUsdOnly && !isNaN(usdFlat) && usdFlat > 0) {
+                prices.push(usdFlat);
+              } else if (!isNaN(mainAmount) && mainAmount > 1) {
+                prices.push(mainAmount);
+              }
             }
           });
         });
       });
     });
-    return prices.length ? Math.min(...prices) : null;
+
+    if (prices.length > 0) {
+      return Math.min(...prices);
+    }
+
+    // Fallback a nivel raíz si existiera
+    if (typeof pkg.price === 'number' && pkg.price > 1) {
+      return pkg.price;
+    }
+
+    return null;
   };
 
   const lowestPrice = getLowestPrice();
@@ -57,11 +104,11 @@ const PackageCard = ({ pkg }) => {
     typeof currentTransportMode === 'string' &&
     ['plane', 'avion', 'avión'].includes(currentTransportMode.toLowerCase());
 
-  // Extracción de ítems incluidos para el Miniturismo
+  // Extracción de ítems incluidos para Miniturismo
   const firstCircuitIncludes = pkg.circuits?.[0]?.includes || [];
 
   // =========================================================
-  // RENDER: TARJETA DE MINITURISMO (Estilo Foto Adjunta)
+  // RENDER: TARJETA DE MINITURISMO
   // =========================================================
   if (isDayTrip) {
     return (
@@ -84,7 +131,7 @@ const PackageCard = ({ pkg }) => {
           <div className="miniCardBody">
             <h3 className="miniCardTitle">{pkg.title}</h3>
 
-            {/* Iconos con Etiqueta en Azul */}
+            {/* Iconos con Etiqueta */}
             <div className="miniCardIconsRow">
               <div className="miniCardIconItem">
                 <FaBus />
@@ -104,9 +151,8 @@ const PackageCard = ({ pkg }) => {
               </div>
             </div>
 
-            {/* Puntos destacados / Qué incluye y Precio */}
+            {/* Puntos destacados y Precio */}
             <div className="miniCardFooterRow">
-              {/* Lista de viñetas */}
               <ul className="miniCardIncludes">
                 {firstCircuitIncludes.length > 0 ? (
                   firstCircuitIncludes.slice(0, 2).map((item, idx) => (
@@ -128,7 +174,6 @@ const PackageCard = ({ pkg }) => {
                 )}
               </ul>
 
-              {/* Columna de Precio con Línea Divisora */}
               <div className="miniCardPriceCol">
                 <span className="miniCardPriceLabel">Precio por persona</span>
                 <h4 className="miniCardPriceValue">
@@ -146,12 +191,11 @@ const PackageCard = ({ pkg }) => {
   }
 
   // =========================================================
-  // RENDER: TARJETA TRADICIONAL (Para el resto de categorías)
+  // RENDER: TARJETA TRADICIONAL
   // =========================================================
   return (
     <Link to={`/packages/${pkg.slug}`} className="packageCardLink">
       <div className="packageCard">
-        {/* Imagen */}
         <img
           src={pkg.images?.[0]}
           alt={pkg.title}
@@ -160,10 +204,8 @@ const PackageCard = ({ pkg }) => {
 
         <div className="packageOverlay"></div>
 
-        {/* Categoría */}
         <div className="packageTag">{pkg.category}</div>
 
-        {/* Contenido */}
         <div className="packageBody">
           <div className="packageContent">
             <h3 className="packageTitle">{pkg.title}</h3>
@@ -184,7 +226,6 @@ const PackageCard = ({ pkg }) => {
             </div>
           </div>
 
-          {/* Precio */}
           <div className="packageFooter">
             <span>Desde</span>
 

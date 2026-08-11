@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect, useRef } from 'react'
-import { Container, Row, Col, Button, Form } from 'react-bootstrap'
+import { Container, Row, Col, Button, Form, ButtonGroup } from 'react-bootstrap'
 import { FaWhatsapp, FaHotel, FaCalendarAlt, FaChevronLeft, FaChevronRight, FaStar, FaMapMarkerAlt } from 'react-icons/fa'
 import { useParams } from 'react-router-dom'
 import Loader from '../Loader/Loader.jsx'
@@ -175,6 +175,7 @@ const PackageDetail = () => {
   const [selectedOption, setSelectedOption] = useState(null)
   const [selectedHotel, setSelectedHotel] = useState(null)
   const [selectedDeparture, setSelectedDeparture] = useState(null)
+  const [selectedCurrency, setSelectedCurrency] = useState('ARS')
 
   const [showCalendar, setShowCalendar] = useState(false)
 
@@ -215,6 +216,13 @@ const PackageDetail = () => {
       const data = res.data
       setPkg(data)
 
+      // Establecer moneda inicial predeterminada
+      if (Array.isArray(data.acceptedCurrencies) && data.acceptedCurrencies.length > 0) {
+        setSelectedCurrency(data.acceptedCurrencies[0])
+      } else if (data.currency) {
+        setSelectedCurrency(data.currency)
+      }
+
       if (data.circuits?.length > 0) {
         setSelectedCircuit(data.circuits[0])
       }
@@ -249,11 +257,57 @@ const PackageDetail = () => {
 
   const phone = '5491151642289'
 
-  const getCalculatedPrice = (departure, option) => {
+  // DETERMINACIÓN ROBUSTA DE MONEDAS ACEPTADAS
+  let acceptedCurrencies = []
+  if (Array.isArray(pkg.acceptedCurrencies) && pkg.acceptedCurrencies.length > 0) {
+    acceptedCurrencies = pkg.acceptedCurrencies
+  } else {
+    // Si no viene el array explicito, detectamos si hay precios guardados en USD dentro de las salidas
+    let hasUsdPrices = false
+    pkg.circuits?.forEach(c => {
+      c.hotels?.forEach(h => {
+        h.departures?.forEach(d => {
+          d.prices?.forEach(p => {
+            if (p.amounts?.usd || (p.amountUsd && Number(p.amountUsd) > 0)) {
+              hasUsdPrices = true
+            }
+          })
+        })
+      })
+    })
+
+    if (hasUsdPrices) {
+      acceptedCurrencies = ['ARS', 'USD']
+    } else if (pkg.currency) {
+      acceptedCurrencies = [pkg.currency]
+    } else {
+      acceptedCurrencies = ['ARS']
+    }
+  }
+
+  // LÓGICA DE OBTENCIÓN DE PRECIO ADAPTATIVA
+  const getCalculatedPrice = (departure, option, currency = selectedCurrency) => {
     if (!departure || !option) return 0
     const optionName = typeof option === 'string' ? option : option.name
     const priceObj = departure.prices?.find((p) => p.option === optionName)
-    return priceObj ? priceObj.amount : 0
+
+    if (!priceObj) return 0
+
+    const currKey = currency.toLowerCase()
+
+    if (priceObj.amounts) {
+      if (priceObj.amounts[currKey] !== null && priceObj.amounts[currKey] !== undefined && priceObj.amounts[currKey] !== '') {
+        return Number(priceObj.amounts[currKey])
+      }
+      return Number(priceObj.amounts.ars || priceObj.amounts.usd || 0)
+    }
+
+    // Compatibilidad con estructuras anteriores
+    if (currKey === 'usd' && priceObj.amountUsd) {
+      return Number(priceObj.amountUsd)
+    }
+
+    return Number(priceObj.amount || 0)
   }
 
   const currentPrice = getCalculatedPrice(selectedDeparture, selectedOption)
@@ -286,7 +340,8 @@ const PackageDetail = () => {
 
   const whatsappText = encodeURIComponent(rawWhatsappText)
   const whatsappUrl = `https://wa.me/${phone}?text=${whatsappText}`
-  const currencySymbol = pkg.currency === 'USD' ? 'US$' : '$'
+
+  const currencySymbol = selectedCurrency === 'USD' ? 'US$' : '$'
   const hotelThumbnail = selectedHotel?.image || pkg.images?.[0]
 
   const allCircuitDepartures = []
@@ -359,7 +414,6 @@ const PackageDetail = () => {
 
             <h3 className='roomTitle '>{pkg.title}</h3>
 
-
             <div className="roomDescription ">
               <span>Destino</span>
               <p>{pkg.destination}</p>
@@ -415,15 +469,9 @@ const PackageDetail = () => {
             {/* HOTELES DISPONIBLES */}
             {!isDayTrip && availableHotelsForSelectedDate.length > 0 && (
               <div className="detailBox">
-
                 <div className='hotelsContainer'>
                   {availableHotelsForSelectedDate.map((hotel, hIdx) => {
                     const isHotelSelected = selectedHotel?.name === hotel.name
-
-                    const depForHotel = hotel.departures?.find(
-                      (dep) => new Date(dep.date).toISOString().split('T')[0] === selectedDateStr
-                    )
-                    const hotelPrice = getCalculatedPrice(depForHotel, selectedOption)
 
                     return (
                       <div
@@ -432,7 +480,7 @@ const PackageDetail = () => {
                         className={`hotelCardRow ${isHotelSelected ? 'activeHotel' : ''}`}
                       >
                         <div className="g-0 gridHotel">
-                          <div xs={12} sm={4} md={3} className="hotelImgCol">
+                          <div className="hotelImgCol">
                             {hotel.image ? (
                               <img
                                 src={hotel.image}
@@ -446,7 +494,7 @@ const PackageDetail = () => {
                             )}
                           </div>
 
-                          <div xs={12} sm={8} md={6} className="px-3 py-2 py-sm-0">
+                          <div className="px-3 py-2 py-sm-0">
                             <div className="gap-2 mb-1 marginTopHotel">
                               <h6 className="hotelTitle m-0">
                                 {hotel.name}
@@ -466,8 +514,6 @@ const PackageDetail = () => {
                               </p>
                             )}
                           </div>
-
-
                         </div>
                       </div>
                     )
@@ -476,6 +522,28 @@ const PackageDetail = () => {
               </div>
             )}
 
+            {/* SELECTOR DE MONEDA (VISIBILIDAD GARANTIZADA) */}
+            {acceptedCurrencies.length > 1 && (
+              <div className="currencySelectorContainer">
+                <span className="currencyLabel">Moneda</span>
+                <div className="currencyButtonGroup">
+                  <button
+                    type="button"
+                    className={`currencyBtn ${selectedCurrency === 'ARS' ? 'active' : ''}`}
+                    onClick={() => setSelectedCurrency('ARS')}
+                  >
+                    Pesos (ARS)
+                  </button>
+                  <button
+                    type="button"
+                    className={`currencyBtn ${selectedCurrency === 'USD' ? 'active' : ''}`}
+                    onClick={() => setSelectedCurrency('USD')}
+                  >
+                    Dólares (USD)
+                  </button>
+                </div>
+              </div>
+            )}
 
             <span className='priceLabel mt-2 d-block'>Valor por persona en base doble</span>
             <h2 className='mainPrice'>
@@ -504,7 +572,6 @@ const PackageDetail = () => {
             {/* CIRCUITOS DISPONIBLES */}
             {!isDayTrip && pkg.circuits?.length > 0 && (
               <div className="detailBox">
-
                 <div className='circuitsContainer'>
                   {pkg.circuits.map((circuit, index) => {
                     const isSelected = selectedCircuit?.title === circuit.title
@@ -563,7 +630,6 @@ const PackageDetail = () => {
               </div>
             )}
 
-
             {/* QUÉ INCLUYE */}
             <div className="detailBox detailBoxIncludes">
               <h4 className='mb-3 section-table-title'>¿Qué incluye la opción {selectedCircuit?.title}?</h4>
@@ -582,8 +648,6 @@ const PackageDetail = () => {
             </div>
 
           </Col>
-
-
         </Row>
       </Container>
     </section>
