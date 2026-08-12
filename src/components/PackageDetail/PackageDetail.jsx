@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect, useRef } from 'react'
-import { Container, Row, Col, Button, Form, ButtonGroup } from 'react-bootstrap'
+import { Container, Row, Col, Button, Form } from 'react-bootstrap'
 import { FaWhatsapp, FaHotel, FaCalendarAlt, FaChevronLeft, FaChevronRight, FaStar, FaMapMarkerAlt } from 'react-icons/fa'
 import { useParams } from 'react-router-dom'
 import Loader from '../Loader/Loader.jsx'
@@ -11,7 +11,7 @@ import '../PackageDetail/PackageDetail.css'
 // =========================================================
 // SUB-COMPONENTE: POPUP CALENDARIO FLOTANTE
 // =========================================================
-const DatePickerPopover = ({ departures, selectedDeparture, onSelectDate, onClose, isDayTrip, currencySymbol, pkgDays }) => {
+const DatePickerPopover = ({ departures, selectedDeparture, onSelectDate, onClose, isDayTrip, currencySymbol, pkgDays, paymentMode }) => {
   const popoverRef = useRef(null)
 
   const departureMap = React.useMemo(() => {
@@ -70,11 +70,24 @@ const DatePickerPopover = ({ departures, selectedDeparture, onSelectDate, onClos
 
   const weekDays = ['LU', 'MA', 'MI', 'JU', 'VI', 'SA', 'DO']
 
-  const formatShortPrice = (amount) => {
+  const formatShortPrice = (price) => {
+    if (!price) return ''
+    const amount = typeof price === 'object' ? (price.ars || price.usd) : price
     if (!amount) return ''
     if (amount >= 1000000) return `${(amount / 1000000).toFixed(2).replace('.', ',')} M`
     if (amount >= 1000) return `${Math.round(amount / 1000)} K`
     return `${amount}`
+  }
+
+  const renderSelectedPriceText = () => {
+    if (!selectedDeparture?.calculatedPrice) return '0'
+    const price = selectedDeparture.calculatedPrice
+    if (paymentMode === 'SPLIT' || typeof price === 'object') {
+      const arsPart = price.ars ? `$${price.ars.toLocaleString('es-AR')}` : ''
+      const usdPart = price.usd ? `US$${price.usd.toLocaleString('es-AR')}` : ''
+      return [arsPart, usdPart].filter(Boolean).join(' + ')
+    }
+    return `${currencySymbol} ${price.toLocaleString('es-AR')}`
   }
 
   return (
@@ -150,7 +163,7 @@ const DatePickerPopover = ({ departures, selectedDeparture, onSelectDate, onClos
             {isDayTrip ? 'Excursión de 1 día' : `Estadía: ${pkgDays} días`}
           </span>
           <strong className="popoverPriceText">
-            {currencySymbol} {selectedDeparture?.calculatedPrice?.toLocaleString('es-AR') || '0'}
+            {renderSelectedPriceText()}
           </strong>
           <span className="popoverPerPersonText"> /persona</span>
         </div>
@@ -257,12 +270,13 @@ const PackageDetail = () => {
 
   const phone = '5491151642289'
 
+  const paymentMode = pkg.paymentMode || 'CHOICE'
+
   // DETERMINACIÓN ROBUSTA DE MONEDAS ACEPTADAS
   let acceptedCurrencies = []
   if (Array.isArray(pkg.acceptedCurrencies) && pkg.acceptedCurrencies.length > 0) {
     acceptedCurrencies = pkg.acceptedCurrencies
   } else {
-    // Si no viene el array explicito, detectamos si hay precios guardados en USD dentro de las salidas
     let hasUsdPrices = false
     pkg.circuits?.forEach(c => {
       c.hotels?.forEach(h => {
@@ -285,14 +299,31 @@ const PackageDetail = () => {
     }
   }
 
-  // LÓGICA DE OBTENCIÓN DE PRECIO ADAPTATIVA
+  // LÓGICA ADAPTADA PARA OBTENCIÓN Y CÁLCULO DE TARIFAS
   const getCalculatedPrice = (departure, option, currency = selectedCurrency) => {
-    if (!departure || !option) return 0
+    if (!departure || !option) return paymentMode === 'SPLIT' ? { ars: 0, usd: 0 } : 0
     const optionName = typeof option === 'string' ? option : option.name
     const priceObj = departure.prices?.find((p) => p.option === optionName)
 
-    if (!priceObj) return 0
+    if (!priceObj) return paymentMode === 'SPLIT' ? { ars: 0, usd: 0 } : 0
 
+    // MODO SPLIT: Retorna objeto con ambos montos obligatorios
+    if (paymentMode === 'SPLIT') {
+      let arsAmount = 0
+      let usdAmount = 0
+
+      if (priceObj.amounts) {
+        arsAmount = Number(priceObj.amounts.ars || 0)
+        usdAmount = Number(priceObj.amounts.usd || 0)
+      } else {
+        arsAmount = Number(priceObj.amount || 0)
+        usdAmount = Number(priceObj.amountUsd || 0)
+      }
+
+      return { ars: arsAmount, usd: usdAmount }
+    }
+
+    // MODOS SINGLE / CHOICE:
     const currKey = currency.toLowerCase()
 
     if (priceObj.amounts) {
@@ -302,7 +333,6 @@ const PackageDetail = () => {
       return Number(priceObj.amounts.ars || priceObj.amounts.usd || 0)
     }
 
-    // Compatibilidad con estructuras anteriores
     if (currKey === 'usd' && priceObj.amountUsd) {
       return Number(priceObj.amountUsd)
     }
@@ -311,6 +341,23 @@ const PackageDetail = () => {
   }
 
   const currentPrice = getCalculatedPrice(selectedDeparture, selectedOption)
+
+  // FORMATO DE RENDERIZADO DEL PRECIO (SOPORTA PAGO DIVIDIDO)
+// FORMATO DE RENDERIZADO DEL PRECIO (SOPORTA PAGO DIVIDIDO)
+const renderFormattedPrice = (price = currentPrice) => {
+  if (paymentMode === 'SPLIT' || typeof price === 'object') {
+    const arsValue = price?.ars ? `$${price.ars.toLocaleString('es-AR')}` : ''
+    const usdValue = price?.usd ? `US$${price.usd.toLocaleString('es-AR')}` : ''
+
+    if (arsValue && usdValue) {
+      return `${arsValue} + ${usdValue}`
+    }
+    return arsValue || usdValue || '$0'
+  }
+
+  // Se remueve el espacio entre el símbolo y el valor numérico
+  return `${selectedCurrency === 'USD' ? 'US$' : '$'}${price?.toLocaleString('es-AR') || '0'}`
+}
 
   const formattedSelectedDate = selectedDeparture?.date
     ? new Date(selectedDeparture.date).toLocaleDateString('es-AR', {
@@ -328,13 +375,13 @@ const PackageDetail = () => {
   if (isDayTrip) {
     rawWhatsappText =
       `¡Hola! Me interesa la excursión de miniturismo *${pkg.title}* ` +
-      `para la salida del *${formattedSelectedDate}*. ` +
+      `para la salida del *${formattedSelectedDate}* (Valor: *${renderFormattedPrice()}*). ` +
       `¿Podrían confirmarme disponibilidad, punto de encuentro y detalles del viaje? ¡Muchas gracias!`
   } else {
     const hotelName = selectedHotel?.name || 'A confirmar'
     rawWhatsappText =
       `¡Hola! Me interesa el paquete *${pkg.title}* para la salida del *${formattedSelectedDate}* ` +
-      `(Circuito: *${selectedCircuit?.title || 'Estándar'}* • Opción: *${optionNameText}* • Hotel: *${hotelName}*). ` +
+      `(Circuito: *${selectedCircuit?.title || 'Estándar'}* • Opción: *${optionNameText}* • Hotel: *${hotelName}* • Valor: *${renderFormattedPrice()}*). ` +
       `¿Podrían confirmarme disponibilidad y detalles? ¡Muchas gracias!`
   }
 
@@ -377,12 +424,14 @@ const PackageDetail = () => {
           selectedDeparture={selectedDeparture}
           selectedOption={selectedOption}
           selectedPrice={currentPrice}
+          formattedPrice={renderFormattedPrice()}
           hotelThumbnail={hotelThumbnail}
           formattedSelectedDate={formattedSelectedDate}
           currencySymbol={currencySymbol}
           whatsappUrl={whatsappUrl}
           scrollToSection={scrollToSection}
           isDayTrip={isDayTrip}
+          paymentMode={paymentMode}
         />
       </Container>
 
@@ -462,6 +511,7 @@ const PackageDetail = () => {
                   isDayTrip={isDayTrip}
                   currencySymbol={currencySymbol}
                   pkgDays={pkg.days}
+                  paymentMode={paymentMode}
                 />
               )}
             </div>
@@ -522,8 +572,8 @@ const PackageDetail = () => {
               </div>
             )}
 
-            {/* SELECTOR DE MONEDA (VISIBILIDAD GARANTIZADA) */}
-            {acceptedCurrencies.length > 1 && (
+            {/* SELECTOR DE MONEDA (SOLO SI NO ES PAGO DIVIDIDO Y HAY MÁS DE 1 MONEDA) */}
+            {paymentMode !== 'SPLIT' && acceptedCurrencies.length > 1 && (
               <div className="currencySelectorContainer">
                 <span className="currencyLabel">Moneda</span>
                 <div className="currencyButtonGroup">
@@ -545,10 +595,20 @@ const PackageDetail = () => {
               </div>
             )}
 
-            <span className='priceLabel mt-2 d-block'>Valor por persona en base doble</span>
+            <span className='priceLabel mt-2 d-block'>
+              {paymentMode === 'SPLIT'
+                ? 'Valor combinado por persona (ARS + USD)'
+                : 'Valor por persona en base doble'}
+            </span>
             <h2 className='mainPrice'>
-              {currencySymbol} {currentPrice?.toLocaleString('es-AR')}
+              {renderFormattedPrice()}
             </h2>
+
+            {pkg.exchangeRate && (
+              <p className="text-muted small mt-1 mb-2">
+                Tipo de cambio ref: ${pkg.exchangeRate.toLocaleString('es-AR')}
+              </p>
+            )}
 
             <Button
               href={whatsappUrl}
@@ -621,7 +681,7 @@ const PackageDetail = () => {
                         </div>
 
                         <div className="circuitField priceText circuitPriceText" data-label="Precio">
-                          {currencySymbol} {circuitPrice?.toLocaleString('es-AR')}
+                          {renderFormattedPrice(circuitPrice)}
                         </div>
                       </div>
                     )

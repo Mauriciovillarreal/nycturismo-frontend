@@ -169,7 +169,7 @@
 }
 
 .circuitCardRow {
-  grid-template-columns: 1.5fr 3fr 1fr;
+  grid-template-columns: 0.9fr 3fr auto;
 }
 
 .dateCardRowCustom {

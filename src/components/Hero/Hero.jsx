@@ -75,13 +75,6 @@ const Hero = () => {
     <div className='heroWrapper'>
       
       {/* Componente de búsqueda modularizado */}
-      <SearchBar 
-        origin={origin} setOrigin={setOrigin}
-        destination={destination} setDestination={setDestination}
-        date={date} setDate={setDate}
-        origins={origins} destinations={destinations} dates={dates}
-        onSearch={handleSearch}
-      />
 
       {/* SECCIÓN: BANNER PRINCIPAL CON CARRUSEL */}
       <Container fluid className='bannerContainer p-0'>

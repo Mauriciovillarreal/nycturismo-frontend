@@ -28,16 +28,35 @@ const PackageResumeBar = ({
   selectedPrice,
   isDayTrip
 }) => {
-  // Precio a mostrar
-  const displayPrice = selectedPrice || selectedCircuit?.price || 0;
-
   // Ancho dinámico de columnas
   const colSize = isDayTrip ? 4 : 3;
 
   // Rating de estrellas dinámico
   const starRating = selectedHotel?.stars ?? selectedDateObj?.stars ?? 0;
 
-  // Helper para renderizar estrellas dinamicas
+  // Helper para formatear el precio (Maneja Números u Objetos { ars, usd })
+  const renderFormattedPrice = () => {
+    const rawPrice = selectedPrice || selectedCircuit?.price;
+
+    if (!rawPrice) return 'A confirmar';
+
+    // Si es un objeto de pago dividido / mixto
+    if (typeof rawPrice === 'object') {
+      const parts = [];
+      if (rawPrice.ars || rawPrice.ARS) {
+        parts.push(`$ ${(rawPrice.ars || rawPrice.ARS).toLocaleString('es-AR')}`);
+      }
+      if (rawPrice.usd || rawPrice.USD) {
+        parts.push(`US$ ${(rawPrice.usd || rawPrice.USD).toLocaleString('es-AR')}`);
+      }
+      return parts.length > 0 ? parts.join(' + ') : 'A confirmar';
+    }
+
+    // Si es un número simple
+    return `${currencySymbol || '$'} ${Number(rawPrice).toLocaleString('es-AR')}`;
+  };
+
+  // Helper para renderizar estrellas dinámicas
   const renderStars = (rating) => {
     const starsCount = Math.min(Math.max(Number(rating) || 0, 0), 5);
     if (starsCount === 0) return null;
@@ -163,9 +182,9 @@ const PackageResumeBar = ({
             <span className='resumeLabel d-block text-uppercase small fw-bold text-muted '>
               <FaInfoCircle className='me-1' /> Tarifa Final
             </span>
-            <h3 className='mb-0 fw-black text-dark price-display'>
-              {currencySymbol} {displayPrice ? displayPrice.toLocaleString('es-AR') : 'A confirmar'}
-            </h3>
+            <h5 className='mb-0 fw-black text-dark price-display'>
+              {renderFormattedPrice()}
+            </h5>
             <small className='text-muted d-block base-text mt-1'>
               {isDayTrip ? 'Final por persona' : 'Final por persona en base doble'}
             </small>

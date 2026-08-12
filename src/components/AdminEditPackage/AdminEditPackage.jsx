@@ -20,11 +20,13 @@ const AdminEditPackage = () => {
     origin: '',
     destination: '',
     category: '',
-    secondaryCategories: '', // 👈 Manejado como texto separado por comas
+    secondaryCategories: '',
     description: '',
     days: '',
     nights: '',
-    acceptedCurrencies: ['ARS'],
+    paymentMode: 'CHOICE', // 👈 Nuevo: SINGLE, CHOICE, SPLIT
+    acceptedCurrencies: ['ARS', 'USD'],
+    exchangeRate: '', // 👈 Nuevo: Cotización
     featured: false,
     transportType: 'bus',
     transportCategory: '',
@@ -53,7 +55,7 @@ const AdminEditPackage = () => {
         initialCurrencies = [pkg.currency]
       }
       if (initialCurrencies.length === 0) {
-        initialCurrencies = ['ARS']
+        initialCurrencies = ['ARS', 'USD']
       }
 
       // Categorías secundarias
@@ -67,11 +69,13 @@ const AdminEditPackage = () => {
         origin: pkg.origin || '',
         destination: pkg.destination || '',
         category: pkg.category || '',
-        secondaryCategories: initialSecondaryCategories, // 👈 Carga inicial de secundarias
+        secondaryCategories: initialSecondaryCategories,
         description: pkg.description || '',
         days: pkg.days || '',
         nights: pkg.nights || '',
+        paymentMode: pkg.paymentMode || 'CHOICE', // 👈 Carga inicial del modo de pago
         acceptedCurrencies: initialCurrencies,
+        exchangeRate: pkg.exchangeRate ?? '', // 👈 Carga inicial de la cotización
         featured: pkg.featured || false,
         transportType: normalizedMode,
         transportCategory: pkg.transport?.category?.toLowerCase() || '',
@@ -324,7 +328,6 @@ const AdminEditPackage = () => {
       .replace(/\s+/g, '-')
       .replace(/[^\w-]+/g, '')
 
-    // Formatear categorías secundarias en un array limpio
     const secondaryCategoriesArray = formData.secondaryCategories
       ? formData.secondaryCategories
           .split(',')
@@ -339,12 +342,13 @@ const AdminEditPackage = () => {
       origin: formData.origin,
       destination: formData.destination,
       category: formData.category,
-      secondaryCategories: secondaryCategoriesArray, // 👈 Se envía como Array de strings
+      secondaryCategories: secondaryCategoriesArray,
       description: formData.description,
       days: Number(formData.days),
       nights: Number(formData.nights),
+      paymentMode: formData.paymentMode, // 👈 Se envía la modalidad de pago
       acceptedCurrencies: formData.acceptedCurrencies,
-      currency: formData.acceptedCurrencies[0] || 'ARS',
+      exchangeRate: formData.exchangeRate !== '' ? Number(formData.exchangeRate) : null, // 👈 Se envía la cotización
       featured: formData.featured,
       transport: {
         mode: formData.transportType,
@@ -484,7 +488,7 @@ const AdminEditPackage = () => {
             </Col>
 
             {/* Días */}
-            <Col md={4}>
+            <Col md={3}>
               <Form.Group className="mb-3">
                 <Form.Label>Días</Form.Label>
                 <Form.Control
@@ -498,7 +502,7 @@ const AdminEditPackage = () => {
             </Col>
 
             {/* Noches */}
-            <Col md={4}>
+            <Col md={3}>
               <Form.Group className="mb-3">
                 <Form.Label>Noches</Form.Label>
                 <Form.Control
@@ -511,8 +515,29 @@ const AdminEditPackage = () => {
               </Form.Group>
             </Col>
 
+            {/* Modalidad de Pago (NUEVO) */}
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label className="fw-semibold">Modalidad de Cobro/Pago</Form.Label>
+                <Form.Select
+                  name="paymentMode"
+                  value={formData.paymentMode}
+                  onChange={handleChange}
+                >
+                  <option value="CHOICE">Elección (Paga el 100% en ARS o el 100% en USD)</option>
+                  <option value="SPLIT">Dividido (Paga una parte en ARS Y otra en USD)</option>
+                  <option value="SINGLE">Moneda Única (Solo acepta 1 moneda)</option>
+                </Form.Select>
+                <Form.Text className="text-muted small">
+                  {formData.paymentMode === 'CHOICE' && '💡 El cliente podrá seleccionar pagar en Pesos O en Dólares.'}
+                  {formData.paymentMode === 'SPLIT' && '💡 La tarifa sumará obligatoriamente ambos montos (ARS + USD).'}
+                  {formData.paymentMode === 'SINGLE' && '💡 Se cobrará exclusivamente en la moneda seleccionada.'}
+                </Form.Text>
+              </Form.Group>
+            </Col>
+
             {/* Monedas Aceptadas */}
-            <Col md={4}>
+            <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Monedas Aceptadas</Form.Label>
                 <div className="d-flex gap-3 pt-1">
@@ -531,6 +556,20 @@ const AdminEditPackage = () => {
                     onChange={() => handleCurrencyToggle('USD')}
                   />
                 </div>
+              </Form.Group>
+            </Col>
+
+            {/* Cotización / Tipo de Cambio (NUEVO) */}
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Cotización / Tipo de Cambio (Opcional)</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="exchangeRate"
+                  placeholder="Ej: 1250"
+                  value={formData.exchangeRate}
+                  onChange={handleChange}
+                />
               </Form.Group>
             </Col>
 

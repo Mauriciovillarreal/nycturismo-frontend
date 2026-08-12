@@ -20,10 +20,12 @@ const AdminCreatePackage = () => {
     origin: '',
     destination: '',
     category: '',
-    secondaryCategories: '', // 👈 Estado para categorías secundarias (texto separado por comas)
+    secondaryCategories: '',
     description: '',
     days: '',
     nights: '',
+    paymentMode: 'choice',
+    exchangeRate: '',
     currency: 'ARS',
     acceptedCurrencies: ['ARS'],
     featured: false,
@@ -55,7 +57,7 @@ const AdminCreatePackage = () => {
     ]
   })
 
-  // Manejo de cambios generales y checkboxes de Monedas
+  // Manejo de cambios generales
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
 
@@ -95,17 +97,14 @@ const AdminCreatePackage = () => {
     })
   }
 
-  // --- MANEJO DE IMÁGENES ---
+  // --- IMÁGENES ---
   const handleImageChange = (index, value) => {
     const updatedImages = [...formData.images]
     updatedImages[index] = value
-    setFormData({
-      ...formData,
-      images: updatedImages
-    })
+    setFormData({ ...formData, images: updatedImages })
   }
 
-  // --- MANEJO DE CIRCUITOS ---
+  // --- CIRCUITOS ---
   const addCircuit = () => {
     setFormData((prev) => ({
       ...prev,
@@ -152,7 +151,7 @@ const AdminCreatePackage = () => {
     })
   }
 
-  // --- MANEJO DE OPCIONES DE CIRCUITO ---
+  // --- OPCIONES DE CIRCUITO ---
   const addOption = (circuitIndex) => {
     setFormData((prev) => {
       const newCircuits = prev.circuits.map((circuit, cIdx) => {
@@ -236,7 +235,7 @@ const AdminCreatePackage = () => {
     })
   }
 
-  // --- MANEJO DE HOTELES ---
+  // --- HOTELES ---
   const addHotel = (circuitIndex) => {
     setFormData((prev) => {
       const newCircuits = [...prev.circuits]
@@ -283,7 +282,7 @@ const AdminCreatePackage = () => {
     })
   }
 
-  // --- MANEJO DE SALIDAS Y PRECIOS ---
+  // --- SALIDAS Y PRECIOS POR HOTEL ---
   const addDeparture = (circuitIndex, hotelIndex) => {
     setFormData((prev) => {
       const newCircuits = [...prev.circuits]
@@ -327,13 +326,39 @@ const AdminCreatePackage = () => {
       const newCircuits = [...prev.circuits]
       const priceObj = newCircuits[circuitIndex].hotels[hotelIndex].departures[depIndex].prices[priceIndex]
 
-      if (!priceObj.amounts) {
-        priceObj.amounts = { ars: '', usd: '' }
-      }
-
+      if (!priceObj.amounts) priceObj.amounts = { ars: '', usd: '' }
       priceObj.amounts[curr] = val
+
       return { ...prev, circuits: newCircuits }
     })
+  }
+
+  // --- MAPEAR PRECIOS LIMPIOS ---
+  const mapDepartures = (departures) => {
+    return departures
+      .filter((dep) => dep.date !== '')
+      .map((dep) => {
+        const cleanedPrices = dep.prices
+          .filter((p) => p.option && p.option.trim() !== '')
+          .map((p) => {
+            const arsNum = Number(p.amounts?.ars)
+            const usdNum = Number(p.amounts?.usd)
+            return {
+              option: p.option.trim(),
+              amount: !isNaN(arsNum) && arsNum > 0 ? arsNum : undefined,
+              amountUsd: !isNaN(usdNum) && usdNum > 0 ? usdNum : undefined,
+              amounts: {
+                ars: !isNaN(arsNum) && arsNum > 0 ? arsNum : undefined,
+                usd: !isNaN(usdNum) && usdNum > 0 ? usdNum : undefined
+              }
+            }
+          })
+
+        return {
+          date: dep.date,
+          prices: cleanedPrices
+        }
+      })
   }
 
   // --- SUBMIT ---
@@ -346,7 +371,6 @@ const AdminCreatePackage = () => {
       .replace(/\s+/g, '-')
       .replace(/[^\w-]+/g, '')
 
-    // Formatear categorías secundarias en un Array de strings
     const secondaryCategoriesArray = formData.secondaryCategories
       ? formData.secondaryCategories
           .split(',')
@@ -368,41 +392,13 @@ const AdminCreatePackage = () => {
         .filter((opt) => opt.name !== '')
 
       const cleanedHotels = circuit.hotels
-        .map((hotel) => {
-          const cleanedDepartures = hotel.departures
-            .filter((dep) => dep.date !== '')
-            .map((dep) => {
-              const cleanedPrices = dep.prices
-                .filter((p) => p.option && p.option.trim() !== '')
-                .map((p) => {
-                  const arsNum = Number(p.amounts?.ars)
-                  const usdNum = Number(p.amounts?.usd)
-                  
-                  return {
-                    option: p.option.trim(),
-                    amount: !isNaN(arsNum) && arsNum > 0 ? arsNum : undefined,
-                    amountUsd: !isNaN(usdNum) && usdNum > 0 ? usdNum : undefined,
-                    amounts: {
-                      ars: !isNaN(arsNum) && arsNum > 0 ? arsNum : undefined,
-                      usd: !isNaN(usdNum) && usdNum > 0 ? usdNum : undefined
-                    }
-                  }
-                })
-
-              return {
-                date: dep.date,
-                prices: cleanedPrices
-              }
-            })
-
-          return {
-            name: hotel.name.trim(),
-            image: hotel.image.trim(),
-            city: hotel.city.trim(),
-            stars: Number(hotel.stars),
-            departures: cleanedDepartures
-          }
-        })
+        .map((hotel) => ({
+          name: hotel.name.trim(),
+          image: hotel.image.trim(),
+          city: hotel.city.trim(),
+          stars: Number(hotel.stars),
+          departures: mapDepartures(hotel.departures)
+        }))
         .filter((h) => h.name !== '')
 
       return {
@@ -422,10 +418,12 @@ const AdminCreatePackage = () => {
       origin: formData.origin.trim(),
       destination: formData.destination.trim(),
       category: formData.category.trim(),
-      secondaryCategories: secondaryCategoriesArray, // 👈 Se envía como Array
+      secondaryCategories: secondaryCategoriesArray,
       description: formData.description.trim(),
       days: Number(formData.days),
       nights: Number(formData.nights),
+      paymentMode: formData.paymentMode,
+      exchangeRate: formData.exchangeRate ? Number(formData.exchangeRate) : undefined,
       currency: formData.acceptedCurrencies[0] || 'ARS',
       acceptedCurrencies: formData.acceptedCurrencies,
       featured: formData.featured,
@@ -455,7 +453,7 @@ const AdminCreatePackage = () => {
 
         <Form onSubmit={handleSubmit}>
           <Row>
-            {/* TITULO */}
+            {/* TÍTULO */}
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Título</Form.Label>
@@ -464,7 +462,7 @@ const AdminCreatePackage = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  placeholder="Ej: Japón Soñado 2026"
+                  placeholder="Ej: Villa Carlos Paz - agosto"
                   required
                 />
               </Form.Group>
@@ -479,12 +477,12 @@ const AdminCreatePackage = () => {
                   name="operatorCode"
                   value={formData.operatorCode}
                   onChange={handleChange}
-                  placeholder="Ej: OP-7721"
+                  placeholder="Ej: RUTA 86"
                 />
               </Form.Group>
             </Col>
 
-            {/* CATEGORIA PRINCIPAL */}
+            {/* CATEGORÍA PRINCIPAL */}
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Categoría Principal</Form.Label>
@@ -493,13 +491,13 @@ const AdminCreatePackage = () => {
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  placeholder="Ej: Miniturismo, Nacionales, Internacional..."
+                  placeholder="Ej: Finde largo, Miniturismo..."
                   required
                 />
               </Form.Group>
             </Col>
 
-            {/* CATEGORIAS SECUNDARIAS */}
+            {/* CATEGORÍAS SECUNDARIAS */}
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Categorías Secundarias (separadas por comas)</Form.Label>
@@ -508,7 +506,7 @@ const AdminCreatePackage = () => {
                   name="secondaryCategories"
                   value={formData.secondaryCategories}
                   onChange={handleChange}
-                  placeholder="Ej: Paquetes en bus, Finde largo, Vacaciones de verano"
+                  placeholder="Ej: Paquetes en Aéreo, Miniturismo"
                 />
               </Form.Group>
             </Col>
@@ -537,14 +535,14 @@ const AdminCreatePackage = () => {
                   name="destination"
                   value={formData.destination}
                   onChange={handleChange}
-                  placeholder="Ej: Japón"
+                  placeholder="Ej: Villa Carlos Paz"
                   required
                 />
               </Form.Group>
             </Col>
 
-            {/* DIAS */}
-            <Col md={2}>
+            {/* DÍAS Y NOCHES */}
+            <Col md={3}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Días</Form.Label>
                 <Form.Control
@@ -557,8 +555,7 @@ const AdminCreatePackage = () => {
               </Form.Group>
             </Col>
 
-            {/* NOCHES */}
-            <Col md={2}>
+            <Col md={3}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Noches</Form.Label>
                 <Form.Control
@@ -571,8 +568,28 @@ const AdminCreatePackage = () => {
               </Form.Group>
             </Col>
 
+            {/* MODALIDAD DE COBRO / PAGO */}
+       {/* MODALIDAD DE COBRO / PAGO */}
+<Col md={6}>
+  <Form.Group className="mb-3">
+    <Form.Label className="fw-semibold">Modalidad de Cobro/Pago</Form.Label>
+    <Form.Select
+      name="paymentMode"
+      value={formData.paymentMode}
+      onChange={handleChange}
+    >
+      <option value="choice">Elección (Paga el 100% en ARS o el 100% en USD)</option>
+      <option value="split">Dividido (Paga una parte en ARS Y otra en USD)</option>
+      <option value="single">Moneda Única (Solo acepta 1 moneda)</option>
+    </Form.Select>
+    <Form.Text className="text-muted small">
+      💡 Seleccioná cómo el cliente abonará esta tarifa.
+    </Form.Text>
+  </Form.Group>
+</Col>
+
             {/* MONEDAS ACEPTADAS */}
-            <Col md={4}>
+            <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold d-block">Monedas Aceptadas</Form.Label>
                 <div className="d-flex gap-3 pt-1">
@@ -598,8 +615,22 @@ const AdminCreatePackage = () => {
               </Form.Group>
             </Col>
 
+            {/* COTIZACIÓN / TIPO DE CAMBIO */}
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label className="fw-semibold">Cotización / Tipo de Cambio (Opcional)</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="exchangeRate"
+                  value={formData.exchangeRate}
+                  onChange={handleChange}
+                  placeholder="Ej: 1250"
+                />
+              </Form.Group>
+            </Col>
+
             {/* TRANSPORTE */}
-            <Col md={2}>
+            <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Transporte</Form.Label>
                 <Form.Select
@@ -613,10 +644,10 @@ const AdminCreatePackage = () => {
               </Form.Group>
             </Col>
 
-            {/* TIPO CATEGORIA TRANSPORTE */}
-            <Col md={2}>
+            {/* TIPO / CLASE DE SERVICIO */}
+            <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label className="fw-semibold">Tipo/Clase</Form.Label>
+                <Form.Label className="fw-semibold">Tipo / Clase de servicio</Form.Label>
                 <Form.Select
                   name="transportCategory"
                   value={formData.transportCategory}
@@ -643,10 +674,10 @@ const AdminCreatePackage = () => {
               </Form.Group>
             </Col>
 
-            {/* DESCRIPCION */}
+            {/* DESCRIPCIÓN */}
             <Col md={12}>
               <Form.Group className="mb-3">
-                <Form.Label className="fw-semibold">Descripción del viaje</Form.Label>
+                <Form.Label className="fw-semibold">Descripción</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={4}
@@ -660,10 +691,10 @@ const AdminCreatePackage = () => {
 
             <hr className="my-4 text-muted" />
 
-            {/* URLs DE IMÁGENES */}
+            {/* IMÁGENES */}
             <Col md={12} className="mb-3">
               <h4 className="fw-bold m-0"><FaImage className="me-2 text-secondary" />URLs de Imágenes (Máx. 5)</h4>
-              <p className="text-muted small mb-0">La primera imagen cargada se tomará como la portada principal del paquete.</p>
+              <p className="text-muted small mb-0">La primera imagen es la portada principal.</p>
             </Col>
 
             <Col md={12} className="mb-4">
@@ -713,11 +744,11 @@ const AdminCreatePackage = () => {
                   <Row>
                     <Col md={12}>
                       <Form.Group className="mb-3">
-                        <Form.Label className="small fw-bold">Nombre del Circuito</Form.Label>
+                        <Form.Label className="small fw-bold">Título del Circuito</Form.Label>
                         <Form.Control
                           type="text"
                           value={circuit.title}
-                          placeholder="Ej: Clásico, Premium, etc."
+                          placeholder="Ej: CIRCUITO 1"
                           onChange={(e) => handleCircuitChange(circuitIndex, 'title', e.target.value)}
                           required
                         />
@@ -726,11 +757,11 @@ const AdminCreatePackage = () => {
 
                     <Col md={12}>
                       <Form.Group className="mb-3">
-                        <Form.Label className="small fw-bold">Descripción del Circuito</Form.Label>
+                        <Form.Label className="small fw-bold">Descripción corta</Form.Label>
                         <Form.Control
                           type="text"
                           value={circuit.description}
-                          placeholder="Ej: Recorrido completo por la costa norte"
+                          placeholder="Ej: Paquete completo con bus ida y vta + traslados..."
                           onChange={(e) => handleCircuitChange(circuitIndex, 'description', e.target.value)}
                         />
                       </Form.Group>
@@ -738,24 +769,24 @@ const AdminCreatePackage = () => {
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label className="small fw-bold">¿Qué Incluye? (separado por comas)</Form.Label>
+                        <Form.Label className="small fw-bold">Incluye (separado por comas)</Form.Label>
                         <Form.Control
                           type="text"
                           value={circuit.includes}
                           onChange={(e) => handleCircuitChange(circuitIndex, 'includes', e.target.value)}
-                          placeholder="Pasaje aéreo, Equipaje, Guía..."
+                          placeholder="Bus semicama ida y vta, Traslados in/out..."
                         />
                       </Form.Group>
                     </Col>
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label className="small fw-bold">¿Qué NO incluye? (separado por comas)</Form.Label>
+                        <Form.Label className="small fw-bold">No Incluye (separado por comas)</Form.Label>
                         <Form.Control
                           type="text"
                           value={circuit.excludes}
                           onChange={(e) => handleCircuitChange(circuitIndex, 'excludes', e.target.value)}
-                          placeholder="Propinas, comidas no especificadas..."
+                          placeholder="Comidas en ruta, Entradas a parques..."
                         />
                       </Form.Group>
                     </Col>
@@ -763,7 +794,7 @@ const AdminCreatePackage = () => {
 
                   <hr className="my-3 text-muted" />
 
-                  {/* OPCIONES DE RÉGIMEN / SERVICIO */}
+                  {/* OPCIONES DE CIRCUITO */}
                   <div className="mb-3">
                     <div className="d-flex justify-content-between align-items-center mb-2">
                       <h6 className="fw-bold m-0 text-dark">Opciones del Circuito</h6>
@@ -785,7 +816,7 @@ const AdminCreatePackage = () => {
                               <Form.Control
                                 type="text"
                                 value={option.name}
-                                placeholder="Ej: Desayuno, Media Pensión, All Inclusive"
+                                placeholder="Ej: Desayuno, Media Pensión"
                                 onChange={(e) => handleOptionNameChange(circuitIndex, optionIndex, e.target.value)}
                                 required
                               />
@@ -800,7 +831,7 @@ const AdminCreatePackage = () => {
                               onClick={() => removeOption(circuitIndex, optionIndex)}
                               disabled={circuit.options.length === 1}
                             >
-                              <FaTrash /> Eliminar
+                              Eliminar
                             </Button>
                           </Col>
                         </Row>
@@ -835,7 +866,7 @@ const AdminCreatePackage = () => {
                               size="sm"
                               onClick={() => removeHotel(circuitIndex, hotelIndex)}
                             >
-                              Eliminar Hotel
+                              Quitar Hotel
                             </Button>
                           )}
                         </div>
@@ -843,11 +874,11 @@ const AdminCreatePackage = () => {
                         <Row className="g-2 mb-3">
                           <Col md={4}>
                             <Form.Group>
-                              <Form.Label className="small fw-bold text-secondary mb-1">Nombre del Hotel</Form.Label>
+                              <Form.Label className="small fw-bold text-secondary mb-1">Nombre</Form.Label>
                               <Form.Control
                                 type="text"
                                 value={hotel.name}
-                                placeholder="Ej: Hotel Gran Palace"
+                                placeholder="Ej: Hotel Guarumba"
                                 onChange={(e) => handleHotelChange(circuitIndex, hotelIndex, 'name', e.target.value)}
                                 required
                               />
@@ -860,9 +891,21 @@ const AdminCreatePackage = () => {
                               <Form.Control
                                 type="text"
                                 value={hotel.city}
-                                placeholder="Ej: Tokio"
+                                placeholder="Ej: Federación"
                                 onChange={(e) => handleHotelChange(circuitIndex, hotelIndex, 'city', e.target.value)}
                                 required
+                              />
+                            </Form.Group>
+                          </Col>
+
+                          <Col md={3}>
+                            <Form.Group>
+                              <Form.Label className="small fw-bold text-secondary mb-1">Imagen (URL)</Form.Label>
+                              <Form.Control
+                                type="text"
+                                value={hotel.image}
+                                placeholder="https://..."
+                                onChange={(e) => handleHotelChange(circuitIndex, hotelIndex, 'image', e.target.value)}
                               />
                             </Form.Group>
                           </Col>
@@ -874,29 +917,17 @@ const AdminCreatePackage = () => {
                                 value={hotel.stars}
                                 onChange={(e) => handleHotelChange(circuitIndex, hotelIndex, 'stars', e.target.value)}
                               >
-                                <option value={1}>1 ★</option>
-                                <option value={2}>2 ★★</option>
-                                <option value={3}>3 ★★★</option>
-                                <option value={4}>4 ★★★★</option>
-                                <option value={5}>5 ★★★★★</option>
+                                <option value={1}>1</option>
+                                <option value={2}>2</option>
+                                <option value={3}>3</option>
+                                <option value={4}>4</option>
+                                <option value={5}>5</option>
                               </Form.Select>
-                            </Form.Group>
-                          </Col>
-
-                          <Col md={3}>
-                            <Form.Group>
-                              <Form.Label className="small fw-bold text-secondary mb-1">Imagen del Hotel (URL)</Form.Label>
-                              <Form.Control
-                                type="text"
-                                value={hotel.image}
-                                placeholder="https://ejemplo.com/hotel.jpg"
-                                onChange={(e) => handleHotelChange(circuitIndex, hotelIndex, 'image', e.target.value)}
-                              />
                             </Form.Group>
                           </Col>
                         </Row>
 
-                        {/* SALIDAS Y PRECIOS POR MONEDA */}
+                        {/* SALIDAS DEL HOTEL */}
                         <div className="mt-2 bg-white p-3 rounded-2 border">
                           <div className="d-flex justify-content-between align-items-center mb-2">
                             <span className="fw-bold small text-primary d-flex align-items-center gap-1">
@@ -931,7 +962,7 @@ const AdminCreatePackage = () => {
                                   <Form.Label className="small fw-bold text-secondary mb-1 d-block">
                                     Precios por Opción
                                   </Form.Label>
-                                  
+
                                   <div className="d-flex flex-wrap gap-2">
                                     {circuit.options.map((opt, optIdx) => {
                                       const priceObj = dep.prices[optIdx] || { amounts: { ars: '', usd: '' } }
@@ -942,7 +973,7 @@ const AdminCreatePackage = () => {
                                           <div className="small fw-semibold text-dark mb-1">
                                             {opt.name || `Opción ${optIdx + 1}`}
                                           </div>
-                                          
+
                                           <div className="d-flex gap-2">
                                             {formData.acceptedCurrencies.includes('ARS') && (
                                               <div className="w-100">
@@ -1014,7 +1045,7 @@ const AdminCreatePackage = () => {
               </Button>
             </Col>
 
-            {/* DESTACADO */}
+            {/* DESTACADO Y SUBMIT */}
             <Col md={12}>
               <Form.Group className="mb-4">
                 <Form.Check
@@ -1029,7 +1060,6 @@ const AdminCreatePackage = () => {
               </Form.Group>
             </Col>
 
-            {/* BOTÓN SUBMIT */}
             <Col md={12}>
               <Button
                 type="submit"

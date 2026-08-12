@@ -31,8 +31,8 @@ const PackageCard = ({ pkg, calculatedPrice, currencySymbol: propSymbol }) => {
 
   const getCurrencySymbol = () => {
     if (propSymbol) return propSymbol;
-    if (isUsdOnly || pkg.currency === 'USD') return 'US$ ';
-    return '$ ';
+    if (isUsdOnly || pkg.currency === 'USD') return 'US$';
+    return '$';
   };
 
   const currencySymbol = getCurrencySymbol();
