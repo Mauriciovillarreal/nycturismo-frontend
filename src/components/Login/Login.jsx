@@ -28,7 +28,7 @@ const Login = () => {
       {/* Lado Izquierdo */}
       <div className="login-image">
         <div className="overlay">
-         
+          <img src="./img/data-upload.png" alt="" />
         </div>
       </div>
 
@@ -36,13 +36,13 @@ const Login = () => {
       <div className="login-form-container">
         <div className="login-card">
 
-         
+
 
           {error && <Alert variant="danger">{error}</Alert>}
 
           <Form onSubmit={handleSubmit} className="loginForm">
             <Form.Group className="mb-3">
-            
+
               <Form.Control
                 type="email"
                 value={email}
@@ -53,7 +53,7 @@ const Login = () => {
             </Form.Group>
 
             <Form.Group className="mb-4">
-              
+
               <Form.Control
                 type="password"
                 value={password}

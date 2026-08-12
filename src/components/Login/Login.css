@@ -12,6 +12,10 @@
     position: relative;
 }
 
+.overlay img {
+    width: 400px;
+}
+
 .login-image .overlay {
     position: absolute;
     inset: 0;

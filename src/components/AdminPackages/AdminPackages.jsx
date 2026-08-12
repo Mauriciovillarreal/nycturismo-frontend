@@ -5,7 +5,8 @@ import {
   Col,
   Button,
   Table,
-  Form
+  Form,
+  Badge
 } from 'react-bootstrap'
 
 import { Link } from 'react-router-dom'
@@ -13,7 +14,6 @@ import { Link } from 'react-router-dom'
 import api from '../../services/api'
 
 const AdminPackages = () => {
-
   const [packages, setPackages] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('')
 
@@ -45,25 +45,35 @@ const AdminPackages = () => {
     }
   }
 
-  // Helper para buscar el precio de referencia de un paquete
-  const getMinPackagePrice = (pkg) => {
-    const firstCircuit = pkg.circuits?.[0]
-    if (!firstCircuit) return 0
+  // Helper para buscar los precios mínimos de referencia en ARS y USD
+  const getMinPackagePrices = (pkg) => {
+    let minArs = Infinity
+    let minUsd = Infinity
 
-    let minPrice = Infinity
+    pkg.circuits?.forEach(circuit => {
+      circuit.hotels?.forEach(hotel => {
+        hotel.departures?.forEach(departure => {
+          departure.prices?.forEach(priceItem => {
+            // Evaluamos ARS (soporta amounts.ars y el campo legacy amount)
+            const arsVal = priceItem.amounts?.ars ?? priceItem.amount
+            if (arsVal && Number(arsVal) > 0 && Number(arsVal) < minArs) {
+              minArs = Number(arsVal)
+            }
 
-    // Recorremos los hoteles, salidas y precios del primer circuito para encontrar el menor precio
-    firstCircuit.hotels?.forEach(hotel => {
-      hotel.departures?.forEach(departure => {
-        departure.prices?.forEach(priceItem => {
-          if (priceItem.amount && priceItem.amount < minPrice) {
-            minPrice = priceItem.amount
-          }
+            // Evaluamos USD (soporta amounts.usd y el campo legacy amountUsd)
+            const usdVal = priceItem.amounts?.usd ?? priceItem.amountUsd
+            if (usdVal && Number(usdVal) > 0 && Number(usdVal) < minUsd) {
+              minUsd = Number(usdVal)
+            }
+          })
         })
       })
     })
 
-    return minPrice !== Infinity ? minPrice : 0
+    return {
+      ars: minArs !== Infinity ? minArs : null,
+      usd: minUsd !== Infinity ? minUsd : null
+    }
   }
 
   // Obtener categorías únicas disponibles dinámicamente
@@ -130,7 +140,7 @@ const AdminPackages = () => {
             <th>Destino</th>
             <th>Categoría</th>
             <th>Duración</th>
-            <th>Precio Desde</th>
+            <th>Monedas / Precio Desde</th>
             <th>Transporte</th>
             <th>Acciones</th>
           </tr>
@@ -139,11 +149,13 @@ const AdminPackages = () => {
         <tbody>
           {filteredPackages.length > 0 ? (
             filteredPackages.map(pkg => {
-              // 1. La moneda viene en la raíz del paquete (según Schema)
-              const currency = pkg.currency === 'USD' ? 'US$' : '$'
+              // 1. Calculamos los precios mínimos actualizados
+              const minPrices = getMinPackagePrices(pkg)
 
-              // 2. Calculamos el precio desde el schema anidado
-              const price = getMinPackagePrice(pkg)
+              // 2. Monedas aceptadas (Array o fallback a currency raíz)
+              const accepted = pkg.acceptedCurrencies?.length
+                ? pkg.acceptedCurrencies
+                : [pkg.currency || 'ARS']
 
               // 3. Transporte
               const currentTransportMode = pkg.transport?.mode || pkg.transport?.type || 'bus'
@@ -170,7 +182,25 @@ const AdminPackages = () => {
                   </td>
 
                   <td>
-                    {currency} {price > 0 ? price.toLocaleString('es-AR') : 'A consultar'}
+                    <div className="d-flex flex-column gap-1">
+                      {accepted.includes('ARS') && (
+                        <div>
+                          <Badge bg="secondary" className="me-1">ARS</Badge>
+                          <small className="fw-semibold">
+                            {minPrices.ars ? `$ ${minPrices.ars.toLocaleString('es-AR')}` : 'Sin precio'}
+                          </small>
+                        </div>
+                      )}
+
+                      {accepted.includes('USD') && (
+                        <div>
+                          <Badge bg="success" className="me-1">USD</Badge>
+                          <small className="fw-semibold">
+                            {minPrices.usd ? `US$ ${minPrices.usd.toLocaleString('es-AR')}` : 'Sin precio'}
+                          </small>
+                        </div>
+                      )}
+                    </div>
                   </td>
 
                   <td>

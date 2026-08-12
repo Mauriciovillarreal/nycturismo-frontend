@@ -24,6 +24,7 @@ const AdminCreatePackage = () => {
     days: '',
     nights: '',
     currency: 'ARS',
+    acceptedCurrencies: ['ARS'],
     featured: false,
     transportType: 'bus',
     transportCategory: '',
@@ -44,7 +45,7 @@ const AdminCreatePackage = () => {
             departures: [
               {
                 date: '',
-                prices: [{ option: 'Desayuno', amount: '' }]
+                prices: [{ option: 'Desayuno', amounts: { ars: '', usd: '' } }]
               }
             ]
           }
@@ -53,9 +54,32 @@ const AdminCreatePackage = () => {
     ]
   })
 
-  // Manejo de cambios en datos generales
+  // Manejo de cambios generales y checkboxes de Monedas
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
+
+    if (name === 'acceptedCurrencies') {
+      const currencyValue = value
+      let updatedCurrencies = [...formData.acceptedCurrencies]
+
+      if (checked) {
+        if (!updatedCurrencies.includes(currencyValue)) {
+          updatedCurrencies.push(currencyValue)
+        }
+      } else {
+        // Evitar desmarcar todas
+        if (updatedCurrencies.length > 1) {
+          updatedCurrencies = updatedCurrencies.filter((c) => c !== currencyValue)
+        }
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        acceptedCurrencies: updatedCurrencies,
+        currency: updatedCurrencies[0] || 'ARS'
+      }))
+      return
+    }
 
     setFormData((prevData) => {
       const updatedData = {
@@ -102,7 +126,7 @@ const AdminCreatePackage = () => {
               departures: [
                 {
                   date: '',
-                  prices: [{ option: 'Desayuno', amount: '' }]
+                  prices: [{ option: 'Desayuno', amounts: { ars: '', usd: '' } }]
                 }
               ]
             }
@@ -128,7 +152,7 @@ const AdminCreatePackage = () => {
     })
   }
 
-  // --- MANEJO DE OPCIONES DE CIRCUITO (CORREGIDO INMUTABLE) ---
+  // --- MANEJO DE OPCIONES DE CIRCUITO ---
   const addOption = (circuitIndex) => {
     setFormData((prev) => {
       const newCircuits = prev.circuits.map((circuit, cIdx) => {
@@ -139,7 +163,7 @@ const AdminCreatePackage = () => {
         const newHotels = circuit.hotels.map((hotel) => {
           const newDepartures = hotel.departures.map((dep) => ({
             ...dep,
-            prices: [...dep.prices, { option: '', amount: '' }]
+            prices: [...dep.prices, { option: '', amounts: { ars: '', usd: '' } }]
           }))
           return { ...hotel, departures: newDepartures }
         })
@@ -220,7 +244,7 @@ const AdminCreatePackage = () => {
 
       const initialPrices = circuit.options.map((opt) => ({
         option: opt.name,
-        amount: ''
+        amounts: { ars: '', usd: '' }
       }))
 
       circuit.hotels.push({
@@ -259,7 +283,7 @@ const AdminCreatePackage = () => {
     })
   }
 
-  // --- MANEJO DE SALIDAS ---
+  // --- MANEJO DE SALIDAS Y PRECIOS ---
   const addDeparture = (circuitIndex, hotelIndex) => {
     setFormData((prev) => {
       const newCircuits = [...prev.circuits]
@@ -268,7 +292,7 @@ const AdminCreatePackage = () => {
 
       const initialPrices = circuit.options.map((opt) => ({
         option: opt.name,
-        amount: ''
+        amounts: { ars: '', usd: '' }
       }))
 
       hotel.departures.push({
@@ -298,10 +322,16 @@ const AdminCreatePackage = () => {
     })
   }
 
-  const handlePriceChange = (circuitIndex, hotelIndex, depIndex, priceIndex, amountValue) => {
+  const handleAmountChange = (circuitIndex, hotelIndex, depIndex, priceIndex, curr, val) => {
     setFormData((prev) => {
       const newCircuits = [...prev.circuits]
-      newCircuits[circuitIndex].hotels[hotelIndex].departures[depIndex].prices[priceIndex].amount = amountValue
+      const priceObj = newCircuits[circuitIndex].hotels[hotelIndex].departures[depIndex].prices[priceIndex]
+
+      if (!priceObj.amounts) {
+        priceObj.amounts = { ars: '', usd: '' }
+      }
+
+      priceObj.amounts[curr] = val
       return { ...prev, circuits: newCircuits }
     })
   }
@@ -335,11 +365,21 @@ const AdminCreatePackage = () => {
             .filter((dep) => dep.date !== '')
             .map((dep) => {
               const cleanedPrices = dep.prices
-                .filter((p) => p.option && p.option.trim() !== '' && p.amount !== '')
-                .map((p) => ({
-                  option: p.option.trim(),
-                  amount: Number(p.amount)
-                }))
+                .filter((p) => p.option && p.option.trim() !== '')
+                .map((p) => {
+                  const arsNum = Number(p.amounts?.ars)
+                  const usdNum = Number(p.amounts?.usd)
+                  
+                  return {
+                    option: p.option.trim(),
+                    amount: !isNaN(arsNum) && arsNum > 0 ? arsNum : undefined,
+                    amountUsd: !isNaN(usdNum) && usdNum > 0 ? usdNum : undefined,
+                    amounts: {
+                      ars: !isNaN(arsNum) && arsNum > 0 ? arsNum : undefined,
+                      usd: !isNaN(usdNum) && usdNum > 0 ? usdNum : undefined
+                    }
+                  }
+                })
 
               return {
                 date: dep.date,
@@ -377,7 +417,8 @@ const AdminCreatePackage = () => {
       description: formData.description.trim(),
       days: Number(formData.days),
       nights: Number(formData.nights),
-      currency: formData.currency,
+      currency: formData.acceptedCurrencies[0] || 'ARS',
+      acceptedCurrencies: formData.acceptedCurrencies,
       featured: formData.featured,
       transport: {
         mode: formData.transportType,
@@ -421,7 +462,7 @@ const AdminCreatePackage = () => {
             </Col>
 
             {/* CÓDIGO DE OPERADOR */}
-            <Col md={6}>
+            <Col md={3}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Código de Operador</Form.Label>
                 <Form.Control
@@ -435,7 +476,7 @@ const AdminCreatePackage = () => {
             </Col>
 
             {/* CATEGORIA */}
-            <Col md={4}>
+            <Col md={3}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Categoría</Form.Label>
                 <Form.Control
@@ -450,7 +491,7 @@ const AdminCreatePackage = () => {
             </Col>
 
             {/* ORIGEN */}
-            <Col md={4}>
+            <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Origen</Form.Label>
                 <Form.Control
@@ -465,7 +506,7 @@ const AdminCreatePackage = () => {
             </Col>
 
             {/* DESTINO */}
-            <Col md={4}>
+            <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Destino</Form.Label>
                 <Form.Control
@@ -480,9 +521,9 @@ const AdminCreatePackage = () => {
             </Col>
 
             {/* DIAS */}
-            <Col md={3}>
+            <Col md={2}>
               <Form.Group className="mb-3">
-                <Form.Label className="fw-semibold">Cantidad de días</Form.Label>
+                <Form.Label className="fw-semibold">Días</Form.Label>
                 <Form.Control
                   type="number"
                   name="days"
@@ -494,9 +535,9 @@ const AdminCreatePackage = () => {
             </Col>
 
             {/* NOCHES */}
-            <Col md={3}>
+            <Col md={2}>
               <Form.Group className="mb-3">
-                <Form.Label className="fw-semibold">Cantidad de noches</Form.Label>
+                <Form.Label className="fw-semibold">Noches</Form.Label>
                 <Form.Control
                   type="number"
                   name="nights"
@@ -507,18 +548,30 @@ const AdminCreatePackage = () => {
               </Form.Group>
             </Col>
 
-            {/* MONEDA GENERAL */}
-            <Col md={2}>
+            {/* MONEDAS ACEPTADAS */}
+            <Col md={4}>
               <Form.Group className="mb-3">
-                <Form.Label className="fw-semibold">Moneda</Form.Label>
-                <Form.Select
-                  name="currency"
-                  value={formData.currency}
-                  onChange={handleChange}
-                >
-                  <option value="ARS">Pesos ($)</option>
-                  <option value="USD">Dólares (US$)</option>
-                </Form.Select>
+                <Form.Label className="fw-semibold d-block">Monedas Aceptadas</Form.Label>
+                <div className="d-flex gap-3 pt-1">
+                  <Form.Check
+                    type="checkbox"
+                    id="create-curr-ars"
+                    label="Pesos (ARS)"
+                    value="ARS"
+                    name="acceptedCurrencies"
+                    checked={formData.acceptedCurrencies.includes('ARS')}
+                    onChange={handleChange}
+                  />
+                  <Form.Check
+                    type="checkbox"
+                    id="create-curr-usd"
+                    label="Dólares (USD)"
+                    value="USD"
+                    name="acceptedCurrencies"
+                    checked={formData.acceptedCurrencies.includes('USD')}
+                    onChange={handleChange}
+                  />
+                </div>
               </Form.Group>
             </Col>
 
@@ -547,7 +600,7 @@ const AdminCreatePackage = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Seleccione clase...</option>
+                  <option value="">Seleccione...</option>
                   {formData.transportType === 'bus' && (
                     <>
                       <option value="semi-cama">Semi-Cama</option>
@@ -559,7 +612,7 @@ const AdminCreatePackage = () => {
                     <>
                       <option value="clase-economica">Clase Económica</option>
                       <option value="economica-premium">Económica Premium</option>
-                      <option value="clase-ejecutiva">Clase Ejecutiva (Business)</option>
+                      <option value="clase-ejecutiva">Clase Ejecutiva</option>
                       <option value="primera-clase">Primera Clase</option>
                     </>
                   )}
@@ -690,7 +743,7 @@ const AdminCreatePackage = () => {
                   {/* OPCIONES DE RÉGIMEN / SERVICIO */}
                   <div className="mb-3">
                     <div className="d-flex justify-content-between align-items-center mb-2">
-                      <h6 className="fw-bold m-0 text-dark">Opciones (Regímenes / Variantes)</h6>
+                      <h6 className="fw-bold m-0 text-dark">Opciones del Circuito</h6>
                       <Button
                         type="button"
                         variant="outline-primary"
@@ -737,7 +790,7 @@ const AdminCreatePackage = () => {
                   {/* HOTELES */}
                   <div>
                     <div className="d-flex justify-content-between align-items-center mb-3">
-                      <h6 className="fw-bold m-0 text-dark">Hoteles asignados a este Circuito</h6>
+                      <h6 className="fw-bold m-0 text-dark">Hoteles del Circuito</h6>
                       <Button
                         type="button"
                         variant="outline-secondary"
@@ -820,11 +873,11 @@ const AdminCreatePackage = () => {
                           </Col>
                         </Row>
 
-                        {/* SALIDAS DEL HOTEL */}
+                        {/* SALIDAS Y PRECIOS POR MONEDA */}
                         <div className="mt-2 bg-white p-3 rounded-2 border">
                           <div className="d-flex justify-content-between align-items-center mb-2">
                             <span className="fw-bold small text-primary d-flex align-items-center gap-1">
-                              <FaCalendarPlus /> Fechas de Salida y Precios
+                              <FaCalendarPlus /> Salidas del Hotel
                             </span>
                             <Button
                               type="button"
@@ -837,11 +890,11 @@ const AdminCreatePackage = () => {
                           </div>
 
                           {hotel.departures.map((dep, depIndex) => (
-                            <div key={depIndex} className="p-2 mb-2 bg-light rounded border align-items-center">
-                              <Row className="g-2 align-items-center">
+                            <div key={depIndex} className="p-3 mb-2 bg-light rounded border">
+                              <Row className="g-2 align-items-start">
                                 <Col md={3}>
                                   <Form.Group>
-                                    <Form.Label className="small fw-bold text-secondary mb-1">Fecha</Form.Label>
+                                    <Form.Label className="small fw-bold text-secondary mb-1">Fecha de Salida</Form.Label>
                                     <Form.Control
                                       type="date"
                                       value={dep.date}
@@ -852,27 +905,56 @@ const AdminCreatePackage = () => {
                                 </Col>
 
                                 <Col md={8}>
-                                  <Row className="g-2">
+                                  <Form.Label className="small fw-bold text-secondary mb-1 d-block">
+                                    Precios por Opción
+                                  </Form.Label>
+                                  
+                                  <div className="d-flex flex-wrap gap-2">
                                     {circuit.options.map((opt, optIdx) => {
-                                      const priceObj = dep.prices[optIdx] || { amount: '' }
+                                      const priceObj = dep.prices[optIdx] || { amounts: { ars: '', usd: '' } }
+                                      const amounts = priceObj.amounts || { ars: '', usd: '' }
+
                                       return (
-                                        <Col key={optIdx} md={Math.max(3, Math.floor(12 / Math.max(circuit.options.length, 1)))}>
-                                          <Form.Group>
-                                            <Form.Label className="small fw-bold text-secondary mb-1 text-truncate w-100">
-                                              Precio {opt.name || `Opción ${optIdx + 1}`}
-                                            </Form.Label>
-                                            <Form.Control
-                                              type="number"
-                                              value={priceObj.amount}
-                                              placeholder="0.00"
-                                              onChange={(e) => handlePriceChange(circuitIndex, hotelIndex, depIndex, optIdx, e.target.value)}
-                                              required
-                                            />
-                                          </Form.Group>
-                                        </Col>
+                                        <Card key={optIdx} className="p-2 border rounded bg-white flex-fill">
+                                          <div className="small fw-semibold text-dark mb-1">
+                                            {opt.name || `Opción ${optIdx + 1}`}
+                                          </div>
+                                          
+                                          <div className="d-flex gap-2">
+                                            {formData.acceptedCurrencies.includes('ARS') && (
+                                              <div className="w-100">
+                                                <Form.Label className="text-muted" style={{ fontSize: '0.75rem' }}>
+                                                  Monto ARS ($)
+                                                </Form.Label>
+                                                <Form.Control
+                                                  type="number"
+                                                  size="sm"
+                                                  placeholder="0"
+                                                  value={amounts.ars || ''}
+                                                  onChange={(e) => handleAmountChange(circuitIndex, hotelIndex, depIndex, optIdx, 'ars', e.target.value)}
+                                                />
+                                              </div>
+                                            )}
+
+                                            {formData.acceptedCurrencies.includes('USD') && (
+                                              <div className="w-100">
+                                                <Form.Label className="text-muted" style={{ fontSize: '0.75rem' }}>
+                                                  Monto USD (US$)
+                                                </Form.Label>
+                                                <Form.Control
+                                                  type="number"
+                                                  size="sm"
+                                                  placeholder="0"
+                                                  value={amounts.usd || ''}
+                                                  onChange={(e) => handleAmountChange(circuitIndex, hotelIndex, depIndex, optIdx, 'usd', e.target.value)}
+                                                />
+                                              </div>
+                                            )}
+                                          </div>
+                                        </Card>
                                       )
                                     })}
-                                  </Row>
+                                  </div>
                                 </Col>
 
                                 <Col md={1} className="text-end">
@@ -880,7 +962,7 @@ const AdminCreatePackage = () => {
                                     type="button"
                                     variant="outline-danger"
                                     size="sm"
-                                    className="w-100 mt-4"
+                                    className="mt-4 w-100"
                                     onClick={() => removeDeparture(circuitIndex, hotelIndex, depIndex)}
                                     disabled={hotel.departures.length === 1}
                                   >
@@ -918,13 +1000,13 @@ const AdminCreatePackage = () => {
                   id="featuredCheckbox"
                   checked={formData.featured}
                   onChange={handleChange}
-                  label="Destacar este paquete en la Home"
+                  label="Marcar este paquete como Destacado"
                   className="fw-semibold"
                 />
               </Form.Group>
             </Col>
 
-            {/* BOTÓN FINAL */}
+            {/* BOTÓN SUBMIT */}
             <Col md={12}>
               <Button
                 type="submit"
