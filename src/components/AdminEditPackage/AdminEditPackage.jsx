@@ -20,6 +20,7 @@ const AdminEditPackage = () => {
     origin: '',
     destination: '',
     category: '',
+    secondaryCategories: '', // 👈 Manejado como texto separado por comas
     description: '',
     days: '',
     nights: '',
@@ -46,7 +47,7 @@ const AdminEditPackage = () => {
         normalizedMode = 'plane'
       }
 
-      // Monedas aceptadas (Soporte multimoneda + fallback al campo previo pkg.currency)
+      // Monedas aceptadas
       let initialCurrencies = pkg.acceptedCurrencies || []
       if (initialCurrencies.length === 0 && pkg.currency) {
         initialCurrencies = [pkg.currency]
@@ -55,12 +56,18 @@ const AdminEditPackage = () => {
         initialCurrencies = ['ARS']
       }
 
+      // Categorías secundarias
+      const initialSecondaryCategories = Array.isArray(pkg.secondaryCategories)
+        ? pkg.secondaryCategories.join(', ')
+        : ''
+
       setFormData({
         title: pkg.title || '',
         operatorCode: pkg.operatorCode || '',
         origin: pkg.origin || '',
         destination: pkg.destination || '',
         category: pkg.category || '',
+        secondaryCategories: initialSecondaryCategories, // 👈 Carga inicial de secundarias
         description: pkg.description || '',
         days: pkg.days || '',
         nights: pkg.nights || '',
@@ -191,7 +198,7 @@ const AdminEditPackage = () => {
     setFormData({ ...formData, circuits: updatedCircuits })
   }
 
-  // --- HANDLERS DE OPCIONES (CON SINCRONIZACIÓN DE PRECIOS) ---
+  // --- HANDLERS DE OPCIONES ---
   const handleOptionChange = (circuitIndex, optionIndex, value) => {
     const updatedCircuits = [...formData.circuits]
     const oldName = updatedCircuits[circuitIndex].options[optionIndex].name
@@ -317,6 +324,14 @@ const AdminEditPackage = () => {
       .replace(/\s+/g, '-')
       .replace(/[^\w-]+/g, '')
 
+    // Formatear categorías secundarias en un array limpio
+    const secondaryCategoriesArray = formData.secondaryCategories
+      ? formData.secondaryCategories
+          .split(',')
+          .map(cat => cat.trim())
+          .filter(Boolean)
+      : []
+
     const data = {
       title: formData.title,
       slug,
@@ -324,6 +339,7 @@ const AdminEditPackage = () => {
       origin: formData.origin,
       destination: formData.destination,
       category: formData.category,
+      secondaryCategories: secondaryCategoriesArray, // 👈 Se envía como Array de strings
       description: formData.description,
       days: Number(formData.days),
       nights: Number(formData.nights),
@@ -397,7 +413,7 @@ const AdminEditPackage = () => {
             </Col>
 
             {/* Código de Operador */}
-            <Col md={3}>
+            <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>Código de Operador</Form.Label>
                 <Form.Control
@@ -410,17 +426,31 @@ const AdminEditPackage = () => {
               </Form.Group>
             </Col>
 
-            {/* Categoría */}
-            <Col md={3}>
+            {/* Categoría Principal */}
+            <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label>Categoría</Form.Label>
+                <Form.Label>Categoría Principal</Form.Label>
                 <Form.Control
                   type="text"
                   name="category"
-                  placeholder="Ej: Internacional, Miniturismo..."
+                  placeholder="Ej: Vacaciones de Verano"
                   value={formData.category}
                   onChange={handleChange}
                   required
+                />
+              </Form.Group>
+            </Col>
+
+            {/* Categorías Secundarias */}
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Categorías Secundarias (separadas por comas)</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="secondaryCategories"
+                  placeholder="Ej: Paquetes en Aéreo, Miniturismo"
+                  value={formData.secondaryCategories}
+                  onChange={handleChange}
                 />
               </Form.Group>
             </Col>

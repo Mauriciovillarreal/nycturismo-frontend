@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom'
 import PackageCard from '../PackageCard/PackageCard.jsx'
 import Loader from '../Loader/Loader.jsx'
 import api from '../../services/api.js'
-import { categoryBanners } from '../../data/categoryBanners.js' // Importar banners
+import { categoryBanners } from '../../data/categoryBanners.js'
 
 import '../Packages/Packages.css'
 
@@ -35,11 +35,19 @@ const Packages = () => {
     }
   }
 
-  // Filtrado de paquetes...
+  // Filtrado de paquetes en el Frontend
   const filteredPackages = packages.filter(pkg => {
     if (origin && pkg?.origin !== origin) return false
     if (destination && pkg?.destination !== destination) return false
-    if (category && pkg?.category !== category) return false
+
+    // 👈 CAMBIO AQUÍ: Buscar en la categoría principal Y en las secundarias
+    if (category) {
+      const isMainCategory = pkg?.category === category
+      const isSecondaryCategory = pkg?.secondaryCategories?.includes(category)
+
+      if (!isMainCategory && !isSecondaryCategory) return false
+    }
+
     if (date) {
       const searchDate = new Date(date)
       if (isNaN(searchDate.getTime())) return false
@@ -61,7 +69,6 @@ const Packages = () => {
     return 'Nuestros Paquetes Turísticos'
   }
 
-  // Obtener la información del banner si existe la categoría
   const activeBanner = category ? categoryBanners[category] : null
 
   if (loading) return <Loader />
@@ -84,7 +91,7 @@ const Packages = () => {
           </div>
         </Container>
       ) : (
-        /* HEADER POR DEFECTO (Si no hay banner o no es filtro por categoría) */
+        /* HEADER POR DEFECTO */
         <Container className="pt-5">
           <div className="mb-4 text-center text-md-start titlePackagesFiltered">
             <h1 className="text-center titlePackagesFiltered">
@@ -103,6 +110,7 @@ const Packages = () => {
                 {filteredPackages.map(pkg => {
                   const isDayTrip =
                     pkg.category?.toLowerCase() === 'miniturismo' ||
+                    pkg.secondaryCategories?.some(cat => cat.toLowerCase() === 'miniturismo') ||
                     pkg.nights === 0 ||
                     pkg.nights === '0'
 

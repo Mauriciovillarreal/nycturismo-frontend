@@ -20,6 +20,7 @@ const AdminCreatePackage = () => {
     origin: '',
     destination: '',
     category: '',
+    secondaryCategories: '', // 👈 Estado para categorías secundarias (texto separado por comas)
     description: '',
     days: '',
     nights: '',
@@ -67,7 +68,6 @@ const AdminCreatePackage = () => {
           updatedCurrencies.push(currencyValue)
         }
       } else {
-        // Evitar desmarcar todas
         if (updatedCurrencies.length > 1) {
           updatedCurrencies = updatedCurrencies.filter((c) => c !== currencyValue)
         }
@@ -346,6 +346,14 @@ const AdminCreatePackage = () => {
       .replace(/\s+/g, '-')
       .replace(/[^\w-]+/g, '')
 
+    // Formatear categorías secundarias en un Array de strings
+    const secondaryCategoriesArray = formData.secondaryCategories
+      ? formData.secondaryCategories
+          .split(',')
+          .map((cat) => cat.trim())
+          .filter(Boolean)
+      : []
+
     const cleanedCircuits = formData.circuits.map((circuit) => {
       const cleanedIncludes = circuit.includes
         ? circuit.includes.split(',').map((item) => item.trim()).filter(Boolean)
@@ -414,6 +422,7 @@ const AdminCreatePackage = () => {
       origin: formData.origin.trim(),
       destination: formData.destination.trim(),
       category: formData.category.trim(),
+      secondaryCategories: secondaryCategoriesArray, // 👈 Se envía como Array
       description: formData.description.trim(),
       days: Number(formData.days),
       nights: Number(formData.nights),
@@ -462,7 +471,7 @@ const AdminCreatePackage = () => {
             </Col>
 
             {/* CÓDIGO DE OPERADOR */}
-            <Col md={3}>
+            <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-semibold">Código de Operador</Form.Label>
                 <Form.Control
@@ -475,10 +484,10 @@ const AdminCreatePackage = () => {
               </Form.Group>
             </Col>
 
-            {/* CATEGORIA */}
-            <Col md={3}>
+            {/* CATEGORIA PRINCIPAL */}
+            <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label className="fw-semibold">Categoría</Form.Label>
+                <Form.Label className="fw-semibold">Categoría Principal</Form.Label>
                 <Form.Control
                   type="text"
                   name="category"
@@ -486,6 +495,20 @@ const AdminCreatePackage = () => {
                   onChange={handleChange}
                   placeholder="Ej: Miniturismo, Nacionales, Internacional..."
                   required
+                />
+              </Form.Group>
+            </Col>
+
+            {/* CATEGORIAS SECUNDARIAS */}
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label className="fw-semibold">Categorías Secundarias (separadas por comas)</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="secondaryCategories"
+                  value={formData.secondaryCategories}
+                  onChange={handleChange}
+                  placeholder="Ej: Paquetes en bus, Finde largo, Vacaciones de verano"
                 />
               </Form.Group>
             </Col>
