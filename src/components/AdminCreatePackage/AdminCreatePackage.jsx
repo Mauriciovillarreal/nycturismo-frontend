@@ -373,9 +373,9 @@ const AdminCreatePackage = () => {
 
     const secondaryCategoriesArray = formData.secondaryCategories
       ? formData.secondaryCategories
-          .split(',')
-          .map((cat) => cat.trim())
-          .filter(Boolean)
+        .split(',')
+        .map((cat) => cat.trim())
+        .filter(Boolean)
       : []
 
     const cleanedCircuits = formData.circuits.map((circuit) => {
@@ -568,25 +568,25 @@ const AdminCreatePackage = () => {
               </Form.Group>
             </Col>
 
+
             {/* MODALIDAD DE COBRO / PAGO */}
-       {/* MODALIDAD DE COBRO / PAGO */}
-<Col md={6}>
-  <Form.Group className="mb-3">
-    <Form.Label className="fw-semibold">Modalidad de Cobro/Pago</Form.Label>
-    <Form.Select
-      name="paymentMode"
-      value={formData.paymentMode}
-      onChange={handleChange}
-    >
-      <option value="choice">Elección (Paga el 100% en ARS o el 100% en USD)</option>
-      <option value="split">Dividido (Paga una parte en ARS Y otra en USD)</option>
-      <option value="single">Moneda Única (Solo acepta 1 moneda)</option>
-    </Form.Select>
-    <Form.Text className="text-muted small">
-      💡 Seleccioná cómo el cliente abonará esta tarifa.
-    </Form.Text>
-  </Form.Group>
-</Col>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label className="fw-semibold">Modalidad de Cobro/Pago</Form.Label>
+                <Form.Select
+                  name="paymentMode"
+                  value={formData.paymentMode}
+                  onChange={handleChange}
+                >
+                  <option value="CHOICE">Elección (Paga el 100% en ARS o el 100% en USD)</option>
+                  <option value="SPLIT">Dividido (Paga una parte en ARS Y otra en USD)</option>
+                  <option value="SINGLE">Moneda Única (Solo acepta 1 moneda)</option>
+                </Form.Select>
+                <Form.Text className="text-muted small">
+                  💡 Seleccioná cómo el cliente abonará esta tarifa.
+                </Form.Text>
+              </Form.Group>
+            </Col>
 
             {/* MONEDAS ACEPTADAS */}
             <Col md={6}>
