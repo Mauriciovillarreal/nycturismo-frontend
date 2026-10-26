@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react'
 import {
   Container,
@@ -16,6 +15,7 @@ import api from '../../services/api'
 const AdminPackages = () => {
   const [packages, setPackages] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('')
+  const [filterStatus, setFilterStatus] = useState('') // Nuevo estado para el filtro de estado (vencidos/vigentes)
 
   useEffect(() => {
     fetchPackages()
@@ -127,14 +127,41 @@ const AdminPackages = () => {
     new Set(packages.map(pkg => pkg.category).filter(Boolean))
   )
 
-  // Filtrar por categoría
-  const filteredPackages = selectedCategory
-    ? packages.filter(pkg => pkg.category === selectedCategory)
-    : packages
+  // Filtrar por categoría Y por estado (vencidos / vigentes)
+  const filteredPackages = packages.filter(pkg => {
+    // Filtro por categoría
+    const matchesCategory = selectedCategory 
+      ? pkg.category === selectedCategory 
+      : true
 
-  // Fecha actual, normalizada para comparar días completos
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+    if (!matchesCategory) return false
+
+    // Si no hay filtro de estado, pasa
+    if (!filterStatus) return true
+
+    const packageDates = getPackageDates(pkg)
+
+    // Validar si tiene alguna fecha futura (vigente)
+    const hasFutureDates = packageDates.some(date => {
+      const parsedDate = new Date(date)
+      if (isNaN(parsedDate.getTime())) return false
+      parsedDate.setUTCHours(0, 0, 0, 0)
+      const todayUTC = new Date()
+      todayUTC.setUTCHours(0, 0, 0, 0)
+      return parsedDate >= todayUTC
+    })
+
+    // Comprobar la regla seleccionada
+    if (filterStatus === 'expired') {
+      // Vencido: O bien no tiene fechas, o todas sus fechas son pasadas (no tiene futuras)
+      return packageDates.length === 0 || !hasFutureDates
+    } else if (filterStatus === 'active') {
+      // Vigente: Tiene al menos una fecha futura
+      return hasFutureDates
+    }
+
+    return true
+  })
 
   return (
     <Container className="py-4">
@@ -156,25 +183,39 @@ const AdminPackages = () => {
         </Col>
       </Row>
 
-      {/* FILTRO POR CATEGORÍA */}
-      <Row className="mb-3">
+      {/* FILTROS (Categoría y Estado) */}
+      <Row className="mb-3 g-3">
         <Col xs={12} sm={6} md={4} lg={3}>
           <Form.Group controlId="categoryFilter">
             <Form.Label className="fw-semibold text-muted small">
               Filtrar por Categoría:
             </Form.Label>
-
             <Form.Select
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}
             >
               <option value="">Todas las categorías</option>
-
               {categories.map(cat => (
                 <option key={cat} value={cat}>
                   {cat}
                 </option>
               ))}
+            </Form.Select>
+          </Form.Group>
+        </Col>
+
+        <Col xs={12} sm={6} md={4} lg={3}>
+          <Form.Group controlId="statusFilter">
+            <Form.Label className="fw-semibold text-muted small">
+              Filtrar por Estado:
+            </Form.Label>
+            <Form.Select
+              value={filterStatus}
+              onChange={e => setFilterStatus(e.target.value)}
+            >
+              <option value="">Todos los estados</option>
+              <option value="active">Vigentes (Con salidas futuras)</option>
+              <option value="expired">Vencidos (Sin salidas vigentes)</option>
             </Form.Select>
           </Form.Group>
         </Col>
