@@ -48,16 +48,17 @@ const CategoryGrid = () => {
 
                         {/* COLUMNA 3: Turquía (Arriba grande) + Caribe (Abajo chico) */}
                         <div className="categoryCol">
-                            <div className="categoryCard categoryCard-tall" onClick={() => handleNavigate('Miniturismo')}>
-                                <img src="https://iili.io/CrApDRp.png" alt="Miniturismo" />
-                                <div className="categoryOverlay"></div>
-                                <h2>Miniturismo</h2>
-                            </div>
-                            <div className="categoryCard" onClick={() => handleNavigate('Internacional')}>
+                              <div className="categoryCard categoryCard-tall" onClick={() => handleNavigate('Internacional')}>
                                 <img src="https://img.static-kl.com/transform/bb1c45ef-bc48-407b-a559-c8b7ca39d7a3/" alt="Internacional" />
                                 <div className="categoryOverlay"></div>
                                 <h2>Internacional</h2>
                             </div>
+                            <div className="categoryCard" onClick={() => handleNavigate('Miniturismo')}>
+                                <img src="https://iili.io/CrApDRp.png" alt="Miniturismo" />
+                                <div className="categoryOverlay"></div>
+                                <h2>Miniturismo</h2>
+                            </div>
+                          
                         </div>
 
                         {/* COLUMNA 4: Argentina (Arriba chico) + NaranjaX/Banner (Abajo grande) */}
