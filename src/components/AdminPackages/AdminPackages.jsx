@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react'
 import {
   Container,
@@ -10,7 +11,6 @@ import {
 } from 'react-bootstrap'
 
 import { Link } from 'react-router-dom'
-
 import api from '../../services/api'
 
 const AdminPackages = () => {
@@ -45,7 +45,7 @@ const AdminPackages = () => {
     }
   }
 
-  // Helper para buscar los precios mínimos de referencia en ARS y USD
+  // Obtener los precios mínimos en ARS y USD
   const getMinPackagePrices = (pkg) => {
     let minArs = Infinity
     let minUsd = Infinity
@@ -54,15 +54,25 @@ const AdminPackages = () => {
       circuit.hotels?.forEach(hotel => {
         hotel.departures?.forEach(departure => {
           departure.prices?.forEach(priceItem => {
-            // Evaluamos ARS (soporta amounts.ars y el campo legacy amount)
-            const arsVal = priceItem.amounts?.ars ?? priceItem.amount
-            if (arsVal && Number(arsVal) > 0 && Number(arsVal) < minArs) {
+            const arsVal =
+              priceItem.amounts?.ars ?? priceItem.amount
+
+            if (
+              arsVal != null &&
+              Number(arsVal) > 0 &&
+              Number(arsVal) < minArs
+            ) {
               minArs = Number(arsVal)
             }
 
-            // Evaluamos USD (soporta amounts.usd y el campo legacy amountUsd)
-            const usdVal = priceItem.amounts?.usd ?? priceItem.amountUsd
-            if (usdVal && Number(usdVal) > 0 && Number(usdVal) < minUsd) {
+            const usdVal =
+              priceItem.amounts?.usd ?? priceItem.amountUsd
+
+            if (
+              usdVal != null &&
+              Number(usdVal) > 0 &&
+              Number(usdVal) < minUsd
+            ) {
               minUsd = Number(usdVal)
             }
           })
@@ -76,15 +86,55 @@ const AdminPackages = () => {
     }
   }
 
-  // Obtener categorías únicas disponibles dinámicamente
+  // Obtener las fechas de salida de todos los circuitos y hoteles
+  const getPackageDates = (pkg) => {
+    const dates = []
+
+    pkg.circuits?.forEach(circuit => {
+      circuit.hotels?.forEach(hotel => {
+        hotel.departures?.forEach(departure => {
+          if (departure.date) {
+            dates.push(departure.date)
+          }
+        })
+      })
+    })
+
+    // Eliminar fechas duplicadas y ordenar cronológicamente
+    return [...new Set(dates)].sort(
+      (a, b) => new Date(a) - new Date(b)
+    )
+  }
+
+  // Formatear fechas al formato argentino
+  const formatPackageDate = (date) => {
+    const parsedDate = new Date(date)
+
+    if (isNaN(parsedDate.getTime())) {
+      return 'Fecha inválida'
+    }
+
+    return parsedDate.toLocaleDateString('es-AR', {
+      timeZone: 'UTC',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
+  }
+
+  // Obtener categorías únicas
   const categories = Array.from(
     new Set(packages.map(pkg => pkg.category).filter(Boolean))
   )
 
-  // Filtrar paquetes según la categoría seleccionada
+  // Filtrar por categoría
   const filteredPackages = selectedCategory
     ? packages.filter(pkg => pkg.category === selectedCategory)
     : packages
+
+  // Fecha actual, normalizada para comparar días completos
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   return (
     <Container className="py-4">
@@ -113,13 +163,15 @@ const AdminPackages = () => {
             <Form.Label className="fw-semibold text-muted small">
               Filtrar por Categoría:
             </Form.Label>
+
             <Form.Select
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}
             >
               <option value="">Todas las categorías</option>
-              {categories.map((cat, index) => (
-                <option key={index} value={cat}>
+
+              {categories.map(cat => (
+                <option key={cat} value={cat}>
                   {cat}
                 </option>
               ))}
@@ -128,18 +180,14 @@ const AdminPackages = () => {
         </Col>
       </Row>
 
-      <Table
-        striped
-        bordered
-        hover
-        responsive
-      >
+      <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th>Título</th>
             <th>Destino</th>
             <th>Categoría</th>
             <th>Duración</th>
+            <th>Fechas de salida</th>
             <th>Monedas / Precio Desde</th>
             <th>Transporte</th>
             <th>Acciones</th>
@@ -149,66 +197,145 @@ const AdminPackages = () => {
         <tbody>
           {filteredPackages.length > 0 ? (
             filteredPackages.map(pkg => {
-              // 1. Calculamos los precios mínimos actualizados
               const minPrices = getMinPackagePrices(pkg)
 
-              // 2. Monedas aceptadas (Array o fallback a currency raíz)
+              const packageDates = getPackageDates(pkg)
+
               const accepted = pkg.acceptedCurrencies?.length
                 ? pkg.acceptedCurrencies
                 : [pkg.currency || 'ARS']
 
-              // 3. Transporte
-              const currentTransportMode = pkg.transport?.mode || pkg.transport?.type || 'bus'
-              const isPlane = 
-                typeof currentTransportMode === 'string' && 
-                ['plane', 'avion', 'avión'].includes(currentTransportMode.toLowerCase())
+              const currentTransportMode =
+                pkg.transport?.mode ||
+                pkg.transport?.type ||
+                'bus'
+
+              const isPlane =
+                typeof currentTransportMode === 'string' &&
+                ['plane', 'avion', 'avión'].includes(
+                  currentTransportMode.toLowerCase()
+                )
+
+              // Determinar si existen salidas futuras
+              const hasFutureDates = packageDates.some(date => {
+                const parsedDate = new Date(date)
+
+                if (isNaN(parsedDate.getTime())) {
+                  return false
+                }
+
+                parsedDate.setUTCHours(0, 0, 0, 0)
+
+                const todayUTC = new Date()
+                todayUTC.setUTCHours(0, 0, 0, 0)
+
+                return parsedDate >= todayUTC
+              })
 
               return (
                 <tr key={pkg._id}>
-                  <td>
-                    {pkg.title}
-                  </td>
+                  <td>{pkg.title}</td>
 
-                  <td>
-                    {pkg.destination}
-                  </td>
+                  <td>{pkg.destination}</td>
 
-                  <td>
-                    {pkg.category}
-                  </td>
+                  <td>{pkg.category || 'Sin categoría'}</td>
 
                   <td>
                     {pkg.days}D / {pkg.nights}N
                   </td>
 
+                  {/* FECHAS DE SALIDA */}
+                  <td>
+                    {packageDates.length > 0 ? (
+                      <div className="d-flex flex-column gap-1">
+                        {packageDates.map((date, index) => {
+                          const parsedDate = new Date(date)
+
+                          if (isNaN(parsedDate.getTime())) {
+                            return (
+                              <Badge
+                                key={`${date}-${index}`}
+                                bg="secondary"
+                                className="text-start"
+                              >
+                                Fecha inválida
+                              </Badge>
+                            )
+                          }
+
+                          parsedDate.setUTCHours(0, 0, 0, 0)
+
+                          const todayUTC = new Date()
+                          todayUTC.setUTCHours(0, 0, 0, 0)
+
+                          const isPast = parsedDate < todayUTC
+
+                          return (
+                            <Badge
+                              key={`${date}-${index}`}
+                              bg={isPast ? 'danger' : 'success'}
+                              className="text-start"
+                            >
+                              {formatPackageDate(date)}
+                              {isPast ? ' - Vencida' : ' - Vigente'}
+                            </Badge>
+                          )
+                        })}
+
+                        {!hasFutureDates && (
+                          <small className="text-danger fw-bold mt-1">
+                            Todas las fechas vencieron
+                          </small>
+                        )}
+                      </div>
+                    ) : (
+                      <small className="text-muted">
+                        Sin fechas cargadas
+                      </small>
+                    )}
+                  </td>
+
+                  {/* PRECIOS */}
                   <td>
                     <div className="d-flex flex-column gap-1">
                       {accepted.includes('ARS') && (
                         <div>
-                          <Badge bg="secondary" className="me-1">ARS</Badge>
+                          <Badge bg="secondary" className="me-1">
+                            ARS
+                          </Badge>
+
                           <small className="fw-semibold">
-                            {minPrices.ars ? `$ ${minPrices.ars.toLocaleString('es-AR')}` : 'Sin precio'}
+                            {minPrices.ars != null
+                              ? `$ ${minPrices.ars.toLocaleString('es-AR')}`
+                              : 'Sin precio'}
                           </small>
                         </div>
                       )}
 
                       {accepted.includes('USD') && (
                         <div>
-                          <Badge bg="success" className="me-1">USD</Badge>
+                          <Badge bg="success" className="me-1">
+                            USD
+                          </Badge>
+
                           <small className="fw-semibold">
-                            {minPrices.usd ? `US$ ${minPrices.usd.toLocaleString('es-AR')}` : 'Sin precio'}
+                            {minPrices.usd != null
+                              ? `US$ ${minPrices.usd.toLocaleString('es-AR')}`
+                              : 'Sin precio'}
                           </small>
                         </div>
                       )}
                     </div>
                   </td>
 
+                  {/* TRANSPORTE */}
                   <td>
                     {isPlane ? 'Avión' : 'Bus'}
                     {' - '}
                     {pkg.transport?.category || 'Sin especificar'}
                   </td>
 
+                  {/* ACCIONES */}
                   <td>
                     <div className="d-flex gap-2">
                       <Button
@@ -234,10 +361,7 @@ const AdminPackages = () => {
             })
           ) : (
             <tr>
-              <td
-                colSpan="7"
-                className="text-center py-4"
-              >
+              <td colSpan={8} className="text-center py-4">
                 {packages.length === 0
                   ? 'No hay paquetes cargados'
                   : 'No hay paquetes en esta categoría'}

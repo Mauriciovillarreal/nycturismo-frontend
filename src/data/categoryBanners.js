@@ -21,7 +21,15 @@ export const categoryBanners = {
     subtitle: 'Aprovechá al máximo los días feriados con viajes diseñados a tu medida.'
   },
   'Vacaciones de verano': {
-    image: 'https://img.wpfc.ml/90d/k7/0d6cum.png',
+    image: 'https://cdn.pixabay.com/photo/2017/06/17/18/35/beach-2413081_1280.jpg',
     subtitle: 'Playa, sol y naturaleza para disfrutar la temporada estival.'
+  }  ,
+  'Navidad': {
+    image: 'https://cdn.pixabay.com/photo/2026/09/15/23/29/23-29-47-598_1280.jpg',
+    subtitle: 'Celebra las fiestas con nuestros paquetes de navidad.'
+  },
+  'Año Nuevo': {
+    image: 'https://cdn.pixabay.com/photo/2017/01/04/21/00/new-years-eve-1953253_1280.jpg',
+    subtitle: 'Celebra las fiestas con nuestros paquetes de año nuevo.'
   }
 }

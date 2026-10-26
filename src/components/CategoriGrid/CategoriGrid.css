@@ -1,135 +1,128 @@
 .categorySection {
-    width: 100%;
-    padding: 140px 0px;
+    padding: 40px 0;
 }
 
-.categoryContainer {
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.categoryGrid {
+.categoryGridColumns {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas iguales */
+    gap: 2px; /* Espacio entre columnas y tarjetas */
 }
 
+.categoryCol {
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* Espacio vertical entre tarjetas de una misma columna */
+}
+
+/* Estilos base de cada tarjeta */
 .categoryCard {
     position: relative;
-    height: 260px;
+    width: 100%;
+    height: 180px; /* Altura estándar para tarjetas chicas */;
     overflow: hidden;
     cursor: pointer;
-    border-radius: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.categoryCard:hover img {
-    transform: scale(1.02);
-     transition: transform 0.8s ease;
+/* Tarjetas altas (ocupan el doble de alto para lograr el diseño asimétrico) */
+.categoryCard.categoryCard-tall {
+    height: 226px; /* 180px + 16px de gap + 180px */
 }
 
 .categoryCard img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
+    transition: transform 0.5s ease;
 }
 
+/* Efecto hover moderno */
+.categoryCard:hover img {
+    transform: scale(1.05);
+}
+
+/* Capa oscura superpuesta para que resalte el texto blanco */
 .categoryOverlay {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(to top,
-            rgba(0, 0, 0, 0.65),
-            rgba(0, 0, 0, 0.15));
-}
-
-.categoryCard h2 {
-  text-transform: uppercase !important;
-  font-size: 1.5rem !important;
-}
-
-.categoryCard h2 {
-    position: absolute;
-
-    top: 50%;
-    left: 50%;
-
-    transform: translate(-50%, -50%);
-
-    color: white;
-
-    font-size: 2.4rem;
-    font-weight: 700;
-
-    text-align: center;
-
-    margin: 0;
-
-    z-index: 2;
-
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.6) 100%);
+    transition: background 0.3s ease;
 }
 
-/* TABLET */
-
-@media(max-width: 992px) {
-
-    .categoryGrid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
+.categoryCard:hover .categoryOverlay {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.7) 100%);
 }
 
-/* MOBILE */
+/* Estilo del texto (Títulos centrados o posicionados como en tu imagen) */
+.categoryCard h2 {
+    text-align: center;
+    position: absolute;
+    bottom: 90px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #ffffff;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 0;
+    z-index: 2;
+    padding: 0 10px;
+    text-transform: uppercase;
+}
 
-@media(max-width: 768px) {
-
-    .categorySection {
-        padding: 70px 0;
-        width: 100%;
-
-        overflow: hidden;
+/* Responsividad para pantallas medianas y celulares */
+@media (max-width: 992px) {
+    .categoryGridColumns {
+        grid-template-columns: repeat(2, 1fr); /* Pasa a 2 columnas en tablets */
     }
-
-    .categoryContainer {
-        width: 100%;
-        max-width: 100%;
-        overflow: hidden;
-        padding-left: 16px;
+    .categoryCard.categoryCard-tall {
+        height: 220px; /* Ajustamos alturas para pantallas chicas */
     }
+}
 
-    .categoryGrid {
-        display: flex;
+@media (max-width: 576px) {
+    .categoryGridColumns {
+        grid-template-columns: 1fr; /* 1 sola columna en celulares */
+    }
+    .categoryCard, 
+    .categoryCard.categoryCard-tall {
+        height: 200px;
+    }
+}
 
+/* --- EFECTO CARRUSEL EN MÓVIL --- */
+@media (max-width: 992px) {
+    .categoryGridColumns {
+        display: flex; /* Cambiamos a flexbox para alinear las columnas en fila */
+        overflow-x: auto; /* Habilitamos el scroll horizontal estilo carrusel */
+        scroll-snap-type: x mandatory; /* Hace que el scroll se ajuste de golpe a cada tarjeta/columna */
         gap: 12px;
-
-        overflow-x: auto;
-        overflow-y: hidden;
-
-        scroll-snap-type: x mandatory;
-
-        -webkit-overflow-scrolling: touch;
-
-        scrollbar-width: none;
-
-        padding-right: 16px;
+        padding-bottom: 15px; /* Espacio para la barra de scroll si aparece */
+        -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
     }
 
-    .categoryGrid::-webkit-scrollbar {
+    /* Ocultar barra de scroll para que se vea estético */
+    .categoryGridColumns::-webkit-scrollbar {
         display: none;
     }
-
-    .categoryCard {
-        flex: 0 0 82%;
-
-        height: 280px;
-
-        scroll-snap-align: start;
+    .categoryGridColumns {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
 
-
-    .categoryCard h2 {
-        font-size: 2rem;
-        padding: 0 10px;
+    .categoryCol {
+        flex: 0 0 75%; /* Cada columna ocupa el 75% del ancho de la pantalla para ver la siguiente */
+        max-width: 75%;
+        scroll-snap-align: start; /* Ajusta el encuadre al deslizar */
     }
 
+    .categoryCard, 
+    .categoryCard.categoryCard-tall {
+        height: 220px; /* Altura uniforme y cómoda para el formato móvil */
+    }
 }
